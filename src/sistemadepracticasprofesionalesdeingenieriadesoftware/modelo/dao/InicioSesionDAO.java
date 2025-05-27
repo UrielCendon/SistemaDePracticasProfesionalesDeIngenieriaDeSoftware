@@ -21,10 +21,10 @@ public class InicioSesionDAO {
         Usuario usuarioSesion = null;
         Connection conexionBD = ConexionBD.abrirConexion();
         if(conexionBD != null){
-            String consulta = "SELECT idUsuario, nombre, apellidoPaterno, "
-                    + "apellidoMaterno, username "
+            String consulta = "SELECT id_usuario, nombre, apellido_paterno, "
+                    + "apellido_materno, usuario "
                     + "FROM usuario "
-                    + "WHERE username = ? AND password = ?";
+                    + "WHERE usuario = ? AND password = ?";
             
             PreparedStatement sentencia = conexionBD.prepareStatement(consulta);
             sentencia.setString(1, username);
@@ -45,12 +45,12 @@ public class InicioSesionDAO {
         
     private static Usuario convertirRegistroUsuario(ResultSet resultado) throws SQLException{
         Usuario usuario = new Usuario();
-        usuario.setIdUsuario(resultado.getInt("idUsuario"));
+        usuario.setIdUsuario(resultado.getInt("id_usuario"));
         usuario.setNombre(resultado.getString("nombre"));
-        usuario.setApellidoPaterno(resultado.getString("apellidoPaterno"));
-        usuario.setApellidoMaterno(resultado.getString("apellidoMaterno") 
-                != null ? resultado.getString("apellidoMaterno") : "");
-        usuario.setUsername(resultado.getString("username"));
+        usuario.setApellidoPaterno(resultado.getString("apellido_paterno"));
+        usuario.setApellidoMaterno(resultado.getString("apellido_materno") 
+                != null ? resultado.getString("apellido_materno") : "");
+        usuario.setUsername(resultado.getString("usuario"));
         return usuario;
     }
 }

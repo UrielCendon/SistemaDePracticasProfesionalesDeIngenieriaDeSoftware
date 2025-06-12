@@ -4,3 +4,5 @@ manifest.mf
 build.xml
 /build/
 /dist/
+
+/src/sistemadepracticasprofesionalesdeingenieriadesoftware/config.properties

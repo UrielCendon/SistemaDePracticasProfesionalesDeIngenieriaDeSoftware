@@ -15,13 +15,17 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import sistemadepracticasprofesionalesdeingenieriadesoftware.SistemaDePracticasProfesionalesDeIngenieriaDeSoftware;
-import sistemadepracticasprofesionalesdeingenieriadesoftware.modelo.dao.InicioSesionDAO;
-import sistemadepracticasprofesionalesdeingenieriadesoftware.modelo.pojo.Usuario;
+import sistemadepracticasprofesionalesdeingenieriadesoftware.
+        SistemaDePracticasProfesionalesDeIngenieriaDeSoftware;
+import sistemadepracticasprofesionalesdeingenieriadesoftware.modelo.dao.
+        InicioSesionDAO;
+import sistemadepracticasprofesionalesdeingenieriadesoftware.modelo.pojo.
+        Usuario;
 import sistemadepracticasprofesionalesdeingenieriadesoftware.util.Utilidad;
 
 /**
@@ -38,20 +42,24 @@ public class FXMLInicioSesionController implements Initializable {
     @FXML
     private Label lbErrorContraseña;
     @FXML
-    private PasswordField tfContraseña;
+    private PasswordField pfPassword;
+    @FXML
+    private TextField tfPasswordVisible;
+    @FXML
+    private Button btnMostrarContraseña;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
+        configurarListeners();
     }    
 
     @FXML
     private void btnClicVerificarSesion(ActionEvent event) {
         String usuario = tfUsuario.getText();
-        String contrasena = tfContraseña.getText();
+        String contrasena = pfPassword.getText();
         if(validarCampos(usuario, contrasena))
             validarCredenciales(usuario, contrasena);
     }
@@ -77,10 +85,7 @@ public class FXMLInicioSesionController implements Initializable {
             Usuario usuarioSesion = InicioSesionDAO.verificarCredenciales
             (usuario, contrasena);
             if (usuarioSesion != null){
-                Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION, 
-                        "Credenciales correctas", "Bienvenido(a) " 
-                        + usuarioSesion.toString() + " al sistema.");
-                irPantallaPrincipal(usuarioSesion);
+                irPantallaPrincipalCoordinador(usuarioSesion);
             }else{                
                 Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, 
                         "Credenciales incorrectas", "Usuario y/o contraseña "
@@ -91,19 +96,66 @@ public class FXMLInicioSesionController implements Initializable {
                     "Problemas de conexión", ex.getMessage());
         }
     }
-    private void irPantallaPrincipal(Usuario usuario){
+    private void irPantallaPrincipalCoordinador(Usuario usuario){
         try {
             Stage escenarioBase = (Stage) tfUsuario.getScene().getWindow();
-            FXMLLoader cargador = new FXMLLoader(SistemaDePracticasProfesionalesDeIngenieriaDeSoftware.class.getResource("vista/FXMLPrincipal.fxml"));
+            FXMLLoader cargador = new FXMLLoader
+                (SistemaDePracticasProfesionalesDeIngenieriaDeSoftware.
+                class.getResource("vista/FXMLPrincipalCoordinador.fxml"));
             Parent vista = cargador.load();
-            FXMLPrincipalController controlador = cargador.getController();
-            //controlador.inicializarInformacion(usuario);
+            FXMLPrincipalCoordinadorController controlador = cargador.getController();
+            controlador.inicializarInformacion(usuario);
             Scene escenaPrincipal = new Scene(vista);
             escenarioBase.setScene(escenaPrincipal);
-            escenarioBase.setTitle("Home");
+            escenarioBase.setTitle("Sistema de gestión de prácticas "
+                    + "profesionales");
+            escenarioBase.centerOnScreen();
             escenarioBase.show();
         } catch (IOException ex) {
             ex.printStackTrace();
+        }
+    }
+
+    private void mostrarContrasenaVisible() {
+        tfPasswordVisible.setText(pfPassword.getText());
+        tfPasswordVisible.setVisible(true);
+        tfPasswordVisible.setManaged(true);
+
+        pfPassword.setVisible(false);
+        pfPassword.setManaged(false);
+    }
+
+    private void ocultarContrasenaVisible() {
+        pfPassword.setText(tfPasswordVisible.getText());
+        pfPassword.setVisible(true);
+        pfPassword.setManaged(true);
+
+        tfPasswordVisible.setVisible(false);
+        tfPasswordVisible.setManaged(false);
+    }
+    
+    private void configurarListeners() {
+        pfPassword.textProperty().addListener((obs, oldText, newText) -> {
+            tfPasswordVisible.setText(newText);
+        });
+
+        tfPasswordVisible.textProperty().addListener((obs, oldText, 
+                newText) -> {
+            pfPassword.setText(newText);
+        });
+    }
+    
+    private String obtenerContrasenaActual() {
+        return pfPassword.isVisible() ? pfPassword.getText() : 
+                tfPasswordVisible.getText();
+    }
+    
+    @FXML
+    private void btnClicMostrarContraseña(ActionEvent event) {
+        if (tfPasswordVisible.isVisible()) {
+            ocultarContrasenaVisible();
+        } else {
+            mostrarContrasenaVisible();
         }
     }
 }

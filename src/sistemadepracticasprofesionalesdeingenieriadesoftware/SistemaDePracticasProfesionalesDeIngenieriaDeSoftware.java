@@ -35,8 +35,9 @@ public class SistemaDePracticasProfesionalesDeIngenieriaDeSoftware extends
             primaryStage.setTitle("Inicio de sesion");
             primaryStage.show();
         } catch (IOException ex) {
-            Logger.getLogger(SistemaDePracticasProfesionalesDeIngenieriaDeSoftware.
-                    class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger
+                (SistemaDePracticasProfesionalesDeIngenieriaDeSoftware.
+                class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

@@ -19,7 +19,8 @@ public class Usuario {
         
     }
 
-    public Usuario(int idUsuario, String nombre, String apellidoPaterno, String apellidoMaterno, String username) {
+    public Usuario(int idUsuario, String nombre, String apellidoPaterno, 
+            String apellidoMaterno, String username) {
         this.idUsuario = idUsuario;
         this.nombre = nombre;
         this.apellidoPaterno = apellidoPaterno;
@@ -69,6 +70,6 @@ public class Usuario {
 
     @Override
     public String toString() {
-        return nombre + " " + apellidoPaterno + " " + apellidoMaterno;
+        return nombre + " " + apellidoPaterno;
     }
 }

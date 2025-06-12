@@ -16,8 +16,8 @@ import sistemadepracticasprofesionalesdeingenieriadesoftware.modelo.pojo.Usuario
  * @author uriel
  */
 public class InicioSesionDAO {
-    public static Usuario verificarCredenciales(String username, String password) 
-            throws SQLException{
+    public static Usuario verificarCredenciales(String username, 
+            String password) throws SQLException{
         Usuario usuarioSesion = null;
         Connection conexionBD = ConexionBD.abrirConexion();
         if(conexionBD != null){
@@ -43,7 +43,8 @@ public class InicioSesionDAO {
         return usuarioSesion;
     }
         
-    private static Usuario convertirRegistroUsuario(ResultSet resultado) throws SQLException{
+    private static Usuario convertirRegistroUsuario(ResultSet resultado) 
+            throws SQLException{
         Usuario usuario = new Usuario();
         usuario.setIdUsuario(resultado.getInt("id_usuario"));
         usuario.setNombre(resultado.getString("nombre"));

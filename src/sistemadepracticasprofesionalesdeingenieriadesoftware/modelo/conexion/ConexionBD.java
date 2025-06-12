@@ -22,11 +22,14 @@ public class ConexionBD {
             
     public static Connection abrirConexion(){
         Connection conexionBD = null;
-        String urlConexion = String.format("jdbc:mysql://%s:%s/%s?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC", IP, PUERTO, NOMBRE_BD);
+        String urlConexion = String.format("jdbc:mysql://%s:%s/%s?allowPublic"
+                + "KeyRetrieval=true&useSSL=false&server"
+                + "Timezone=UTC", IP, PUERTO, NOMBRE_BD);
         
         try {
            Class.forName(DRIVER);
-           conexionBD = DriverManager.getConnection(urlConexion, USUARIO, PASSWORD);
+           conexionBD = DriverManager.getConnection(urlConexion, USUARIO, 
+                   PASSWORD);
         } catch(ClassNotFoundException e){
             e.printStackTrace();
             System.err.println("Error Clase no encontrada.");

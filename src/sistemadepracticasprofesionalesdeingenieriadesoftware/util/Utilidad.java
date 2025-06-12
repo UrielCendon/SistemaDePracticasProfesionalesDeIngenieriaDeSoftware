@@ -15,7 +15,8 @@ import javafx.stage.Stage;
  * @author uriel
  */
 public class Utilidad {
-    public static void mostrarAlertaSimple(Alert.AlertType tipo, String titulo, String mensaje){
+    public static void mostrarAlertaSimple(Alert.AlertType tipo, String titulo, 
+            String mensaje){
         Alert alerta = new Alert(tipo);
         alerta.setTitle(titulo);
         alerta.setHeaderText(null);
@@ -32,7 +33,8 @@ public class Utilidad {
         return ((Stage) component.getScene().getWindow());
     }
     
-    public static boolean mostrarConfirmacion(String titulo, String encabezado, String contenido) {
+    public static boolean mostrarConfirmacion(String titulo, String encabezado, 
+            String contenido) {
         Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
         alerta.setTitle(titulo);
         alerta.setHeaderText(encabezado);

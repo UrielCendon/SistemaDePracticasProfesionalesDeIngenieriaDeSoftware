@@ -16,7 +16,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
 import javafx.stage.Stage;
 import sistemadepracticasprofesionalesdeingenieriadesoftware.SistemaDePracticasProfesionalesDeIngenieriaDeSoftware;
 import sistemadepracticasprofesionalesdeingenieriadesoftware.modelo.pojo.Usuario;
@@ -27,8 +26,8 @@ import sistemadepracticasprofesionalesdeingenieriadesoftware.util.Utilidad;
  *
  * @author uriel
  */
-public class FXMLPrincipalCoordinadorController implements Initializable {
-    
+public class FXMLPrincipalProfesorController implements Initializable {
+
     private Usuario usuarioSesion;
     @FXML
     private Button btnCerrarSesion;
@@ -40,8 +39,8 @@ public class FXMLPrincipalCoordinadorController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
-    }
+        // TODO
+    }    
     
     public void inicializarInformacion(Usuario usuarioSesion){
         this.usuarioSesion = usuarioSesion;
@@ -52,6 +51,14 @@ public class FXMLPrincipalCoordinadorController implements Initializable {
         if(usuarioSesion != null){
             lbNombreUsuario.setText(usuarioSesion.toString());
         }
+    }
+
+    @FXML
+    private void clicValidarEntregas(ActionEvent event) {
+    }
+
+    @FXML
+    private void clicConsultarExpediente(ActionEvent event) {
     }
 
     @FXML
@@ -81,39 +88,5 @@ public class FXMLPrincipalCoordinadorController implements Initializable {
             }
         }
     }
-
-
-
-    @FXML
-    private void clicRegistrarProyecto(ActionEvent event) {
-    }
-
-    @FXML
-    private void clicRegistrarResponsable(ActionEvent event) {
-    }
-
-    @FXML
-    private void clicRegistrarOV(ActionEvent event) {
-    }
-
-    @FXML
-    private void clicActualizarProyecto(ActionEvent event) {
-    }
-
-    @FXML
-    private void clicActualizarResponsable(ActionEvent event) {
-    }
-
-    @FXML
-    private void clicAsignarProyecto(ActionEvent event) {
-    }
-
-    @FXML
-    private void clicGenerarDocuAsignacion(ActionEvent event) {
-    }
-
-    @FXML
-    private void clicProgramarEntregas(ActionEvent event) {
-    }
-   
+    
 }

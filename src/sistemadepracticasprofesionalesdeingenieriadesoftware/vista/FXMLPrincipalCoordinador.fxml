@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.image.*?>
@@ -23,31 +24,34 @@
       </Label>
       <MenuBar layoutX="32.0" layoutY="93.0" prefHeight="51.0" prefWidth="855.0" style="-fx-border-color: #000000;">
         <menus>
-          <Menu mnemonicParsing="false" style="-fx-cursor: hand;" text="Asignar Proyecto" />
+          <Menu mnemonicParsing="false" style="-fx-cursor: hand;" text="Asignar Proyecto">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#clicAsignarProyecto" text="Asignar proyecto" />
+               </items></Menu>
           <Menu mnemonicParsing="false" style="-fx-cursor: hand;">
             <graphic>
                 <Label text="Generar documentos&#10;de asignación" />
             </graphic>
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#clicGenerarDocuAsignacion" text="Generar documentos de asignación" />
+               </items>
           </Menu>
           <Menu mnemonicParsing="false" style="-fx-cursor: hand;" text="Programar entregas">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Documentos Iniciales" />
-                  <MenuItem mnemonicParsing="false" text="Documentos intermedios" />
-                  <MenuItem mnemonicParsing="false" text="Documentos finales" />
-                  <MenuItem mnemonicParsing="false" text="Reportes" />
-            </items>
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#clicProgramarEntregas" text="Programar entregas" />
+               </items>
           </Menu>
             <Menu mnemonicParsing="false" style="-fx-cursor: hand;" text="Registrar en el sistema">
               <items>
-                <MenuItem mnemonicParsing="false" text="Un Proyecto" />
-                  <MenuItem mnemonicParsing="false" text="Un Responsable de OV" />
-                  <MenuItem mnemonicParsing="false" text="Una Organizacion Vinculada" />
+                <MenuItem mnemonicParsing="false" onAction="#clicRegistrarProyecto" text="Un proyecto" />
+                  <MenuItem mnemonicParsing="false" onAction="#clicRegistrarResponsable" text="Un responsable de una OV" />
+                  <MenuItem mnemonicParsing="false" onAction="#clicRegistrarOV" text="Una organizacion vinculada" />
               </items>
             </Menu>
             <Menu mnemonicParsing="false" style="-fx-cursor: hand;" text="Actualizar en el sistema">
               <items>
-                <MenuItem mnemonicParsing="false" text="Un Proyecto" />
-                  <MenuItem mnemonicParsing="false" text="Un Responsable de OV" />
+                <MenuItem mnemonicParsing="false" onAction="#clicActualizarProyecto" text="Un proyecto" />
+                  <MenuItem mnemonicParsing="false" onAction="#clicActualizarResponsable" text="Un responsable de una OV" />
               </items>
             </Menu>
         </menus>
@@ -57,6 +61,8 @@
       <Separator layoutX="494.0" layoutY="93.0" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="50.0" prefWidth="2.0" style="-fx-background-color: transparent; -fx-border-color: #000000;" />
       <Separator layoutX="664.0" layoutY="93.0" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="50.0" prefWidth="2.0" style="-fx-background-color: transparent; -fx-border-color: #000000;" />
       <Button fx:id="btnCerrarSesion" layoutX="753.0" layoutY="393.0" mnemonicParsing="false" onAction="#btnClicCerrarSesion" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Cerrar Sesión" textFill="RED" />
-      <Label fx:id="lbNombreUsuario" layoutX="728.0" layoutY="68.0" />
+      <Label fx:id="lbNombreUsuario" layoutX="733.0" layoutY="68.0" />
+      <Line endX="807.0" layoutX="100.0" layoutY="93.0" startX="-100.0" stroke="#6f6f6f" />
+      <Line endX="807.0" layoutX="100.0" layoutY="144.0" startX="-100.0" stroke="#6f6f6f" />
    </children>
 </AnchorPane>

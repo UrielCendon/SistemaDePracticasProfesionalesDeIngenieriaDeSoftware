@@ -82,10 +82,18 @@ public class FXMLInicioSesionController implements Initializable {
     
     private void validarCredenciales(String usuario, String contrasena){
         try{
+            //Se podría llamar a un método general recuperando el idUsuario y tipoUsuario
+            //Aquí mismo después, con un case según el tipoUsuario se llama a
+            //verificarCredencialesCoordinador/Estudiante/Profesor/Evaluador
+            
+            //Podría verificar las credenciales de usuario y contraseña, si existen
+            //retorna el idUsuario y tipo, según el nombre del tipoUsuario, hay una tabla
+            //existente en la BD con el mismo nombre del tipo, de la que recuperar los datos
+            //nombre y apellido paterno, para mostrar en cada ventana principal
             Usuario usuarioSesion = InicioSesionDAO.verificarCredenciales
             (usuario, contrasena);
             if (usuarioSesion != null){
-                irPantallaPrincipalCoordinador(usuarioSesion);
+                irPantallaPrincipalProfesor(usuarioSesion);
             }else{                
                 Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, 
                         "Credenciales incorrectas", "Usuario y/o contraseña "
@@ -103,12 +111,55 @@ public class FXMLInicioSesionController implements Initializable {
                 (SistemaDePracticasProfesionalesDeIngenieriaDeSoftware.
                 class.getResource("vista/FXMLPrincipalCoordinador.fxml"));
             Parent vista = cargador.load();
-            FXMLPrincipalCoordinadorController controlador = cargador.getController();
+            FXMLPrincipalCoordinadorController controlador = cargador.
+                getController();
             controlador.inicializarInformacion(usuario);
             Scene escenaPrincipal = new Scene(vista);
             escenarioBase.setScene(escenaPrincipal);
             escenarioBase.setTitle("Sistema de gestión de prácticas "
-                    + "profesionales");
+                + "profesionales");
+            escenarioBase.centerOnScreen();
+            escenarioBase.show();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    private void irPantallaPrincipalEstudiante(Usuario usuario){
+        try {
+            Stage escenarioBase = (Stage) tfUsuario.getScene().getWindow();
+            FXMLLoader cargador = new FXMLLoader
+                (SistemaDePracticasProfesionalesDeIngenieriaDeSoftware.
+                class.getResource("vista/FXMLPrincipalEstudiante.fxml"));
+            Parent vista = cargador.load();
+            FXMLPrincipalEstudianteController controlador = cargador.
+                getController();
+            controlador.inicializarInformacion(usuario);
+            Scene escenaPrincipal = new Scene(vista);
+            escenarioBase.setScene(escenaPrincipal);
+            escenarioBase.setTitle("Sistema de gestión de prácticas "
+                + "profesionales");
+            escenarioBase.centerOnScreen();
+            escenarioBase.show();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    private void irPantallaPrincipalProfesor(Usuario usuario){
+        try {
+            Stage escenarioBase = (Stage) tfUsuario.getScene().getWindow();
+            FXMLLoader cargador = new FXMLLoader
+                (SistemaDePracticasProfesionalesDeIngenieriaDeSoftware.
+                class.getResource("vista/FXMLPrincipalProfesor.fxml"));
+            Parent vista = cargador.load();
+            FXMLPrincipalProfesorController controlador = cargador.
+                getController();
+            controlador.inicializarInformacion(usuario);
+            Scene escenaPrincipal = new Scene(vista);
+            escenarioBase.setScene(escenaPrincipal);
+            escenarioBase.setTitle("Sistema de gestión de prácticas "
+                + "profesionales");
             escenarioBase.centerOnScreen();
             escenarioBase.show();
         } catch (IOException ex) {

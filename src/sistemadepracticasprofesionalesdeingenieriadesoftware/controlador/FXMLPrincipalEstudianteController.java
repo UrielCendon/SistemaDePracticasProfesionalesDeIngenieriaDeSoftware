@@ -27,8 +27,8 @@ import sistemadepracticasprofesionalesdeingenieriadesoftware.util.Utilidad;
  *
  * @author uriel
  */
-public class FXMLPrincipalCoordinadorController implements Initializable {
-    
+public class FXMLPrincipalEstudianteController implements Initializable {
+
     private Usuario usuarioSesion;
     @FXML
     private Button btnCerrarSesion;
@@ -40,7 +40,7 @@ public class FXMLPrincipalCoordinadorController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
+        // TODO
     }
     
     public void inicializarInformacion(Usuario usuarioSesion){
@@ -53,6 +53,24 @@ public class FXMLPrincipalCoordinadorController implements Initializable {
             lbNombreUsuario.setText(usuarioSesion.toString());
         }
     }
+
+
+    @FXML
+    private void clicDocIniciales(ActionEvent event) {
+    }
+
+    @FXML
+    private void clicDocIntermedios(ActionEvent event) {
+    }
+
+    @FXML
+    private void clicDocFinales(ActionEvent event) {
+    }
+
+    @FXML
+    private void clicDocReportes(ActionEvent event) {
+    }
+
 
     @FXML
     private void btnClicCerrarSesion(ActionEvent event) {
@@ -82,38 +100,16 @@ public class FXMLPrincipalCoordinadorController implements Initializable {
         }
     }
 
-
-
     @FXML
-    private void clicRegistrarProyecto(ActionEvent event) {
+    private void clicGenerarFormatoEvaluacion(ActionEvent event) {
     }
 
     @FXML
-    private void clicRegistrarResponsable(ActionEvent event) {
+    private void clicConsultarAvance(ActionEvent event) {
     }
 
     @FXML
-    private void clicRegistrarOV(ActionEvent event) {
+    private void clicEvaluarOV(ActionEvent event) {
     }
-
-    @FXML
-    private void clicActualizarProyecto(ActionEvent event) {
-    }
-
-    @FXML
-    private void clicActualizarResponsable(ActionEvent event) {
-    }
-
-    @FXML
-    private void clicAsignarProyecto(ActionEvent event) {
-    }
-
-    @FXML
-    private void clicGenerarDocuAsignacion(ActionEvent event) {
-    }
-
-    @FXML
-    private void clicProgramarEntregas(ActionEvent event) {
-    }
-   
+    
 }

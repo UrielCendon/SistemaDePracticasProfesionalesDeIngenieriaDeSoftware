@@ -1,42 +1,57 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package sistemadepracticasprofesionalesdeingenieriadesoftware.modelo.conexion;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author uriel
  */
 public class ConexionBD {
-    private static final String IP = "localhost";
-    private static final String PUERTO = "3306";
-    private static final String NOMBRE_BD = "practicas";
-    private static final String USUARIO = "root";
-    private static final String PASSWORD = "UrieLCD42024";
+    
     private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
-            
+    
     public static Connection abrirConexion(){
         Connection conexionBD = null;
-        String urlConexion = String.format("jdbc:mysql://%s:%s/%s?allowPublic"
-                + "KeyRetrieval=true&useSSL=false&server"
-                + "Timezone=UTC", IP, PUERTO, NOMBRE_BD);
-        
+        String[] credentials = getCredenciales();
+
         try {
-           Class.forName(DRIVER);
-           conexionBD = DriverManager.getConnection(urlConexion, USUARIO, 
-                   PASSWORD);
-        } catch(ClassNotFoundException e){
-            e.printStackTrace();
-            System.err.println("Error Clase no encontrada.");
-        } catch (SQLException s){
-            s.printStackTrace();
-            System.err.println("Error en la conexion: "+ s.getMessage());
+            Class.forName(DRIVER);
+            conexionBD = DriverManager.getConnection(credentials[0], 
+                    credentials[1], credentials[2]);
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(ConexionBD.class.getName()).log(Level.SEVERE,
+                    null, ex);
         }
+
         return conexionBD;
+    }
+    
+    private static String[] getCredenciales() {
+        String[] credenciales = new String[3];
+
+        try (InputStream input = ConexionBD.class.getClassLoader()
+                .getResourceAsStream("sistemadepracticasprofesionales"
+                        + "deingenieriadesoftware/config.properties")) {
+
+            Properties properties = new Properties();
+            properties.load(input);
+
+            credenciales[0] = properties.getProperty("DB_URL");
+            credenciales[1] = properties.getProperty("DB_USER");
+            credenciales[2] = properties.getProperty("DB_PASSWORD");
+
+        } catch (IOException ex) {
+            Logger.getLogger(ConexionBD.class.getName()).log(Level.SEVERE, 
+                    null, ex);
+        }
+
+        return credenciales;
     }
 }

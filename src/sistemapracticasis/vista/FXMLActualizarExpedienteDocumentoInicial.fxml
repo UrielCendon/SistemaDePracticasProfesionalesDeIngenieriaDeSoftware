@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="824.0" prefWidth="1207.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sistemapracticasis.controlador.FXMLActualizarExpedienteDocumentoInicialController">
+   <children>
+      <ImageView fitHeight="42.0" fitWidth="47.0" layoutX="1065.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../recursos/imagenIcono.png" />
+         </image>
+      </ImageView>
+      <Label layoutX="68.0" layoutY="21.0" prefHeight="51.0" prefWidth="847.0" style="-fx-background-color: #9faec2; -fx-alignment: CENTER;" text="Actualizar Expediente: Documento Inicial" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+         <font>
+            <Font name="Arial Black" size="34.0" />
+         </font>
+      </Label>
+      <Button layoutX="626.0" layoutY="753.0" mnemonicParsing="false" onAction="#clicSalir" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Salir" textFill="RED" />
+      <Label fx:id="lblNombreUsuario" layoutX="1049.0" layoutY="68.0" />
+      <Line endX="1106.0" layoutX="100.0" layoutY="93.0" startX="-100.0" stroke="#6f6f6f" />
+      <TextField fx:id="txtNombreEstudiante" editable="false" layoutX="43.0" layoutY="103.0" prefHeight="33.0" prefWidth="210.0" promptText="Nombre Estudiante" style="-fx-border-color: BLACK;" />
+      <Button layoutX="441.0" layoutY="753.0" mnemonicParsing="false" onAction="#clicSubirDocumento" prefHeight="42.0" prefWidth="155.0" style="-fx-cursor: hand;" text="Subir documento" textFill="#1aa01a" />
+      <TextField fx:id="txtPeriodo" editable="false" layoutX="264.0" layoutY="103.0" prefHeight="33.0" prefWidth="284.0" style="-fx-border-color: BLACK;" text="Periodo:" />
+      <TextField fx:id="txtInicioPeriodo" editable="false" layoutX="264.0" layoutY="145.0" prefHeight="33.0" prefWidth="284.0" promptText="Inicio del Periodo" style="-fx-border-color: BLACK;" />
+      <TextField fx:id="txtMatriculaEstudiante" editable="false" layoutX="43.0" layoutY="145.0" prefHeight="33.0" prefWidth="210.0" promptText="Matricula" style="-fx-border-color: BLACK;" />
+      <TextField fx:id="txtCorreo" editable="false" layoutX="43.0" layoutY="189.0" prefHeight="33.0" prefWidth="210.0" promptText="Correo" style="-fx-border-color: BLACK;" />
+      <TextField fx:id="txtFinPeriodo" editable="false" layoutX="264.0" layoutY="189.0" prefHeight="33.0" prefWidth="284.0" promptText="Fin del Periodo" style="-fx-border-color: BLACK;" />
+      <TextField fx:id="txtHorasAcumuladas" editable="false" layoutX="565.0" layoutY="103.0" prefHeight="33.0" prefWidth="234.0" style="-fx-border-color: BLACK;" text="Horas acumuladas:" />
+      <TextField fx:id="txtEstado" editable="false" layoutX="565.0" layoutY="145.0" prefHeight="33.0" prefWidth="234.0" style="-fx-border-color: BLACK;" text="Estado:" />
+      <TextField fx:id="txtNombreProyecto" editable="false" layoutX="565.0" layoutY="189.0" prefHeight="33.0" prefWidth="234.0" promptText="Nombre Proyecto" style="-fx-border-color: BLACK;" />
+      <TextField fx:id="txtNombreEE" editable="false" layoutX="815.0" layoutY="103.0" prefHeight="33.0" prefWidth="234.0" promptText="Nombre Experiencia Educativa" style="-fx-border-color: BLACK;" />
+      <TextField fx:id="txtNombreProfesor" editable="false" layoutX="815.0" layoutY="145.0" prefHeight="33.0" prefWidth="234.0" style="-fx-border-color: BLACK;" text="Profesor:" />
+      <TableView fx:id="tblEntregas" layoutX="155.0" layoutY="254.0" prefHeight="467.0" prefWidth="897.0">
+        <columns>
+          <TableColumn fx:id="tbcNombreDocEntrega" editable="false" prefWidth="419.0" sortable="false" text="Nombre del documento" />
+          <TableColumn fx:id="tbcFechaInicioEntrega" editable="false" prefWidth="243.0" sortable="false" text="Fecha de inicio" />
+            <TableColumn fx:id="tbcFechaFinEntrega" editable="false" prefWidth="234.0" sortable="false" text="Fecha de fin" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>

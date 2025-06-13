@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="370.0" prefWidth="576.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="sistemapracticasis.controlador.FXMLObservacionesController">
+   <children>
+      <TextArea fx:id="txaObservacion" layoutX="32.0" layoutY="55.0" prefHeight="240.0" prefWidth="512.0" promptText="Observación..." style="-fx-border-color: BLACK;" />
+      <Label layoutX="32.0" layoutY="18.0" text="Ingrese su observación en el siguiente campo:">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Button layoutX="440.0" layoutY="317.0" mnemonicParsing="false" onAction="#clicEnviar" prefHeight="35.0" prefWidth="122.0" style="-fx-cursor: hand;" text="Enviar" textFill="#1aa01a" />
+      <Button layoutX="14.0" layoutY="317.0" mnemonicParsing="false" onAction="#clicRegresar" prefHeight="35.0" prefWidth="98.0" style="-fx-cursor: hand;" text="Regresar" textFill="RED" />
+   </children>
+</AnchorPane>

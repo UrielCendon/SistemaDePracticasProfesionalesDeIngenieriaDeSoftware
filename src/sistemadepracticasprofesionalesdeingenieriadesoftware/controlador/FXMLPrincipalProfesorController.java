@@ -39,15 +39,31 @@ public class FXMLPrincipalProfesorController implements Initializable {
     private void cargarInformacionUsuario() {
         if (profesorSesion != null) {
             lblNombreUsuario.setText(
-                profesorSesion.getNombre() + " " +
-                profesorSesion.getApellidoPaterno() + " " +
-                profesorSesion.getApellidoMaterno()
+                profesorSesion.toString()
             );
         }
     }
 
     @FXML
     private void clicValidarEntregas(ActionEvent event) {
+        try {
+            Stage escenarioBase = (Stage) lblNombreUsuario.getScene().getWindow();
+            FXMLLoader cargador = new FXMLLoader
+                (SistemaDePracticasProfesionalesDeIngenieriaDeSoftware.class.
+                        getResource("vista/FXMLValidarEntrega.fxml"));
+            Parent vista = cargador.load();
+            FXMLValidarEntregaController controlador = cargador.
+                getController();
+            controlador.inicializarInformacion(profesorSesion);
+            Scene escenaPrincipal = new Scene(vista);
+            escenarioBase.setScene(escenaPrincipal);
+            escenarioBase.setTitle("Sistema de gestión de prácticas "
+                + "profesionales");
+            escenarioBase.centerOnScreen();
+            escenarioBase.show();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @FXML

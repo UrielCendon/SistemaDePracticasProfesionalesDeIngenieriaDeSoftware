@@ -42,15 +42,31 @@ public class FXMLPrincipalEstudianteController implements Initializable {
     private void cargarInformacionUsuario() {
         if (estudianteSesion != null) {
             lblNombreUsuario.setText(
-                estudianteSesion.getNombre() + " " +
-                estudianteSesion.getApellidoPaterno() + " " +
-                estudianteSesion.getApellidoMaterno()
+                estudianteSesion.toString()
             );
         }
     }
 
     @FXML
     private void clicDocIniciales(ActionEvent event) {
+        try {
+            Stage escenarioBase = (Stage) lblNombreUsuario.getScene().getWindow();
+            FXMLLoader cargador = new FXMLLoader
+                (SistemaDePracticasProfesionalesDeIngenieriaDeSoftware.class.
+                        getResource("vista/FXMLActualizarExpedienteDocumentoInicial.fxml"));
+            Parent vista = cargador.load();
+            FXMLActualizarExpedienteDocumentoInicialController controlador = cargador.
+                getController();
+            controlador.inicializarInformacion(estudianteSesion);
+            Scene escenaPrincipal = new Scene(vista);
+            escenarioBase.setScene(escenaPrincipal);
+            escenarioBase.setTitle("Sistema de gestión de prácticas "
+                + "profesionales");
+            escenarioBase.centerOnScreen();
+            escenarioBase.show();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @FXML
@@ -101,5 +117,23 @@ public class FXMLPrincipalEstudianteController implements Initializable {
 
     @FXML
     private void clicEvaluarOV(ActionEvent event) {
+        try {
+            Stage escenarioBase = (Stage) lblNombreUsuario.getScene().getWindow();
+            FXMLLoader cargador = new FXMLLoader
+                (SistemaDePracticasProfesionalesDeIngenieriaDeSoftware.class.
+                        getResource("vista/FXMLEvaluarOrganizacionVinculada.fxml"));
+            Parent vista = cargador.load();
+            FXMLEvaluarOrganizacionVinculadaController controlador = cargador.
+                getController();
+            controlador.inicializarInformacion(estudianteSesion);
+            Scene escenaPrincipal = new Scene(vista);
+            escenarioBase.setScene(escenaPrincipal);
+            escenarioBase.setTitle("Sistema de gestión de prácticas "
+                + "profesionales");
+            escenarioBase.centerOnScreen();
+            escenarioBase.show();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 }

@@ -39,9 +39,7 @@ public class FXMLPrincipalCoordinadorController implements Initializable {
     private void cargarInformacionUsuario() {
         if (coordinadorSesion != null) {
             lblNombreUsuario.setText(
-                coordinadorSesion.getNombre() + " " +
-                coordinadorSesion.getApellidoPaterno() + " " +
-                coordinadorSesion.getApellidoMaterno()
+                coordinadorSesion.toString()
             );
         }
     }
@@ -94,6 +92,25 @@ public class FXMLPrincipalCoordinadorController implements Initializable {
 
     @FXML
     private void clicAsignarProyecto(ActionEvent event) {
+        try {
+            Stage escenarioBase = (Stage) lblNombreUsuario.getScene().
+                getWindow();
+            FXMLLoader cargador = new FXMLLoader
+                (SistemaDePracticasProfesionalesDeIngenieriaDeSoftware.class.
+                        getResource("vista/FXMLAsignarProyecto.fxml"));
+            Parent vista = cargador.load();
+            FXMLAsignarProyectoController controlador = cargador.
+                getController();
+            controlador.inicializarInformacion(coordinadorSesion);
+            Scene escenaPrincipal = new Scene(vista);
+            escenarioBase.setScene(escenaPrincipal);
+            escenarioBase.setTitle("Sistema de gestión de prácticas "
+                + "profesionales");
+            escenarioBase.centerOnScreen();
+            escenarioBase.show();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @FXML

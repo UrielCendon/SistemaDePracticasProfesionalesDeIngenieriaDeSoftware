@@ -39,9 +39,7 @@ public class FXMLPrincipalEvaluadorController implements Initializable {
     private void cargarInformacionUsuario() {
         if (evaluadorSesion != null) {
             lblNombreUsuario.setText(
-                evaluadorSesion.getNombre() + " " +
-                evaluadorSesion.getApellidoPaterno() + " " +
-                evaluadorSesion.getApellidoMaterno()
+                evaluadorSesion.toString()
             );
         }
     }

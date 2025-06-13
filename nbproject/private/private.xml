@@ -3,25 +3,19 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/NetBeansProjects/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/config.properties</file>
-            <file>file:/C:/NetBeansProjects/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/vista/FXMLPrincipalEvaluador.fxml</file>
-            <file>file:/C:/NetBeansProjects/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/modelo/pojo/Evaluador.java</file>
-            <file>file:/C:/NetBeansProjects/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/modelo/dao/EvaluadorDAO.java</file>
-            <file>file:/C:/NetBeansProjects/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/controlador/FXMLPrincipalEvaluadorController.java</file>
-            <file>file:/C:/NetBeansProjects/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/controlador/FXMLPrincipalEstudianteController.java</file>
-            <file>file:/C:/NetBeansProjects/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/modelo/pojo/Estudiante.java</file>
-            <file>file:/C:/NetBeansProjects/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/modelo/dao/CoordinadorDAO.java</file>
-            <file>file:/C:/NetBeansProjects/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/controlador/FXMLPrincipalCoordinadorController.java</file>
-            <file>file:/C:/NetBeansProjects/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/modelo/dao/ProfesorDAO.java</file>
-            <file>file:/C:/NetBeansProjects/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/modelo/pojo/Usuario.java</file>
-            <file>file:/C:/NetBeansProjects/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/modelo/conexion/ConexionBD.java</file>
-            <file>file:/C:/NetBeansProjects/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/modelo/dao/InicioSesionDAO.java</file>
-            <file>file:/C:/NetBeansProjects/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/controlador/FXMLPrincipalProfesorController.java</file>
-            <file>file:/C:/NetBeansProjects/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/modelo/pojo/Coordinador.java</file>
-            <file>file:/C:/NetBeansProjects/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/modelo/pojo/Profesor.java</file>
-            <file>file:/C:/NetBeansProjects/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware.java</file>
-            <file>file:/C:/NetBeansProjects/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/modelo/dao/EstudianteDAO.java</file>
-            <file>file:/C:/NetBeansProjects/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/controlador/FXMLInicioSesionController.java</file>
+            <file>file:/C:/Users/uriel/Documents/proyectoConstruccion/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/controlador/FXMLActualizarExpedienteDocumentoInicialController.java</file>
+            <file>file:/C:/Users/uriel/Documents/proyectoConstruccion/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/vista/FXMLEvaluarOrganizacionVinculada.fxml</file>
+            <file>file:/C:/Users/uriel/Documents/proyectoConstruccion/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/vista/FXMLObservaciones.fxml</file>
+            <file>file:/C:/Users/uriel/Documents/proyectoConstruccion/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/controlador/FXMLEvaluarOrganizacionVinculadaController.java</file>
+            <file>file:/C:/Users/uriel/Documents/proyectoConstruccion/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/controlador/FXMLAsignarProyectoController.java</file>
+            <file>file:/C:/Users/uriel/Documents/proyectoConstruccion/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/vista/FXMLValidarEntrega.fxml</file>
+            <file>file:/C:/Users/uriel/Documents/proyectoConstruccion/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/controlador/FXMLVistaDeLaEntregaController.java</file>
+            <file>file:/C:/Users/uriel/Documents/proyectoConstruccion/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/controlador/FXMLValidarEntregaController.java</file>
+            <file>file:/C:/Users/uriel/Documents/proyectoConstruccion/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware.java</file>
+            <file>file:/C:/Users/uriel/Documents/proyectoConstruccion/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/vista/FXMLVistaDeLaEntrega.fxml</file>
+            <file>file:/C:/Users/uriel/Documents/proyectoConstruccion/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/controlador/FXMLVistaController.java</file>
+            <file>file:/C:/Users/uriel/Documents/proyectoConstruccion/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/vista/FXMLAsignarProyecto.fxml</file>
+            <file>file:/C:/Users/uriel/Documents/proyectoConstruccion/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemadepracticasprofesionalesdeingenieriadesoftware/controlador/FXMLObservacionesController.java</file>
         </group>
     </open-files>
 </project-private>

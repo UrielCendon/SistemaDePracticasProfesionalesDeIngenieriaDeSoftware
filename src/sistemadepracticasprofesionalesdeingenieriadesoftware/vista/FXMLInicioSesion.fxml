@@ -26,19 +26,19 @@
                   <Font name="Arial Black" size="20.0" />
                </font>
             </Label>
-            <TextField fx:id="tfUsuario" layoutX="39.0" layoutY="177.0" prefHeight="31.0" prefWidth="244.0" promptText="Usuario" style="-fx-cursor: text;">
+            <TextField fx:id="txtUsuario" layoutX="39.0" layoutY="177.0" prefHeight="31.0" prefWidth="244.0" promptText="Usuario" style="-fx-cursor: text;">
                <font>
                   <Font size="12.0" />
                </font></TextField>
             <Button layoutX="108.0" layoutY="332.0" mnemonicParsing="false" onAction="#btnClicVerificarSesion" style="-fx-cursor: hand;" text="Iniciar Sesión" textFill="#1aa01a" />
             <Label layoutX="42.0" layoutY="156.0" text="Ingrese su usuario:" />
             <Label layoutX="42.0" layoutY="242.0" text="Ingrese su contraseña:" />
-            <Label fx:id="lbErrorUsuario" layoutX="42.0" layoutY="208.0" textFill="RED">
+            <Label fx:id="lblErrorUsuario" layoutX="42.0" layoutY="208.0" textFill="RED">
                <font>
                   <Font size="12.0" />
                </font>
             </Label>
-            <Label fx:id="lbErrorContraseña" layoutX="43.0" layoutY="294.0" textFill="RED">
+            <Label fx:id="lblErrorContraseña" layoutX="43.0" layoutY="294.0" textFill="RED">
                <font>
                   <Font size="12.0" />
                </font>
@@ -47,7 +47,7 @@
                <font>
                   <Font size="12.0" />
                </font></PasswordField>
-            <TextField fx:id="tfPasswordVisible" layoutX="39.0" layoutY="263.0" managed="false" prefHeight="31.0" prefWidth="244.0" promptText="Contraseña" style="-fx-cursor: text;" visible="false">
+            <TextField fx:id="txtPasswordVisible" layoutX="39.0" layoutY="263.0" managed="false" prefHeight="31.0" prefWidth="244.0" promptText="Contraseña" style="-fx-cursor: text;" visible="false">
                <font>
                   <Font size="12.0" />
                </font>

@@ -32,17 +32,17 @@ import sistemadepracticasprofesionalesdeingenieriadesoftware.util.Utilidad;
 public class FXMLInicioSesionController implements Initializable {
 
     @FXML
-    private TextField tfUsuario;
-    @FXML
-    private Label lbErrorUsuario;
-    @FXML
-    private Label lbErrorContraseña;
-    @FXML
     private PasswordField pfPassword;
     @FXML
-    private TextField tfPasswordVisible;
-    @FXML
     private Button btnMostrarContraseña;
+    @FXML
+    private TextField txtUsuario;
+    @FXML
+    private Label lblErrorUsuario;
+    @FXML
+    private Label lblErrorContraseña;
+    @FXML
+    private TextField txtPasswordVisible;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -51,22 +51,22 @@ public class FXMLInicioSesionController implements Initializable {
 
     @FXML
     private void btnClicVerificarSesion(ActionEvent event) {
-        String usuario = tfUsuario.getText();
+        String usuario = txtUsuario.getText();
         String contrasena = pfPassword.getText();
         if (validarCampos(usuario, contrasena))
             validarCredenciales(usuario, contrasena);
     }
 
     private boolean validarCampos(String usuario, String contrasena) {
-        lbErrorUsuario.setText("");
-        lbErrorContraseña.setText("");
+        lblErrorUsuario.setText("");
+        lblErrorContraseña.setText("");
         boolean camposValidos = true;
         if (usuario.isEmpty()) {
-            lbErrorUsuario.setText("Usuario obligatorio");
+            lblErrorUsuario.setText("Usuario obligatorio");
             camposValidos = false;
         }
         if (contrasena.isEmpty()) {
-            lbErrorContraseña.setText("Contraseña obligatoria");
+            lblErrorContraseña.setText("Contraseña obligatoria");
             camposValidos = false;
         }
         return camposValidos;
@@ -142,7 +142,7 @@ public class FXMLInicioSesionController implements Initializable {
 
     private void irPantallaPrincipalCoordinador(Coordinador coordinador) {
         try {
-            Stage escenarioBase = (Stage) tfUsuario.getScene().getWindow();
+            Stage escenarioBase = (Stage) txtUsuario.getScene().getWindow();
             FXMLLoader cargador = new FXMLLoader(SistemaDePracticasProfesionalesDeIngenieriaDeSoftware.class.getResource("vista/FXMLPrincipalCoordinador.fxml"));
             Parent vista = cargador.load();
             FXMLPrincipalCoordinadorController controlador = cargador.getController();
@@ -159,7 +159,7 @@ public class FXMLInicioSesionController implements Initializable {
 
     private void irPantallaPrincipalEstudiante(Estudiante estudiante) {
         try {
-            Stage escenarioBase = (Stage) tfUsuario.getScene().getWindow();
+            Stage escenarioBase = (Stage) txtUsuario.getScene().getWindow();
             FXMLLoader cargador = new FXMLLoader(SistemaDePracticasProfesionalesDeIngenieriaDeSoftware.class.getResource("vista/FXMLPrincipalEstudiante.fxml"));
             Parent vista = cargador.load();
             FXMLPrincipalEstudianteController controlador = cargador.getController();
@@ -176,7 +176,7 @@ public class FXMLInicioSesionController implements Initializable {
 
     private void irPantallaPrincipalProfesor(Profesor profesor) {
         try {
-            Stage escenarioBase = (Stage) tfUsuario.getScene().getWindow();
+            Stage escenarioBase = (Stage) txtUsuario.getScene().getWindow();
             FXMLLoader cargador = new FXMLLoader(SistemaDePracticasProfesionalesDeIngenieriaDeSoftware.class.getResource("vista/FXMLPrincipalProfesor.fxml"));
             Parent vista = cargador.load();
             FXMLPrincipalProfesorController controlador = cargador.getController();
@@ -193,7 +193,7 @@ public class FXMLInicioSesionController implements Initializable {
 
     private void irPantallaPrincipalEvaluador(Evaluador evaluador) {
         try {
-            Stage escenarioBase = (Stage) tfUsuario.getScene().getWindow();
+            Stage escenarioBase = (Stage) txtUsuario.getScene().getWindow();
             FXMLLoader cargador = new FXMLLoader(SistemaDePracticasProfesionalesDeIngenieriaDeSoftware.class.getResource("vista/FXMLPrincipalEvaluador.fxml"));
             Parent vista = cargador.load();
             FXMLPrincipalEvaluadorController controlador = cargador.getController();
@@ -210,40 +210,40 @@ public class FXMLInicioSesionController implements Initializable {
 
 
     private void mostrarContrasenaVisible() {
-        tfPasswordVisible.setText(pfPassword.getText());
-        tfPasswordVisible.setVisible(true);
-        tfPasswordVisible.setManaged(true);
+        txtPasswordVisible.setText(pfPassword.getText());
+        txtPasswordVisible.setVisible(true);
+        txtPasswordVisible.setManaged(true);
 
         pfPassword.setVisible(false);
         pfPassword.setManaged(false);
     }
 
     private void ocultarContrasenaVisible() {
-        pfPassword.setText(tfPasswordVisible.getText());
+        pfPassword.setText(txtPasswordVisible.getText());
         pfPassword.setVisible(true);
         pfPassword.setManaged(true);
 
-        tfPasswordVisible.setVisible(false);
-        tfPasswordVisible.setManaged(false);
+        txtPasswordVisible.setVisible(false);
+        txtPasswordVisible.setManaged(false);
     }
 
     private void configurarListeners() {
         pfPassword.textProperty().addListener((obs, oldText, newText) -> {
-            tfPasswordVisible.setText(newText);
+            txtPasswordVisible.setText(newText);
         });
 
-        tfPasswordVisible.textProperty().addListener((obs, oldText, newText) -> {
+        txtPasswordVisible.textProperty().addListener((obs, oldText, newText) -> {
             pfPassword.setText(newText);
         });
     }
 
     private String obtenerContrasenaActual() {
-        return pfPassword.isVisible() ? pfPassword.getText() : tfPasswordVisible.getText();
+        return pfPassword.isVisible() ? pfPassword.getText() : txtPasswordVisible.getText();
     }
 
     @FXML
     private void btnClicMostrarContraseña(ActionEvent event) {
-        if (tfPasswordVisible.isVisible()) {
+        if (txtPasswordVisible.isVisible()) {
             ocultarContrasenaVisible();
         } else {
             mostrarContrasenaVisible();

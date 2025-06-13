@@ -24,7 +24,7 @@ public class FXMLPrincipalCoordinadorController implements Initializable {
     @FXML
     private Button btnCerrarSesion;
     @FXML
-    private Label lbNombreUsuario;
+    private Label lblNombreUsuario;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -38,7 +38,7 @@ public class FXMLPrincipalCoordinadorController implements Initializable {
 
     private void cargarInformacionUsuario() {
         if (coordinadorSesion != null) {
-            lbNombreUsuario.setText(
+            lblNombreUsuario.setText(
                 coordinadorSesion.getNombre() + " " +
                 coordinadorSesion.getApellidoPaterno() + " " +
                 coordinadorSesion.getApellidoMaterno()
@@ -56,7 +56,7 @@ public class FXMLPrincipalCoordinadorController implements Initializable {
 
         if (confirmado) {
             try {
-                Stage escenarioBase = Utilidad.getEscenarioComponente(lbNombreUsuario);
+                Stage escenarioBase = Utilidad.getEscenarioComponente(lblNombreUsuario);
                 Parent vista = FXMLLoader.load(
                     SistemaDePracticasProfesionalesDeIngenieriaDeSoftware.class.getResource("vista/FXMLInicioSesion.fxml")
                 );

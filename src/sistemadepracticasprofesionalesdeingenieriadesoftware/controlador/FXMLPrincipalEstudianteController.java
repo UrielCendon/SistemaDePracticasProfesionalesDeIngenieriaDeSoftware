@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package sistemadepracticasprofesionalesdeingenieriadesoftware.controlador;
 
 import java.io.IOException;
@@ -16,44 +12,42 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
 import javafx.stage.Stage;
 import sistemadepracticasprofesionalesdeingenieriadesoftware.SistemaDePracticasProfesionalesDeIngenieriaDeSoftware;
-import sistemadepracticasprofesionalesdeingenieriadesoftware.modelo.pojo.Usuario;
+import sistemadepracticasprofesionalesdeingenieriadesoftware.modelo.pojo.Estudiante;
 import sistemadepracticasprofesionalesdeingenieriadesoftware.util.Utilidad;
 
 /**
  * FXML Controller class
- *
- * @author uriel
  */
 public class FXMLPrincipalEstudianteController implements Initializable {
 
-    private Usuario usuarioSesion;
+    private Estudiante estudianteSesion;
+
     @FXML
     private Button btnCerrarSesion;
     @FXML
     private Label lbNombreUsuario;
 
-    /**
-     * Initializes the controller class.
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }
-    
-    public void inicializarInformacion(Usuario usuarioSesion){
-        this.usuarioSesion = usuarioSesion;
-        cargarInformacionUsuario();
-    }
-    
-    private void cargarInformacionUsuario(){
-        if(usuarioSesion != null){
-            lbNombreUsuario.setText(usuarioSesion.toString());
-        }
+        // Sin implementación por ahora
     }
 
+    public void inicializarInformacion(Estudiante estudianteSesion) {
+        this.estudianteSesion = estudianteSesion;
+        cargarInformacionUsuario();
+    }
+
+    private void cargarInformacionUsuario() {
+        if (estudianteSesion != null) {
+            lbNombreUsuario.setText(
+                estudianteSesion.getNombre() + " " +
+                estudianteSesion.getApellidoPaterno() + " " +
+                estudianteSesion.getApellidoMaterno()
+            );
+        }
+    }
 
     @FXML
     private void clicDocIniciales(ActionEvent event) {
@@ -71,30 +65,27 @@ public class FXMLPrincipalEstudianteController implements Initializable {
     private void clicDocReportes(ActionEvent event) {
     }
 
-
     @FXML
     private void btnClicCerrarSesion(ActionEvent event) {
         boolean confirmado = Utilidad.mostrarConfirmacion(
             "Confirmar cierre de sesión",
             "¿Está seguro(a) de querer cerrar la sesión actual?",
-            "Se perderá el acceso a esta sesión.");
+            "Se perderá el acceso a esta sesión."
+        );
 
         if (confirmado) {
             try {
-                Stage escenarioBase = Utilidad.getEscenarioComponente
-                    (lbNombreUsuario);
-                Parent vista = FXMLLoader.load
-                    (SistemaDePracticasProfesionalesDeIngenieriaDeSoftware.
-                        class.getResource("vista/FXMLInicioSesion.fxml"));
-
+                Stage escenarioBase = Utilidad.getEscenarioComponente(lbNombreUsuario);
+                Parent vista = FXMLLoader.load(
+                    SistemaDePracticasProfesionalesDeIngenieriaDeSoftware.class.getResource("vista/FXMLInicioSesion.fxml")
+                );
                 Scene escenaPrincipal = new Scene(vista);
                 escenarioBase.setScene(escenaPrincipal);
                 escenarioBase.setTitle("Inicio Sesión");
                 escenarioBase.centerOnScreen();
                 escenarioBase.show();
             } catch (IOException ex) {
-                Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "Error",
-                        "No se pudo cerrar sesión.");
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "Error", "No se pudo cerrar sesión.");
                 ex.printStackTrace();
             }
         }
@@ -111,5 +102,4 @@ public class FXMLPrincipalEstudianteController implements Initializable {
     @FXML
     private void clicEvaluarOV(ActionEvent event) {
     }
-    
 }

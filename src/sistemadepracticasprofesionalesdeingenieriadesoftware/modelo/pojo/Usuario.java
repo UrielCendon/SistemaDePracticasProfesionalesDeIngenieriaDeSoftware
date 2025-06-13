@@ -1,31 +1,16 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package sistemadepracticasprofesionalesdeingenieriadesoftware.modelo.pojo;
 
-/**
- *
- * @author uriel
- */
 public class Usuario {
-        private int idUsuario;
-    private String nombre;
-    private String apellidoPaterno;
-    private String apellidoMaterno;
+    private int idUsuario;
     private String username;
-    
-    public Usuario(){
-        
-    }
+    private String tipo;
 
-    public Usuario(int idUsuario, String nombre, String apellidoPaterno, 
-            String apellidoMaterno, String username) {
+    public Usuario() {}
+
+    public Usuario(int idUsuario, String username, String tipo) {
         this.idUsuario = idUsuario;
-        this.nombre = nombre;
-        this.apellidoPaterno = apellidoPaterno;
-        this.apellidoMaterno = apellidoMaterno;
         this.username = username;
+        this.tipo = tipo;
     }
 
     public int getIdUsuario() {
@@ -36,30 +21,6 @@ public class Usuario {
         this.idUsuario = idUsuario;
     }
 
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getApellidoPaterno() {
-        return apellidoPaterno;
-    }
-
-    public void setApellidoPaterno(String apellidoPaterno) {
-        this.apellidoPaterno = apellidoPaterno;
-    }
-
-    public String getApellidoMaterno() {
-        return apellidoMaterno;
-    }
-
-    public void setApellidoMaterno(String apellidoMaterno) {
-        this.apellidoMaterno = apellidoMaterno;
-    }
-
     public String getUsername() {
         return username;
     }
@@ -68,8 +29,16 @@ public class Usuario {
         this.username = username;
     }
 
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
     @Override
     public String toString() {
-        return nombre + " " + apellidoPaterno;
+        return username + " (" + tipo + ")";
     }
 }

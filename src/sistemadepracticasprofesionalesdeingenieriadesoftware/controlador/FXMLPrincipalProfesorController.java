@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package sistemadepracticasprofesionalesdeingenieriadesoftware.controlador;
 
 import java.io.IOException;
@@ -18,38 +14,35 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import sistemadepracticasprofesionalesdeingenieriadesoftware.SistemaDePracticasProfesionalesDeIngenieriaDeSoftware;
-import sistemadepracticasprofesionalesdeingenieriadesoftware.modelo.pojo.Usuario;
+import sistemadepracticasprofesionalesdeingenieriadesoftware.modelo.pojo.Profesor;
 import sistemadepracticasprofesionalesdeingenieriadesoftware.util.Utilidad;
 
-/**
- * FXML Controller class
- *
- * @author uriel
- */
 public class FXMLPrincipalProfesorController implements Initializable {
 
-    private Usuario usuarioSesion;
+    private Profesor profesorSesion;
+
     @FXML
     private Button btnCerrarSesion;
     @FXML
     private Label lbNombreUsuario;
 
-    /**
-     * Initializes the controller class.
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
-    
-    public void inicializarInformacion(Usuario usuarioSesion){
-        this.usuarioSesion = usuarioSesion;
+        // Inicialización si es necesaria
+    }
+
+    public void inicializarInformacion(Profesor profesorSesion) {
+        this.profesorSesion = profesorSesion;
         cargarInformacionUsuario();
     }
-    
-    private void cargarInformacionUsuario(){
-        if(usuarioSesion != null){
-            lbNombreUsuario.setText(usuarioSesion.toString());
+
+    private void cargarInformacionUsuario() {
+        if (profesorSesion != null) {
+            lbNombreUsuario.setText(
+                profesorSesion.getNombre() + " " +
+                profesorSesion.getApellidoPaterno() + " " +
+                profesorSesion.getApellidoMaterno()
+            );
         }
     }
 
@@ -66,27 +59,25 @@ public class FXMLPrincipalProfesorController implements Initializable {
         boolean confirmado = Utilidad.mostrarConfirmacion(
             "Confirmar cierre de sesión",
             "¿Está seguro(a) de querer cerrar la sesión actual?",
-            "Se perderá el acceso a esta sesión.");
+            "Se perderá el acceso a esta sesión."
+        );
 
         if (confirmado) {
             try {
-                Stage escenarioBase = Utilidad.getEscenarioComponente
-                    (lbNombreUsuario);
-                Parent vista = FXMLLoader.load
-                    (SistemaDePracticasProfesionalesDeIngenieriaDeSoftware.
-                        class.getResource("vista/FXMLInicioSesion.fxml"));
-
+                Stage escenarioBase = Utilidad.getEscenarioComponente(lbNombreUsuario);
+                Parent vista = FXMLLoader.load(
+                    SistemaDePracticasProfesionalesDeIngenieriaDeSoftware.class.getResource("vista/FXMLInicioSesion.fxml")
+                );
                 Scene escenaPrincipal = new Scene(vista);
                 escenarioBase.setScene(escenaPrincipal);
                 escenarioBase.setTitle("Inicio Sesión");
                 escenarioBase.centerOnScreen();
                 escenarioBase.show();
             } catch (IOException ex) {
-                Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "Error",
-                        "No se pudo cerrar sesión.");
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "Error", "No se pudo cerrar sesión.");
                 ex.printStackTrace();
             }
         }
     }
-    
 }
+

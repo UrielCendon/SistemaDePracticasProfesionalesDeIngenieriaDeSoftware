@@ -10,38 +10,38 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import sistemadepracticasprofesionalesdeingenieriadesoftware.SistemaDePracticasProfesionalesDeIngenieriaDeSoftware;
-import sistemadepracticasprofesionalesdeingenieriadesoftware.modelo.pojo.Coordinador;
+import sistemadepracticasprofesionalesdeingenieriadesoftware.modelo.pojo.Evaluador;
 import sistemadepracticasprofesionalesdeingenieriadesoftware.util.Utilidad;
 
-public class FXMLPrincipalCoordinadorController implements Initializable {
+/**
+ * FXML Controller class
+ */
+public class FXMLPrincipalEvaluadorController implements Initializable {
 
-    private Coordinador coordinadorSesion;
+    private Evaluador evaluadorSesion;
 
     @FXML
-    private Button btnCerrarSesion;
-    @FXML
-    private Label lbNombreUsuario;
+    private Label lblNombreUsuario;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Sin implementación por ahora
+        // Sin inicialización específica
     }
 
-    public void inicializarInformacion(Coordinador coordinadorSesion) {
-        this.coordinadorSesion = coordinadorSesion;
+    public void inicializarInformacion(Evaluador evaluadorSesion) {
+        this.evaluadorSesion = evaluadorSesion;
         cargarInformacionUsuario();
     }
 
     private void cargarInformacionUsuario() {
-        if (coordinadorSesion != null) {
-            lbNombreUsuario.setText(
-                coordinadorSesion.getNombre() + " " +
-                coordinadorSesion.getApellidoPaterno() + " " +
-                coordinadorSesion.getApellidoMaterno()
+        if (evaluadorSesion != null) {
+            lblNombreUsuario.setText(
+                evaluadorSesion.getNombre() + " " +
+                evaluadorSesion.getApellidoPaterno() + " " +
+                evaluadorSesion.getApellidoMaterno()
             );
         }
     }
@@ -56,7 +56,7 @@ public class FXMLPrincipalCoordinadorController implements Initializable {
 
         if (confirmado) {
             try {
-                Stage escenarioBase = Utilidad.getEscenarioComponente(lbNombreUsuario);
+                Stage escenarioBase = Utilidad.getEscenarioComponente(lblNombreUsuario);
                 Parent vista = FXMLLoader.load(
                     SistemaDePracticasProfesionalesDeIngenieriaDeSoftware.class.getResource("vista/FXMLInicioSesion.fxml")
                 );
@@ -66,41 +66,13 @@ public class FXMLPrincipalCoordinadorController implements Initializable {
                 escenarioBase.centerOnScreen();
                 escenarioBase.show();
             } catch (IOException ex) {
-                Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "Error", "No se pudo cerrar sesión.");
+                Utilidad.mostrarAlertaSimple(
+                    Alert.AlertType.ERROR,
+                    "Error",
+                    "No se pudo cerrar sesión."
+                );
                 ex.printStackTrace();
             }
         }
-    }
-
-    @FXML
-    private void clicRegistrarProyecto(ActionEvent event) {
-    }
-
-    @FXML
-    private void clicRegistrarResponsable(ActionEvent event) {
-    }
-
-    @FXML
-    private void clicRegistrarOV(ActionEvent event) {
-    }
-
-    @FXML
-    private void clicActualizarProyecto(ActionEvent event) {
-    }
-
-    @FXML
-    private void clicActualizarResponsable(ActionEvent event) {
-    }
-
-    @FXML
-    private void clicAsignarProyecto(ActionEvent event) {
-    }
-
-    @FXML
-    private void clicGenerarDocuAsignacion(ActionEvent event) {
-    }
-
-    @FXML
-    private void clicProgramarEntregas(ActionEvent event) {
     }
 }

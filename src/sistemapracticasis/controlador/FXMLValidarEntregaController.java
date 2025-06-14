@@ -64,7 +64,7 @@ public class FXMLValidarEntregaController implements Initializable {
             "Cancelar",
             "Cancelar",
             "¿Está seguro de que quiere cancelar?")) {
-                Navegador.cambiarEscena(
+                Navegador.cambiarEscenaParametrizada(
                     Utilidad.getEscenarioComponente(lblNombreUsuario),
                     "/sistemapracticasis/vista/FXMLPrincipalProfesor.fxml",
                     FXMLPrincipalProfesorController.class,

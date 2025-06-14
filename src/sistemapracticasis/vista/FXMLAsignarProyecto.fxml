@@ -22,30 +22,30 @@
          </font>
       </Label>
       <Button fx:id="btnCancelar" layoutX="481.0" layoutY="463.0" mnemonicParsing="false" onAction="#clicCancelar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Cancelar" textFill="RED" />
-      <Label fx:id="lblNombreUsuario" layoutX="733.0" layoutY="68.0" />
+      <Label fx:id="lblNombreUsuario" layoutX="700.0" layoutY="68.0" />
       <Line endX="807.0" layoutX="100.0" layoutY="93.0" startX="-100.0" stroke="#6f6f6f" />
-      <TextField fx:id="txtBuscar" layoutX="127.0" layoutY="117.0" prefHeight="39.0" prefWidth="393.0" promptText="Buscar matrícula" style="-fx-cursor: text;" />
+      <TextField fx:id="txtBuscar" layoutX="127.0" layoutY="117.0" prefHeight="39.0" prefWidth="393.0" promptText="Buscar matrícula (S12345678)" style="-fx-cursor: text;" />
       <ImageView fitHeight="39.0" fitWidth="51.0" layoutX="481.0" layoutY="117.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../recursos/icons8-buscar-50.png" />
          </image>
       </ImageView>
-      <Label fx:id="lblMatricula" layoutX="291.0" layoutY="192.0" text="Matrícula:" />
-      <Label fx:id="lblNombre" layoutX="294.0" layoutY="237.0" text="Nombre:" />
-      <Label fx:id="lblCorreo" layoutX="299.0" layoutY="282.0" text="Correo:" />
-      <Label fx:id="lblTelefono" layoutX="292.0" layoutY="331.0" text="Teléfono:" />
-      <Label fx:id="lblProyecto" layoutX="292.0" layoutY="380.0" text="Proyecto:" />
-      <TextField fx:id="txtMatricula" editable="false" layoutX="423.0" layoutY="186.0" prefHeight="31.0" prefWidth="284.0" promptText="Matrícula" style="-fx-border-color: BLACK;" />
-      <TextField fx:id="txtNombre" editable="false" layoutX="423.0" layoutY="231.0" prefHeight="31.0" prefWidth="284.0" promptText="Nombre" style="-fx-border-color: BLACK;" />
-      <TextField fx:id="txtCorreo" editable="false" layoutX="423.0" layoutY="276.0" prefHeight="31.0" prefWidth="284.0" promptText="Correo" style="-fx-border-color: BLACK;" />
-      <TextField fx:id="txtTelefono" editable="false" layoutX="423.0" layoutY="325.0" prefHeight="31.0" prefWidth="284.0" promptText="Telefono" style="-fx-border-color: BLACK;" />
-      <TextField fx:id="txtProyecto" editable="false" layoutX="423.0" layoutY="374.0" prefHeight="31.0" prefWidth="284.0" promptText="Proyecto" style="-fx-border-color: BLACK;" />
+      <Label layoutX="272.0" layoutY="192.0" text="Matrícula:" />
+      <Label layoutX="275.0" layoutY="237.0" text="Nombre:" />
+      <Label layoutX="280.0" layoutY="282.0" text="Correo:" />
+      <Label layoutX="273.0" layoutY="331.0" text="Teléfono:" />
+      <Label layoutX="273.0" layoutY="380.0" text="Proyecto:" />
+      <TextField fx:id="txtMatricula" editable="false" layoutX="404.0" layoutY="186.0" prefHeight="33.0" prefWidth="341.0" promptText="Matrícula" style="-fx-border-color: BLACK;" />
+      <TextField fx:id="txtNombre" editable="false" layoutX="404.0" layoutY="231.0" prefHeight="33.0" prefWidth="341.0" promptText="Nombre" style="-fx-border-color: BLACK;" />
+      <TextField fx:id="txtCorreo" editable="false" layoutX="404.0" layoutY="276.0" prefHeight="33.0" prefWidth="341.0" promptText="Correo" style="-fx-border-color: BLACK;" />
+      <TextField fx:id="txtTelefono" editable="false" layoutX="404.0" layoutY="325.0" prefHeight="33.0" prefWidth="341.0" promptText="Telefono" style="-fx-border-color: BLACK;" />
+      <TextField fx:id="txtProyecto" editable="false" layoutX="404.0" layoutY="374.0" prefHeight="33.0" prefWidth="341.0" promptText="Proyecto" style="-fx-border-color: BLACK;" />
       <Button fx:id="btnAsignarProyecto" layoutX="299.0" layoutY="463.0" mnemonicParsing="false" onAction="#clicAsignarProyecto" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Asignar Proyecto" textFill="#1aa01a" />
-      <Line fx:id="linMatricula" layoutX="375.0" layoutY="219.0" startX="-100.0" stroke="#3768b2" />
-      <Line fx:id="linNombre" layoutX="375.0" layoutY="265.0" startX="-100.0" stroke="#3768b2" />
-      <Line fx:id="linCorreo" layoutX="375.0" layoutY="310.0" startX="-100.0" stroke="#3768b2" />
-      <Line fx:id="linTelefono" layoutX="375.0" layoutY="360.0" startX="-100.0" stroke="#3768b2" />
-      <Line fx:id="linProyecto" layoutX="375.0" layoutY="410.0" startX="-100.0" stroke="#3768b2" />
+      <Line layoutX="356.0" layoutY="219.0" startX="-100.0" stroke="#3768b2" />
+      <Line layoutX="356.0" layoutY="265.0" startX="-100.0" stroke="#3768b2" />
+      <Line layoutX="356.0" layoutY="310.0" startX="-100.0" stroke="#3768b2" />
+      <Line layoutX="356.0" layoutY="360.0" startX="-100.0" stroke="#3768b2" />
+      <Line layoutX="356.0" layoutY="410.0" startX="-100.0" stroke="#3768b2" />
       <Button layoutX="533.0" layoutY="116.0" mnemonicParsing="false" onAction="#clicBuscar" prefHeight="42.0" prefWidth="65.0" style="-fx-cursor: hand;" text="Buscar" />
    </children>
 </AnchorPane>

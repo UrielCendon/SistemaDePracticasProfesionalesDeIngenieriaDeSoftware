@@ -8,7 +8,8 @@ import sistemapracticasis.modelo.conexion.ConexionBD;
 import sistemapracticasis.modelo.pojo.Coordinador;
 
 public class CoordinadorDAO {
-    public static Coordinador obtenerCoordinadorPorIdUsuario(int idUsuario) throws SQLException {
+    public static Coordinador obtenerCoordinadorPorIdUsuario(int idUsuario) 
+            throws SQLException {
         Coordinador coordinador = null;
         Connection conexion = ConexionBD.abrirConexion();
 
@@ -24,8 +25,10 @@ public class CoordinadorDAO {
                 coordinador.setNumPersonal(resultado.getInt("num_personal"));
                 coordinador.setNombre(resultado.getString("nombre"));
                 coordinador.setCorreo(resultado.getString("correo"));
-                coordinador.setApellidoPaterno(resultado.getString("apellido_paterno"));
-                coordinador.setApellidoMaterno(resultado.getString("apellido_materno"));
+                coordinador.setApellidoPaterno(resultado.
+                    getString("apellido_paterno"));
+                coordinador.setApellidoMaterno(resultado.
+                    getString("apellido_materno"));
                 coordinador.setIdUsuario(resultado.getInt("id_usuario"));
             }
 

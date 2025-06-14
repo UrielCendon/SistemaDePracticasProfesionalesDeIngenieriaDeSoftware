@@ -83,7 +83,7 @@ public class FXMLActualizarExpedienteDocumentoInicialController implements
             "Salir",
             "Salir",
             "¿Está seguro de que quiere salir?")) {
-                Navegador.cambiarEscena(
+                Navegador.cambiarEscenaParametrizada(
                     Utilidad.getEscenarioComponente(lblNombreUsuario),
                     "/sistemapracticasis/vista/FXMLPrincipalEstudiante.fxml",
                     FXMLPrincipalEstudianteController.class,

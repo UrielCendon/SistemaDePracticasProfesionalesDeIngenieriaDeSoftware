@@ -13,6 +13,7 @@ public class Estudiante {
     private int idPeriodo;
     private int idExperienciaEducativa;
     private int idUsuario;
+    private String nombreProyecto;
 
     public int getIdEstudiante() {
         return idEstudiante;
@@ -110,6 +111,14 @@ public class Estudiante {
         this.idUsuario = idUsuario;
     }
 
+    public String getNombreProyecto() {
+        return nombreProyecto;
+    }
+
+    public void setNombreProyecto(String nombreProyecto) {
+        this.nombreProyecto = nombreProyecto;
+    }
+    
     @Override
     public String toString() {
         return nombre + " " + apellidoPaterno + " " + apellidoMaterno;

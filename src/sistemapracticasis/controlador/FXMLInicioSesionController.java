@@ -150,7 +150,7 @@ public class FXMLInicioSesionController implements Initializable {
     }
 
     private void irPantallaPrincipalCoordinador(Coordinador coordinador) {
-        Navegador.cambiarEscena(
+        Navegador.cambiarEscenaParametrizada(
             Utilidad.getEscenarioComponente(txtUsuario),
             "/sistemapracticasis/vista/FXMLPrincipalCoordinador.fxml",
             FXMLPrincipalCoordinadorController.class,
@@ -160,7 +160,7 @@ public class FXMLInicioSesionController implements Initializable {
     }
 
     private void irPantallaPrincipalEstudiante(Estudiante estudiante) {
-        Navegador.cambiarEscena(
+        Navegador.cambiarEscenaParametrizada(
             Utilidad.getEscenarioComponente(txtUsuario),
             "/sistemapracticasis/vista/FXMLPrincipalEstudiante.fxml",
             FXMLPrincipalEstudianteController.class,
@@ -170,7 +170,7 @@ public class FXMLInicioSesionController implements Initializable {
     }
 
     private void irPantallaPrincipalProfesor(Profesor profesor) {
-        Navegador.cambiarEscena(
+        Navegador.cambiarEscenaParametrizada(
             Utilidad.getEscenarioComponente(txtUsuario),
             "/sistemapracticasis/vista/FXMLPrincipalProfesor.fxml",
             FXMLPrincipalProfesorController.class,
@@ -180,7 +180,7 @@ public class FXMLInicioSesionController implements Initializable {
     }
 
     private void irPantallaPrincipalEvaluador(Evaluador evaluador) {
-        Navegador.cambiarEscena(
+        Navegador.cambiarEscenaParametrizada(
             Utilidad.getEscenarioComponente(txtUsuario),
             "/sistemapracticasis/vista/FXMLPrincipalEvaluador.fxml",
             FXMLPrincipalEvaluadorController.class,

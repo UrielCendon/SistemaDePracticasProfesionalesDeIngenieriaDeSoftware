@@ -41,7 +41,7 @@ public class FXMLPrincipalProfesorController implements Initializable {
 
     @FXML
     private void clicValidarEntregas(ActionEvent event) {
-        Navegador.cambiarEscena(
+        Navegador.cambiarEscenaParametrizada(
             Utilidad.getEscenarioComponente(lblNombreUsuario),
             "/sistemapracticasis/vista/FXMLValidarEntrega.fxml",
             FXMLValidarEntregaController.class,

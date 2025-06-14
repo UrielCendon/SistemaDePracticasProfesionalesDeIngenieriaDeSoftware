@@ -15,7 +15,7 @@
         </columns>
       </TableView>
       <TextField fx:id="txtProyectoSeleccionado" editable="false" layoutX="34.0" layoutY="383.0" prefHeight="31.0" prefWidth="284.0" promptText="Proyecto seleccionado" style="-fx-border-color: BLACK;" />
-      <Button layoutX="34.0" layoutY="432.0" mnemonicParsing="false" onAction="#clicAsignarProyecto" prefHeight="17.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Asignar Proyecto" textFill="#1aa01a" />
+      <Button fx:id="btnAsignarProyecto" layoutX="34.0" layoutY="432.0" mnemonicParsing="false" onAction="#clicAsignarProyecto" prefHeight="17.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Asignar Proyecto" textFill="#1aa01a" />
       <Button layoutX="511.0" layoutY="432.0" mnemonicParsing="false" onAction="#clicCancelar" prefHeight="31.0" prefWidth="84.0" style="-fx-cursor: hand;" text="Cancelar" textFill="RED" />
       <Label layoutX="34.0" layoutY="23.0" text="Seleccione un proyecto para asignárselo al estudiante:">
          <font>

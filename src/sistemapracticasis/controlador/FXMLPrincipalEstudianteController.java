@@ -44,7 +44,7 @@ public class FXMLPrincipalEstudianteController implements Initializable {
 
     @FXML
     private void clicDocIniciales(ActionEvent event) {
-        Navegador.cambiarEscena(
+        Navegador.cambiarEscenaParametrizada(
             Utilidad.getEscenarioComponente(lblNombreUsuario),
             "/sistemapracticasis/vista/FXMLActualizarExpedienteDocumento"
                 + "Inicial.fxml",
@@ -91,7 +91,7 @@ public class FXMLPrincipalEstudianteController implements Initializable {
 
     @FXML
     private void clicEvaluarOV(ActionEvent event) {
-        Navegador.cambiarEscena(
+        Navegador.cambiarEscenaParametrizada(
             Utilidad.getEscenarioComponente(lblNombreUsuario),
             "/sistemapracticasis/vista/FXMLEvaluarOrganizacionVinculada.fxml",
             FXMLEvaluarOrganizacionVinculadaController.class,

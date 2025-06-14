@@ -8,7 +8,8 @@ import sistemapracticasis.modelo.conexion.ConexionBD;
 import sistemapracticasis.modelo.pojo.Evaluador;
 
 public class EvaluadorDAO {
-    public static Evaluador obtenerEvaluadorPorIdUsuario(int idUsuario) throws SQLException {
+    public static Evaluador obtenerEvaluadorPorIdUsuario(int idUsuario) 
+            throws SQLException {
         Evaluador evaluador = null;
         Connection conexion = ConexionBD.abrirConexion();
 
@@ -24,8 +25,10 @@ public class EvaluadorDAO {
                 evaluador.setNumPersonal(resultado.getInt("num_personal"));
                 evaluador.setNombre(resultado.getString("nombre"));
                 evaluador.setCorreo(resultado.getString("correo"));
-                evaluador.setApellidoPaterno(resultado.getString("apellido_paterno"));
-                evaluador.setApellidoMaterno(resultado.getString("apellido_materno"));
+                evaluador.setApellidoPaterno(resultado.
+                    getString("apellido_paterno"));
+                evaluador.setApellidoMaterno(resultado.
+                    getString("apellido_materno"));
                 evaluador.setIdUsuario(resultado.getInt("id_usuario"));
             }
 

@@ -64,7 +64,7 @@ public class FXMLPrincipalCoordinadorController implements Initializable {
 
     @FXML
     private void clicAsignarProyecto(ActionEvent event) {
-        Navegador.cambiarEscena(
+        Navegador.cambiarEscenaParametrizada(
             Utilidad.getEscenarioComponente(lblNombreUsuario),
             "/sistemapracticasis/vista/FXMLAsignarProyecto.fxml",
             FXMLAsignarProyectoController.class,

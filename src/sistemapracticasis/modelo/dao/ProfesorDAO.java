@@ -8,7 +8,8 @@ import sistemapracticasis.modelo.conexion.ConexionBD;
 import sistemapracticasis.modelo.pojo.Profesor;
 
 public class ProfesorDAO {
-    public static Profesor obtenerProfesorPorIdUsuario(int idUsuario) throws SQLException {
+    public static Profesor obtenerProfesorPorIdUsuario(int idUsuario) 
+            throws SQLException {
         Profesor profesor = null;
         Connection conexion = ConexionBD.abrirConexion();
 
@@ -24,10 +25,11 @@ public class ProfesorDAO {
                 profesor.setNumPersonal(resultado.getInt("num_personal"));
                 profesor.setNombre(resultado.getString("nombre"));
                 profesor.setCorreo(resultado.getString("correo"));
-                profesor.setApellidoPaterno(resultado.getString("apellido_paterno"));
-                profesor.setApellidoMaterno(resultado.getString("apellido_materno"));
-                profesor.setIdUsuario(resultado.getInt("id_usuario"));
-                // Agrega más campos si los necesitas
+                profesor.setApellidoPaterno(resultado.
+                    getString("apellido_paterno"));
+                profesor.setApellidoMaterno(resultado.
+                    getString("apellido_materno"));
+                profesor.setIdUsuario(resultado.getInt("id_usuario"));    
             }
 
             resultado.close();

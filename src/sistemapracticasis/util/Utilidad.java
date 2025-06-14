@@ -22,11 +22,11 @@ public class Utilidad {
     
     /**
      *
-     * @param component
+     * @param componente
      * @return
      */
-    public static Stage getEscenarioComponente(Control component){
-        return ((Stage) component.getScene().getWindow());
+    public static Stage getEscenarioComponente(Control componente){
+        return ((Stage) componente.getScene().getWindow());
     }
     
     public static boolean mostrarConfirmacion(String titulo, String encabezado, 

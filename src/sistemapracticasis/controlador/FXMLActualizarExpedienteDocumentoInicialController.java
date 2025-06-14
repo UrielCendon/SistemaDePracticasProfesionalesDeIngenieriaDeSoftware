@@ -1,21 +1,16 @@
 package sistemapracticasis.controlador;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
-import sistemapracticasis.SistemaPracticasIS;
 import sistemapracticasis.modelo.pojo.Estudiante;
+import sistemapracticasis.util.Navegador;
 import sistemapracticasis.util.Utilidad;
 
 /**
@@ -84,31 +79,17 @@ public class FXMLActualizarExpedienteDocumentoInicialController implements
 
     @FXML
     private void clicSalir(ActionEvent event) {
-        boolean confirmado = Utilidad.mostrarConfirmacion(
+        if (Utilidad.mostrarConfirmacion(
             "Salir",
-            "¿Está seguro de que quiere salir?",
-            ""
-        );
-
-        if (confirmado) {
-            try {
-                Stage escenarioBase = (Stage) lblNombreUsuario.getScene().getWindow();
-                FXMLLoader cargador = new FXMLLoader
-                    (SistemaPracticasIS.class.
-                            getResource("vista/FXMLPrincipalEstudiante.fxml"));
-                Parent vista = cargador.load();
-                FXMLPrincipalEstudianteController controlador = cargador.
-                    getController();
-                controlador.inicializarInformacion(estudianteSesion);
-                Scene escenaPrincipal = new Scene(vista);
-                escenarioBase.setScene(escenaPrincipal);
-                escenarioBase.setTitle("Sistema de gestión de prácticas "
-                    + "profesionales");
-                escenarioBase.centerOnScreen();
-                escenarioBase.show();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            "Salir",
+            "¿Está seguro de que quiere salir?")) {
+                Navegador.cambiarEscena(
+                    Utilidad.getEscenarioComponente(lblNombreUsuario),
+                    "/sistemapracticasis/vista/FXMLPrincipalEstudiante.fxml",
+                    FXMLPrincipalEstudianteController.class,
+                    "inicializarInformacion",
+                    estudianteSesion
+                );
         }
     }
 

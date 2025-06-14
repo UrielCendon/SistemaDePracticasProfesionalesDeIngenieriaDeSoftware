@@ -1,22 +1,16 @@
 package sistemapracticasis.controlador;
 
-import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
-import sistemapracticasis.SistemaPracticasIS;
 import sistemapracticasis.modelo.dao.CoordinadorDAO;
 import sistemapracticasis.modelo.dao.EstudianteDAO;
 import sistemapracticasis.modelo.dao.EvaluadorDAO;
@@ -27,6 +21,7 @@ import sistemapracticasis.modelo.pojo.Estudiante;
 import sistemapracticasis.modelo.pojo.Evaluador;
 import sistemapracticasis.modelo.pojo.Profesor;
 import sistemapracticasis.modelo.pojo.Usuario;
+import sistemapracticasis.util.Navegador;
 import sistemapracticasis.util.Utilidad;
 
 public class FXMLInicioSesionController implements Initializable {
@@ -155,87 +150,43 @@ public class FXMLInicioSesionController implements Initializable {
     }
 
     private void irPantallaPrincipalCoordinador(Coordinador coordinador) {
-        try {
-            Stage escenarioBase = (Stage) txtUsuario.getScene().getWindow();
-            FXMLLoader cargador = new FXMLLoader
-                (SistemaPracticasIS.class.
-                        getResource("vista/FXMLPrincipalCoordinador.fxml"));
-            Parent vista = cargador.load();
-            FXMLPrincipalCoordinadorController controlador = cargador.
-                getController();
-            controlador.inicializarInformacion(coordinador);
-            Scene escenaPrincipal = new Scene(vista);
-            escenarioBase.setScene(escenaPrincipal);
-            escenarioBase.setTitle("Sistema de gestión de prácticas "
-                + "profesionales");
-            escenarioBase.centerOnScreen();
-            escenarioBase.show();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        Navegador.cambiarEscena(
+            Utilidad.getEscenarioComponente(txtUsuario),
+            "/sistemapracticasis/vista/FXMLPrincipalCoordinador.fxml",
+            FXMLPrincipalCoordinadorController.class,
+            "inicializarInformacion",
+            coordinador
+        );
     }
 
     private void irPantallaPrincipalEstudiante(Estudiante estudiante) {
-        try {
-            Stage escenarioBase = (Stage) txtUsuario.getScene().getWindow();
-            FXMLLoader cargador = new FXMLLoader
-                (SistemaPracticasIS.
-                    class.getResource("vista/FXMLPrincipalEstudiante.fxml"));
-            Parent vista = cargador.load();
-            FXMLPrincipalEstudianteController controlador = cargador.
-                getController();
-            controlador.inicializarInformacion(estudiante);
-            Scene escenaPrincipal = new Scene(vista);
-            escenarioBase.setScene(escenaPrincipal);
-            escenarioBase.setTitle("Sistema de gestión de prácticas "
-                + "profesionales");
-            escenarioBase.centerOnScreen();
-            escenarioBase.show();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        Navegador.cambiarEscena(
+            Utilidad.getEscenarioComponente(txtUsuario),
+            "/sistemapracticasis/vista/FXMLPrincipalEstudiante.fxml",
+            FXMLPrincipalEstudianteController.class,
+            "inicializarInformacion",
+            estudiante
+        );
     }
 
     private void irPantallaPrincipalProfesor(Profesor profesor) {
-        try {
-            Stage escenarioBase = (Stage) txtUsuario.getScene().getWindow();
-            FXMLLoader cargador = new FXMLLoader
-                (SistemaPracticasIS.
-                        class.getResource("vista/FXMLPrincipalProfesor.fxml"));
-            Parent vista = cargador.load();
-            FXMLPrincipalProfesorController controlador = cargador
-                .getController();
-            controlador.inicializarInformacion(profesor);
-            Scene escenaPrincipal = new Scene(vista);
-            escenarioBase.setScene(escenaPrincipal);
-            escenarioBase.setTitle("Sistema de gestión de prácticas "
-                + "profesionales");
-            escenarioBase.centerOnScreen();
-            escenarioBase.show();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        Navegador.cambiarEscena(
+            Utilidad.getEscenarioComponente(txtUsuario),
+            "/sistemapracticasis/vista/FXMLPrincipalProfesor.fxml",
+            FXMLPrincipalProfesorController.class,
+            "inicializarInformacion",
+            profesor
+        );
     }
 
     private void irPantallaPrincipalEvaluador(Evaluador evaluador) {
-        try {
-            Stage escenarioBase = (Stage) txtUsuario.getScene().getWindow();
-            FXMLLoader cargador = new FXMLLoader
-                (SistemaPracticasIS.
-                    class.getResource("vista/FXMLPrincipalEvaluador.fxml"));
-            Parent vista = cargador.load();
-            FXMLPrincipalEvaluadorController controlador = cargador.
-                getController();
-            controlador.inicializarInformacion(evaluador);
-            Scene escenaPrincipal = new Scene(vista);
-            escenarioBase.setScene(escenaPrincipal);
-            escenarioBase.setTitle("Sistema de gestión de prácticas "
-                + "profesionales");
-            escenarioBase.centerOnScreen();
-            escenarioBase.show();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        Navegador.cambiarEscena(
+            Utilidad.getEscenarioComponente(txtUsuario),
+            "/sistemapracticasis/vista/FXMLPrincipalEvaluador.fxml",
+            FXMLPrincipalEvaluadorController.class,
+            "inicializarInformacion",
+            evaluador
+        );
     }
 
 

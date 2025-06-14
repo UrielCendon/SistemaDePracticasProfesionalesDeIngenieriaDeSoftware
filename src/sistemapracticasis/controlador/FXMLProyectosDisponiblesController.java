@@ -8,6 +8,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import sistemapracticasis.util.Navegador;
+import sistemapracticasis.util.Utilidad;
 
 /**
  * FXML Controller class
@@ -37,6 +39,12 @@ public class FXMLProyectosDisponiblesController implements Initializable {
 
     @FXML
     private void clicCancelar(ActionEvent event) {
+        if (Utilidad.mostrarConfirmacion(
+            "Cancelar",
+            "Cancelar",
+            "¿Está seguro de que quiere cancelar?")) {
+                Navegador.cerrarVentana(txtProyectoSeleccionado);
+        }
     }
     
 }

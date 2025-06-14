@@ -8,7 +8,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import sistemapracticasis.modelo.dao.EstudianteDAO;
+import sistemapracticasis.modelo.dao.ExpedienteDAO;
+import sistemapracticasis.modelo.dao.PeriodoDAO;
 import sistemapracticasis.modelo.pojo.Estudiante;
+import sistemapracticasis.modelo.pojo.Periodo;
 import sistemapracticasis.util.Navegador;
 import sistemapracticasis.util.Utilidad;
 
@@ -91,6 +95,33 @@ public class FXMLPrincipalEstudianteController implements Initializable {
 
     @FXML
     private void clicEvaluarOV(ActionEvent event) {
+        Periodo periodoActual = new PeriodoDAO().obtenerPeriodoActual(); 
+        if (!EstudianteDAO.estaEnPeriodoActual
+            (estudianteSesion.getMatricula(), periodoActual.getIdPeriodo())) {
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, 
+                    "Periodo incorrecto", 
+                    "No estás asignado al periodo actual");
+                return;
+        }
+
+        if (!new ExpedienteDAO().tieneExpedienteEnCurso
+            (estudianteSesion.getMatricula())) {
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING,
+                    "Sin expediente activo",
+                    "Aún no tienes un expediente activo en este periodo, por "
+                    + "lo tanto no se puede evaluar a una organización "
+                    + "vinculada.");
+                return;
+        }
+        
+        if (new EstudianteDAO().tieneEvaluacionAOV
+            (estudianteSesion.getMatricula())) {
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION,
+                    "No se puede volver a realizar la evaluación", 
+                    "Ya realizaste la evaluación.");
+                return;
+        }
+
         Navegador.cambiarEscenaParametrizada(
             Utilidad.getEscenarioComponente(lblNombreUsuario),
             "/sistemapracticasis/vista/FXMLEvaluarOrganizacionVinculada.fxml",

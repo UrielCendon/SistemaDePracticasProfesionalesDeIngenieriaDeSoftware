@@ -52,7 +52,6 @@ public class EstudianteDAO {
                     "estudiante.nombre, estudiante.correo, estudiante." + 
                     "telefono, estudiante.apellido_paterno, " +
                     "estudiante.apellido_materno, estudiante.id_proyecto, " + 
-                    "estudiante.id_periodo, " +
                     "estudiante.id_experiencia_educativa, " +
                     "proyecto.nombre AS nombre_proyecto " +
                     "FROM estudiante " +
@@ -81,8 +80,6 @@ public class EstudianteDAO {
                         getString("estudiante.apellido_materno"));
                     estudiante.setIdProyecto(resultado.
                         getInt("estudiante.id_proyecto"));
-                    estudiante.setIdPeriodo(resultado.
-                        getInt("estudiante.id_periodo"));
                     estudiante.setIdExperienciaEducativa(resultado.
                         getInt("estudiante.id_experiencia_educativa"));
                     estudiante.setNombreProyecto(resultado.
@@ -122,6 +119,52 @@ public class EstudianteDAO {
         }
 
         return exito;
+    }
+    
+    public boolean tieneEvaluacionAOV(String matriculaEstudiante) { 
+        String consulta = "SELECT eval.id_evaluacion_a_organizacion_vinculada "
+                + "FROM estudiante est "
+                + "JOIN expediente exp ON est.id_estudiante = exp.id_estudiante"
+                + " AND exp.estado = 'en curso' "
+                + "JOIN periodo per ON exp.id_periodo = per.id_periodo "
+                + "JOIN evaluacion_a_organizacion_vinculada eval ON "
+                + "exp.id_expediente = eval.id_expediente "
+                + "WHERE est.matricula = ? "
+                + "AND CURDATE() BETWEEN per.fecha_inicio AND per.fecha_fin";
+
+        try (Connection conn = ConexionBD.abrirConexion();
+             PreparedStatement sentencia = conn.prepareStatement(consulta)) {
+
+            sentencia.setString(1, matriculaEstudiante);
+
+            try (ResultSet resultado = sentencia.executeQuery()) {
+                return resultado.next();
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+    
+    public static boolean estaEnPeriodoActual
+        (String matricula, int idPeriodoActual) {
+            String consulta = "SELECT COUNT(*) > 0 FROM estudiante "
+                    + "WHERE matricula = ? AND id_periodo = ?";
+
+            try (Connection conn = ConexionBD.abrirConexion();
+                 PreparedStatement sentencia = conn.prepareStatement
+                    (consulta)) {
+
+                sentencia.setString(1, matricula);
+                sentencia.setInt(2, idPeriodoActual);
+
+                try (ResultSet resultado = sentencia.executeQuery()) {
+                    return resultado.next() && resultado.getBoolean(1);
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            return false;
     }
 
 }

@@ -54,4 +54,50 @@ public class ProyectoDAO {
 
         return proyectos;
     }
+    
+    public static Proyecto obtenerProyectoPorIdEstudiante(int idEstudiante) {
+        Proyecto proyecto = null;
+        Connection conexion = ConexionBD.abrirConexion();
+
+        if (conexion != null) {
+            String consulta = "SELECT p.id_proyecto, p.nombre, p.descripcion, "
+                + "p.estado, p.cupo, p.fecha_inicio, p.fecha_fin, "
+                + "p.id_organizacion_vinculada "
+                + "FROM proyecto p "
+                + "JOIN estudiante e ON p.id_proyecto = e.id_proyecto "
+                + "WHERE e.id_estudiante = ?";
+
+            try {
+                PreparedStatement sentencia = conexion.prepareStatement
+                    (consulta);
+                sentencia.setInt(1, idEstudiante);
+                ResultSet resultado = sentencia.executeQuery();
+
+                if (resultado.next()) {
+                    proyecto = new Proyecto();
+                    proyecto.setIdProyecto(resultado.getInt("id_proyecto"));
+                    proyecto.setNombre(resultado.getString("nombre"));
+                    proyecto.setDescripcion(resultado.getString("descripcion"));
+                    proyecto.setEstado(EstadoProyecto.fromValor(resultado.
+                        getString("estado")));
+                    proyecto.setCupo(resultado.getInt("cupo"));
+                    proyecto.setFecha_inicio(resultado.getDate("fecha_inicio").
+                        toString());
+                    proyecto.setFecha_fin(resultado.getDate("fecha_fin").
+                        toString());
+                    proyecto.setIdOrganizacionVinculada(resultado.getInt
+                        ("id_organizacion_vinculada"));
+                }
+
+                resultado.close();
+                sentencia.close();
+                conexion.close();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return proyecto;
+    }
 }

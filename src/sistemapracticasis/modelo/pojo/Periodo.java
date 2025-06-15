@@ -5,19 +5,21 @@ package sistemapracticasis.modelo.pojo;
  * @author uriel
  */
 public class Periodo {
-    private int idPeriodo;
     private String nombrePeriodo;
     private String fechaInicio;
     private String fechaFin;
+    private int idExpediente;
+    private int idEstudiante;
 
-    public int getIdPeriodo() {
-        return idPeriodo;
+    public Periodo(String nombrePeriodo, String fechaInicio, String fechaFin, 
+            int idExpediente, int idEstudiante) {
+        this.nombrePeriodo = nombrePeriodo;
+        this.fechaInicio = fechaInicio;
+        this.fechaFin = fechaFin;
+        this.idExpediente = idExpediente;
+        this.idEstudiante = idEstudiante;
     }
-
-    public void setIdPeriodo(int idPeriodo) {
-        this.idPeriodo = idPeriodo;
-    }
-
+    
     public String getNombrePeriodo() {
         return nombrePeriodo;
     }
@@ -41,4 +43,22 @@ public class Periodo {
     public void setFechaFin(String fechaFin) {
         this.fechaFin = fechaFin;
     }
+
+    public int getIdExpediente() {
+        return idExpediente;
+    }
+
+    public void setIdExpediente(int idExpediente) {
+        this.idExpediente = idExpediente;
+    }
+
+    public int getIdEstudiante() {
+        return idEstudiante;
+    }
+
+    public void setIdEstudiante(int idEstudiante) {
+        this.idEstudiante = idEstudiante;
+    }
+    
+    
 }

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package sistemapracticasis.modelo.dao;
 
 import java.sql.Connection;
@@ -9,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import sistemapracticasis.modelo.conexion.ConexionBD;
+import sistemapracticasis.modelo.pojo.EstadoExpediente;
+import sistemapracticasis.modelo.pojo.Expediente;
 
 /**
  *
@@ -58,5 +56,41 @@ public class ExpedienteDAO {
             }
 
             return actualizado;
+        }
+        
+    public static Expediente obtenerExpedientePorIdEstudiante(int idEstudiante) {
+        String consulta = "SELECT e.id_expediente, e.horas_acumuladas, e.estado "
+                + "FROM expediente e "
+                + "JOIN periodo p ON e.id_expediente = p.id_expediente "
+                + "WHERE p.id_estudiante = ? "
+                + "ORDER BY p.fecha_inicio DESC LIMIT 1";
+
+        try (Connection conn = ConexionBD.abrirConexion();
+             PreparedStatement sentencia = conn.prepareStatement(consulta)) {
+
+            sentencia.setInt(1, idEstudiante);
+            ResultSet resultado = sentencia.executeQuery();
+
+            if (resultado.next()) {
+                String estadoTexto = resultado.getString("estado");
+                return new Expediente(
+                    resultado.getInt("id_expediente"),
+                    resultado.getInt("horas_acumuladas"),
+                    EstadoExpediente.fromValor(estadoTexto)
+                );
+            } else {
+                System.out.println("No se encontró expediente para el "
+                    + "estudiante con ID " + idEstudiante);
             }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error en estado del expediente: " + 
+                e.getMessage());
+        }
+        return null;
+    }
+
 }
+

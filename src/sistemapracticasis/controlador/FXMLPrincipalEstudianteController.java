@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import sistemapracticasis.modelo.dao.EntregaDocumentoDAO;
 import sistemapracticasis.modelo.dao.EstudianteDAO;
 import sistemapracticasis.modelo.dao.ExpedienteDAO;
 import sistemapracticasis.modelo.pojo.Estudiante;
@@ -46,6 +47,17 @@ public class FXMLPrincipalEstudianteController implements Initializable {
 
     @FXML
     private void clicDocIniciales(ActionEvent event) {
+        int idEstudiante = estudianteSesion.getIdEstudiante();
+
+        if(!EntregaDocumentoDAO.existeEntregaInicialVigente(idEstudiante)){
+            Utilidad.mostrarAlertaSimple(
+            Alert.AlertType.WARNING,
+            "Fecha inválida",
+            "La fecha de entrega ha concluido."
+            );
+            return;
+        }
+        
         Navegador.cambiarEscenaParametrizada(
             Utilidad.getEscenarioComponente(lblNombreUsuario),
             "/sistemapracticasis/vista/FXMLActualizarExpedienteDocumento"

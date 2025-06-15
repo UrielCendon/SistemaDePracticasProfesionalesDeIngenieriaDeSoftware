@@ -121,16 +121,16 @@ public class EstudianteDAO {
         return exito;
     }
     
-    public boolean tieneEvaluacionAOV(String matriculaEstudiante) { 
+    public boolean tieneEvaluacionAOV(String matriculaEstudiante) {  
         String consulta = "SELECT eval.id_evaluacion_a_organizacion_vinculada "
-                + "FROM estudiante est "
-                + "JOIN expediente exp ON est.id_estudiante = exp.id_estudiante"
-                + " AND exp.estado = 'en curso' "
-                + "JOIN periodo per ON exp.id_periodo = per.id_periodo "
-                + "JOIN evaluacion_a_organizacion_vinculada eval ON "
-                + "exp.id_expediente = eval.id_expediente "
-                + "WHERE est.matricula = ? "
-                + "AND CURDATE() BETWEEN per.fecha_inicio AND per.fecha_fin";
+            + "FROM estudiante est "
+            + "JOIN periodo per ON est.id_estudiante = per.id_estudiante "
+            + "JOIN expediente exp ON per.id_expediente = exp.id_expediente "
+            + "JOIN evaluacion_a_organizacion_vinculada eval ON "
+            + "exp.id_expediente = eval.id_expediente "
+            + "WHERE est.matricula = ? "
+            + "AND exp.estado = 'en curso' "
+            + "AND CURDATE() BETWEEN per.fecha_inicio AND per.fecha_fin";
 
         try (Connection conn = ConexionBD.abrirConexion();
              PreparedStatement sentencia = conn.prepareStatement(consulta)) {
@@ -145,26 +145,27 @@ public class EstudianteDAO {
         }
         return false;
     }
+
     
-    public static boolean estaEnPeriodoActual
-        (String matricula, int idPeriodoActual) {
-            String consulta = "SELECT COUNT(*) > 0 FROM estudiante "
-                    + "WHERE matricula = ? AND id_periodo = ?";
+    public static boolean estaEnPeriodoActual(String matricula) {
+        String consulta = "SELECT COUNT(*) > 0 "
+            + "FROM periodo p "
+            + "INNER JOIN estudiante e ON e.id_estudiante = p.id_estudiante "
+            + "WHERE e.matricula = ? "
+            + "AND CURDATE() BETWEEN p.fecha_inicio AND p.fecha_fin";
 
-            try (Connection conn = ConexionBD.abrirConexion();
-                 PreparedStatement sentencia = conn.prepareStatement
-                    (consulta)) {
+        try (Connection conn = ConexionBD.abrirConexion();
+             PreparedStatement sentencia = conn.prepareStatement(consulta)) {
 
-                sentencia.setString(1, matricula);
-                sentencia.setInt(2, idPeriodoActual);
+            sentencia.setString(1, matricula);
 
-                try (ResultSet resultado = sentencia.executeQuery()) {
-                    return resultado.next() && resultado.getBoolean(1);
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
+            try (ResultSet resultado = sentencia.executeQuery()) {
+                return resultado.next() && resultado.getBoolean(1);
             }
-            return false;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
     }
 
 }

@@ -34,14 +34,14 @@
       <TextField fx:id="txtSupervisionEncargado" layoutX="474.0" layoutY="273.0" prefHeight="31.0" prefWidth="284.0" promptText="Supervisión del encargado" style="-fx-border-color: BLACK;" />
       <TextField fx:id="txtCumplimientoActividades" layoutX="474.0" layoutY="357.0" prefHeight="31.0" prefWidth="284.0" promptText="Cumplimiento de actividades" style="-fx-border-color: BLACK;" />
       <TextField fx:id="txtCargaLaboral" layoutX="474.0" layoutY="439.0" prefHeight="31.0" prefWidth="284.0" promptText="Carga laboral" style="-fx-border-color: BLACK;" />
-      <Button layoutX="308.0" layoutY="753.0" mnemonicParsing="false" onAction="#clicSubir" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Subir" textFill="#1aa01a" />
+      <Button fx:id="btnSubir" layoutX="308.0" layoutY="753.0" mnemonicParsing="false" onAction="#clicSubir" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Subir" textFill="#1aa01a" />
       <Line endX="160.0" layoutX="275.0" layoutY="254.0" startX="-100.0" stroke="#3768b2" />
       <Line endX="160.0" layoutX="275.0" layoutY="327.0" startX="-100.0" stroke="#3768b2" />
       <Line endX="160.0" layoutX="275.0" layoutY="420.0" startX="-100.0" stroke="#3768b2" />
       <Line endX="160.0" layoutX="275.0" layoutY="495.0" startX="-100.0" stroke="#3768b2" />
       <TextField fx:id="txtFecha" editable="false" layoutX="376.0" layoutY="103.0" prefHeight="33.0" prefWidth="188.0" style="-fx-border-color: BLACK;" text="Fecha" />
       <TextField fx:id="txtPuntajeTotal" editable="false" layoutX="582.0" layoutY="103.0" prefHeight="33.0" prefWidth="145.0" style="-fx-border-color: BLACK;" text="Puntaje total: " />
-      <Label layoutX="36.0" layoutY="152.0" text="Ingrese un número del 1 al 10 en los siguientes campos:">
+      <Label layoutX="36.0" layoutY="152.0" text="Ingrese un número entero del 1 al 10 en los siguientes campos:">
          <font>
             <Font size="18.0" />
          </font>

@@ -1,9 +1,13 @@
 package sistemapracticasis.util;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Control;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 /**
@@ -40,4 +44,18 @@ public class Utilidad {
         return respuesta.isPresent() && respuesta.get() == ButtonType.OK;
     }
     
+    public static void cargarFechaActual(Control componente){
+        if (componente instanceof TextField) {
+            TextField textField = (TextField) componente;
+            LocalDate fechaActual = LocalDate.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            textField.setText(fechaActual.format(formatter));
+        } else if (componente instanceof Label) {
+            Label label = (Label) componente;
+            LocalDate fechaActual = LocalDate.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            label.setText(fechaActual.format(formatter));
+        }
+    
+    }
 }

@@ -42,4 +42,39 @@ public class PeriodoDAO {
         }
         return null;
     }
+    
+    public static Periodo obtenerPeriodoActual() {
+        Periodo periodoActual = null;
+
+        String consulta = "SELECT p.id_expediente, p.nombre_periodo, p.fecha_inicio, p.fecha_fin, " +
+                         "ee.nombre AS nombreEE, ee.nrc " +
+                         "FROM periodo p " +
+                         "JOIN expediente exp ON p.id_expediente = exp.id_expediente " +
+                         "JOIN estudiante est ON est.id_estudiante = p.id_estudiante " +
+                         "JOIN experiencia_educativa ee ON est.id_experiencia_educativa = ee.id_experiencia_educativa " +
+                         "WHERE CURDATE() BETWEEN p.fecha_inicio AND p.fecha_fin " +
+                         "LIMIT 1";
+
+        try (Connection conexion = ConexionBD.abrirConexion();
+             PreparedStatement ps = conexion.prepareStatement(consulta);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                periodoActual = new Periodo(
+                    rs.getString("nombre_periodo"),
+                    rs.getString("fecha_inicio"),
+                    rs.getString("fecha_fin"),
+                    rs.getInt("id_expediente"),
+                    0 // idEstudiante no lo necesito aquí
+                );
+                periodoActual.setNombreEE(rs.getString("nombreEE"));
+                periodoActual.setNrc(rs.getString("nrc"));
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return periodoActual;
+    }
 }

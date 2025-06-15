@@ -10,6 +10,8 @@ public class Periodo {
     private String fechaFin;
     private int idExpediente;
     private int idEstudiante;
+    private String nombreEE;
+    private String nrc;
 
     public Periodo(String nombrePeriodo, String fechaInicio, String fechaFin, 
             int idExpediente, int idEstudiante) {
@@ -60,5 +62,19 @@ public class Periodo {
         this.idEstudiante = idEstudiante;
     }
     
-    
+    public String getNombreEE() {
+        return nombreEE;
+    }
+
+    public void setNombreEE(String nombreEE) {
+        this.nombreEE = nombreEE;
+    }
+
+    public String getNrc() {
+        return nrc;
+    }
+
+    public void setNrc(String nrc) {
+        this.nrc = nrc;
+    }
 }

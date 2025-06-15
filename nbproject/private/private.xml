@@ -13,9 +13,12 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/D:/proyectos/Practicas/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemapracticasis/controlador/FXMLPrincipalCoordinadorController.java</file>
-            <file>file:/D:/proyectos/Practicas/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemapracticasis/util/Utilidad.java</file>
-            <file>file:/D:/proyectos/Practicas/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemapracticasis/util/Navegador.java</file>
+            <file>file:/D:/proyectos/Practicas/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemapracticasis/modelo/pojo/Periodo.java</file>
+            <file>file:/D:/proyectos/Practicas/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemapracticasis/modelo/dao/EntregaDocumentoDAO.java</file>
+            <file>file:/D:/proyectos/Practicas/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemapracticasis/controlador/FXMLGenerarEntregaReportesController.java</file>
+            <file>file:/D:/proyectos/Practicas/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemapracticasis/modelo/pojo/EntregaDocumento.java</file>
             <file>file:/D:/proyectos/Practicas/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemapracticasis/modelo/conexion/ConexionBD.java</file>
+            <file>file:/D:/proyectos/Practicas/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemapracticasis/modelo/dao/PeriodoDAO.java</file>
             <file>file:/D:/proyectos/Practicas/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemapracticasis/controlador/FXMLProgramarEntregaController.java</file>
             <file>file:/D:/proyectos/Practicas/SistemaDePracticasProfesionalesDeIngenieriaDeSoftware/src/sistemapracticasis/controlador/FXMLGenerarEntregaInicialesController.java</file>
         </group>

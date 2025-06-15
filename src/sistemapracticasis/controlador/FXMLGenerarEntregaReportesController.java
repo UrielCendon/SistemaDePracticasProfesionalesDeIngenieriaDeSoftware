@@ -18,10 +18,8 @@ import javafx.scene.control.TableView;
  *
  * @author Kaiser
  */
-public class FXMLGenerarEntregaIntermediosController implements Initializable {
+public class FXMLGenerarEntregaReportesController implements Initializable {
 
-    @FXML
-    private TableView<?> tvEntregasIntermedios;
     @FXML
     private TableColumn<?, ?> colNombreEntrega;
     @FXML
@@ -36,6 +34,8 @@ public class FXMLGenerarEntregaIntermediosController implements Initializable {
     private Button btnGenerar;
     @FXML
     private Button btnCancelar;
+    @FXML
+    private TableView<?> tvEntregasReportes;
 
     /**
      * Initializes the controller class.

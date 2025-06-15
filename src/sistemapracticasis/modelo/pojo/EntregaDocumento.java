@@ -14,6 +14,7 @@ public class EntregaDocumento {
     private double calificacion;
     private int idExpediente;
     private int idObservacion;
+    private String descripcion;
 
     public EntregaDocumento(int idEntregaDocumento, String nombre,
             String fechaInicio, String fechaFin) {
@@ -21,6 +22,7 @@ public class EntregaDocumento {
         this.nombre = nombre;
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
+        this.descripcion = nombre;
     }
 
     public int getIdEntregaDocumento() {
@@ -95,5 +97,11 @@ public class EntregaDocumento {
         this.idObservacion = idObservacion;
     }
     
-    
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
 }

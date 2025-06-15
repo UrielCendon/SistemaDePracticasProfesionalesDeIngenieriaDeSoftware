@@ -75,6 +75,13 @@ public class FXMLPrincipalCoordinadorController implements Initializable {
 
     @FXML
     private void clicGenerarDocuAsignacion(ActionEvent event) {
+        Navegador.cambiarEscenaParametrizada(
+            Utilidad.getEscenarioComponente(lblNombreUsuario),
+            "/sistemapracticasis/vista/FXMLGenerarOficios.fxml",
+            sistemapracticasis.controlador.FXMLGenerarOficiosController.class,
+            "inicializarInformacion",
+            coordinadorSesion
+        );
     }
 
     @FXML

@@ -233,14 +233,16 @@ public class FXMLActualizarExpedienteDocumentoInicialController implements
 
     @FXML
     private void clicSubirDocumento(ActionEvent event) {
-        EntregaDocumento entregaSeleccionada = tblEntregas.getSelectionModel().getSelectedItem();
+        EntregaDocumento entregaSeleccionada = tblEntregas.getSelectionModel()
+            .getSelectedItem();
     
         if (entregaSeleccionada != null) {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Abrir");
 
-            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
-                "Archivos PDF (*.pdf)", "*.pdf");
+            FileChooser.ExtensionFilter extFilter = new FileChooser.
+                ExtensionFilter(
+                    "Archivos PDF (*.pdf)", "*.pdf");
             fileChooser.getExtensionFilters().add(extFilter);
 
             File archivoSeleccionado = fileChooser.showOpenDialog(
@@ -250,10 +252,12 @@ public class FXMLActualizarExpedienteDocumentoInicialController implements
                 if (Utilidad.mostrarConfirmacion(
                     "Confirmación",
                     "Confirmación",
-                    "¿Está seguro de que quiere subir el documento seleccionado?")) {
+                    "¿Está seguro de que quiere subir el documento "
+                    + "seleccionado?")) {
 
                     try {
-                        byte[] contenidoDocumento = Files.readAllBytes(archivoSeleccionado.toPath());
+                        byte[] contenidoDocumento = Files.readAllBytes
+                            (archivoSeleccionado.toPath());
 
                         boolean exito = DocumentoDAO.guardarDocumentoInicial(
                             entregaSeleccionada.getIdEntregaDocumento(),
@@ -284,5 +288,4 @@ public class FXMLActualizarExpedienteDocumentoInicialController implements
             }
         }
     }
-    
 }

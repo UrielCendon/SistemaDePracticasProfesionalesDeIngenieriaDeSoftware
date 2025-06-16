@@ -47,7 +47,7 @@ public class FXMLGenerarEntregaInicialesController implements Initializable {
     @FXML
     private Button btnCancelar;
 
-    private int idPeriodoActual;
+    private int idExpediente;
     private ObservableList<EntregaDocumento> entregas;
     
     /**
@@ -65,39 +65,77 @@ public class FXMLGenerarEntregaInicialesController implements Initializable {
     private void configurarColumnas() {
         tvEntregasIniciales.setEditable(true);
 
+        // Columna Nombre (editable con validación)
         colNombreEntrega.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colNombreEntrega.setCellFactory(TextFieldTableCell.forTableColumn());
-        colNombreEntrega.setOnEditCommit(
-            event -> event.getRowValue().setNombre(event.getNewValue())
-        );
+        colNombreEntrega.setOnEditCommit(event -> {
+            if (event.getNewValue() == null || event.getNewValue().trim().isEmpty()) {
+                Utilidad.mostrarAlertaSimple(
+                    Alert.AlertType.WARNING,
+                    "Campo vacío",
+                    "El nombre no puede estar vacío"
+                );
+                tvEntregasIniciales.refresh();
+            } else {
+                event.getRowValue().setNombre(event.getNewValue());
+            }
+        });
 
+        // Columna Descripción (editable con validación)
         colDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
         colDescripcion.setCellFactory(TextFieldTableCell.forTableColumn());
-        colDescripcion.setOnEditCommit(
-            event -> event.getRowValue().setDescripcion(event.getNewValue())
-        );
+        colDescripcion.setOnEditCommit(event -> {
+            if (event.getNewValue() == null || event.getNewValue().trim().isEmpty()) {
+                Utilidad.mostrarAlertaSimple(
+                    Alert.AlertType.WARNING,
+                    "Campo vacío",
+                    "La descripción no puede estar vacía"
+                );
+                tvEntregasIniciales.refresh();
+            } else {
+                event.getRowValue().setDescripcion(event.getNewValue());
+            }
+        });
 
+        // Columna Fecha Inicio (NO editable)
         colFechaInicio.setCellValueFactory(new PropertyValueFactory<>("fechaInicio"));
-        colFechaInicio.setCellFactory(TextFieldTableCell.forTableColumn());
-        colFechaInicio.setOnEditCommit(
-            event -> event.getRowValue().setFechaInicio(event.getNewValue())
-        );
-
+        
+        // Columna Fecha Fin (NO editable)
         colFechaFin.setCellValueFactory(new PropertyValueFactory<>("fechaFin"));
-        colFechaFin.setCellFactory(TextFieldTableCell.forTableColumn());
-        colFechaFin.setOnEditCommit(
-            event -> event.getRowValue().setFechaFin(event.getNewValue())
-        );
-
+        
+        // Columna Calificación con validación (editable)
         colCalificacion.setCellValueFactory(new PropertyValueFactory<>("calificacion"));
         colCalificacion.setCellFactory(TextFieldTableCell.<EntregaDocumento, Double>forTableColumn(new javafx.util.converter.DoubleStringConverter()));
-        colCalificacion.setOnEditCommit(
-            event -> event.getRowValue().setCalificacion(event.getNewValue())
-        );
+        colCalificacion.setOnEditCommit(event -> {
+            try {
+                Double nuevaCalificacion = event.getNewValue();
+                if (nuevaCalificacion == null) {
+                    throw new IllegalArgumentException("La calificación no puede estar vacía");
+                }
+                
+                if (nuevaCalificacion < 0.0 || nuevaCalificacion > 10.0) {
+                    Utilidad.mostrarAlertaSimple(
+                        Alert.AlertType.WARNING, 
+                        "Calificación inválida", 
+                        "La calificación debe estar entre 0.0 y 10.0"
+                    );
+                    tvEntregasIniciales.refresh();
+                } else {
+                    event.getRowValue().setCalificacion(nuevaCalificacion);
+                }
+            } catch (Exception e) {
+                Utilidad.mostrarAlertaSimple(
+                    Alert.AlertType.WARNING, 
+                    "Valor inválido", 
+                    e.getMessage() != null ? e.getMessage() : "Ingrese un valor numérico entre 0.0 y 10.0"
+                );
+                tvEntregasIniciales.refresh();
+            }
+        });
     }
     
     public void inicializarInformacion(String fechaInicio, String fechaFin, Integer idExpediente) {
-        this.idPeriodoActual = idExpediente; // ← nombre correcto
+        this.idExpediente = idExpediente; // ← nombre correcto
         ArrayList<EntregaDocumento> entregasList =
             EntregaDocumentoDAO.generarEntregasInicialesPorDefecto(fechaInicio, fechaFin);
         this.entregas = FXCollections.observableArrayList(entregasList);
@@ -113,17 +151,71 @@ public class FXMLGenerarEntregaInicialesController implements Initializable {
         );
 
         if (confirmar) {
-            // Validación ANTES de guardar
-            if (EntregaDocumentoDAO.existenEntregasInicialesParaPeriodo(idPeriodoActual)) {
-                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Ya existen entregas",
-                        "No se puede generar porque ya existen entregas iniciales para este periodo.");
-                return;
+            try {
+                // Validación completa antes de guardar
+                if (!validarDatosCompletos()) {
+                    return;
+                }
+
+                if (EntregaDocumentoDAO.existenEntregasInicialesParaPeriodo(idExpediente)) {
+                    Utilidad.mostrarAlertaSimple(
+                        Alert.AlertType.WARNING, 
+                        "Ya existen entregas",
+                        "No se puede generar porque ya existen entregas iniciales para este periodo."
+                    );
+                    return;
+                }
+
+                EntregaDocumentoDAO.guardarEntregasIniciales(
+                    new ArrayList<>(tvEntregasIniciales.getItems()), 
+                    idExpediente
+                );
+                Utilidad.mostrarAlertaSimple(
+                    Alert.AlertType.INFORMATION, 
+                    "Éxito", 
+                    "Operación exitosa."
+                );
+                Navegador.cerrarVentana(btnGenerar);
+            } catch (RuntimeException e) {
+                // El DAO ya mostró el mensaje de error
+            }
+        }
+    }
+    
+    private boolean validarDatosCompletos() {
+        for (EntregaDocumento entrega : entregas) {
+            // 1. Validar nombre (no vacío)
+            if (entrega.getNombre() == null || entrega.getNombre().trim().isEmpty()) {
+                Utilidad.mostrarAlertaSimple(
+                    Alert.AlertType.WARNING,
+                    "Campo requerido",
+                    "El nombre no puede estar vacío"
+                );
+                return false;
             }
 
-            EntregaDocumentoDAO.guardarEntregasIniciales(new ArrayList<>(tvEntregasIniciales.getItems()), idPeriodoActual);
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION, "Éxito", "Operación exitosa.");
-            Navegador.cerrarVentana(btnGenerar);
+            // 2. Validar descripción (no vacía)
+            if (entrega.getDescripcion() == null || entrega.getDescripcion().trim().isEmpty()) {
+                Utilidad.mostrarAlertaSimple(
+                    Alert.AlertType.WARNING,
+                    "Campo requerido",
+                    "La descripción no puede estar vacía"
+                );
+                return false;
+            }
+
+            // 3. Validar calificación (rango 0.0 a 10.0)
+            // Nota: Usamos Double.isNaN() para evitar el error con '== null' en primitivos
+            if (Double.isNaN(entrega.getCalificacion()) || entrega.getCalificacion() < 0.0 || entrega.getCalificacion() > 10.0) {
+                Utilidad.mostrarAlertaSimple(
+                    Alert.AlertType.WARNING,
+                    "Calificación inválida",
+                    "La calificación debe estar entre 0.0 y 10.0"
+                );
+                return false;
+            }
         }
+        return true; // Si pasa todas las validaciones
     }
 
     @FXML

@@ -6,10 +6,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.scene.control.Alert;
 import sistemapracticasis.modelo.conexion.ConexionBD;
 import sistemapracticasis.modelo.pojo.EntregaDocumento;
 import sistemapracticasis.modelo.pojo.EntregaDocumentoTipo;
 import sistemapracticasis.modelo.pojo.TipoDocumento;
+import sistemapracticasis.util.Utilidad;
 
 public class EntregaDocumentoDAO {
 
@@ -96,11 +98,9 @@ public class EntregaDocumentoDAO {
         return entregas;
     }
 
-    public static void guardarEntregasIniciales(ArrayList<EntregaDocumento> entregas, int idPeriodo) {
+    public static void guardarEntregasIniciales(ArrayList<EntregaDocumento> entregas, int idExpediente) {
         String consulta = "INSERT INTO entrega_documento(nombre, fecha_inicio, fecha_fin, tipo_entrega, calificacion, id_expediente) " +
-                         "SELECT ?, ?, ?, 'inicial', ?, id_expediente " +
-                         "FROM expediente " +
-                         "WHERE id_periodo = ?";
+                         "VALUES (?, ?, ?, 'inicial', ?, ?)";
 
         try (Connection conexion = ConexionBD.abrirConexion();
              PreparedStatement ps = conexion.prepareStatement(consulta)) {
@@ -110,11 +110,16 @@ public class EntregaDocumentoDAO {
                 ps.setString(2, entrega.getFechaInicio());
                 ps.setString(3, entrega.getFechaFin());
                 ps.setDouble(4, entrega.getCalificacion());
-                ps.setInt(5, idPeriodo);
+                ps.setInt(5, idExpediente);
                 ps.addBatch();
             }
             ps.executeBatch();
         } catch (SQLException e) {
+            Utilidad.mostrarAlertaSimple(
+                Alert.AlertType.ERROR,
+                "Error de base de datos",
+                "No se pudieron guardar las entregas: " + e.getMessage()
+            );
             throw new RuntimeException("Error al guardar las entregas iniciales", e);
         }
     }

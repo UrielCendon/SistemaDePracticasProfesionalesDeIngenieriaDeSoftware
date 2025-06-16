@@ -14,6 +14,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import sistemapracticasis.modelo.dao.EstudianteDAO;
+import sistemapracticasis.modelo.dao.ExpedienteDAO;
+import sistemapracticasis.modelo.dao.PeriodoDAO;
 import sistemapracticasis.modelo.dao.ProyectoDAO;
 import sistemapracticasis.modelo.dto.ParametrosProyectosDisponibles;
 import sistemapracticasis.modelo.pojo.Coordinador;
@@ -112,7 +114,42 @@ public class FXMLAsignarProyectoController implements Initializable {
             ParametrosProyectosDisponibles parametros = new 
                     ParametrosProyectosDisponibles(
                 proyectos,
-                (nombreProyecto) -> actualizarProyectoAsignado(nombreProyecto),
+                (nombreProyecto) -> {
+                    try {
+                        int idExpediente = ExpedienteDAO.insertarExpedienteVacio();
+
+                        if (idExpediente > 0) {
+                            boolean periodoActualizado = PeriodoDAO.
+                                    actualizarExpedienteEstudiante(
+                                        estudiante.getIdEstudiante(), 
+                                        idExpediente);
+
+                            if (periodoActualizado) {
+                                actualizarProyectoAsignado(nombreProyecto);
+                            } else {
+                                Utilidad.mostrarAlertaSimple(
+                                    Alert.AlertType.ERROR,
+                                    "Error",
+                                    "No se pudo actualizar el periodo del "
+                                    + "estudiante"
+                                );
+                            }
+                        } else {
+                            Utilidad.mostrarAlertaSimple(
+                                Alert.AlertType.ERROR,
+                                "Error",
+                                "No se pudo crear el expediente vacío"
+                            );
+                        }
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                        Utilidad.mostrarAlertaSimple(
+                            Alert.AlertType.ERROR,
+                            "Error",
+                            "Ocurrió un error al asignar el proyecto"
+                        );
+                    }
+                },
                 estudiante
             );
 
@@ -171,11 +208,25 @@ public class FXMLAsignarProyectoController implements Initializable {
         Estudiante estudianteEncontrado = obtenerEstudiante(textoBusqueda);
 
         if (estudianteEncontrado != null) {
-            llenarCamposEstudiante(estudianteEncontrado);
+            boolean estaEnPeriodo = EstudianteDAO.estaEnPeriodoActual
+                (textoBusqueda);
+
+            if (estaEnPeriodo) {
+                llenarCamposEstudiante(estudianteEncontrado);
+            } else {
+                Utilidad.mostrarAlertaSimple(
+                    Alert.AlertType.WARNING,
+                    "Estudiante fuera de periodo",
+                    "El estudiante no pertenece al periodo actual. "
+                        + "Por favor, intente con otro."
+                );
+                limpiarCampos();
+            }
+
         } else {
             Utilidad.mostrarAlertaSimple(
-                Alert.AlertType.INFORMATION, 
-                "No encontrado", 
+                Alert.AlertType.INFORMATION,
+                "No encontrado",
                 "No se encontró ningún estudiante con la matrícula ingresada."
             );
             limpiarCampos();

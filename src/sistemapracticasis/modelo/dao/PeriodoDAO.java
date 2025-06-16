@@ -46,14 +46,16 @@ public class PeriodoDAO {
     public static Periodo obtenerPeriodoActual() {
         Periodo periodoActual = null;
 
-        String consulta = "SELECT p.id_expediente, p.nombre_periodo, p.fecha_inicio, p.fecha_fin, " +
-                         "ee.nombre AS nombreEE, ee.nrc " +
-                         "FROM periodo p " +
-                         "JOIN expediente exp ON p.id_expediente = exp.id_expediente " +
-                         "JOIN estudiante est ON est.id_estudiante = p.id_estudiante " +
-                         "JOIN experiencia_educativa ee ON est.id_experiencia_educativa = ee.id_experiencia_educativa " +
-                         "WHERE CURDATE() BETWEEN p.fecha_inicio AND p.fecha_fin " +
-                         "LIMIT 1";
+        String consulta = "SELECT p.id_expediente, p.nombre_periodo, "
+            + "p.fecha_inicio, p.fecha_fin, "
+            + "ee.nombre AS nombreEE, ee.nrc "
+            + "FROM periodo p "
+            + "JOIN expediente exp ON p.id_expediente = exp.id_expediente "
+            + "JOIN estudiante est ON est.id_estudiante = p.id_estudiante "
+            + "JOIN experiencia_educativa ee ON est.id_experiencia_educativa = "
+            + "ee.id_experiencia_educativa "
+            + "WHERE CURDATE() BETWEEN p.fecha_inicio AND p.fecha_fin "
+            + "LIMIT 1";
 
         try (Connection conexion = ConexionBD.abrirConexion();
              PreparedStatement ps = conexion.prepareStatement(consulta);
@@ -65,7 +67,7 @@ public class PeriodoDAO {
                     rs.getString("fecha_inicio"),
                     rs.getString("fecha_fin"),
                     rs.getInt("id_expediente"),
-                    0 // idEstudiante no lo necesito aquí
+                    0
                 );
                 periodoActual.setNombreEE(rs.getString("nombreEE"));
                 periodoActual.setNrc(rs.getString("nrc"));
@@ -76,5 +78,21 @@ public class PeriodoDAO {
         }
 
         return periodoActual;
+    }
+    
+    public static boolean actualizarExpedienteEstudiante(int idEstudiante, 
+            int idExpediente) throws SQLException {
+        String consulta = "UPDATE periodo SET id_expediente = ? WHERE "
+            + "id_estudiante = ? AND fecha_fin > CURDATE()";
+
+        try (Connection conexion = ConexionBD.abrirConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(consulta)){
+
+            sentencia.setInt(1, idExpediente);
+            sentencia.setInt(2, idEstudiante);
+
+            int filasAfectadas = sentencia.executeUpdate();
+            return filasAfectadas > 0;
+        }
     }
 }

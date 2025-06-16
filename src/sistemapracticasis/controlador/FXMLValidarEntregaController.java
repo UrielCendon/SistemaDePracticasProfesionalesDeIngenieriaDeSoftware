@@ -153,11 +153,22 @@ public class FXMLValidarEntregaController implements Initializable {
         Estudiante estudianteEncontrado = obtenerEstudiante(textoBusqueda);
 
         if (estudianteEncontrado != null) {
-            llenarCamposEstudiante(estudianteEncontrado);
+            boolean estaEnPeriodo = EstudianteDAO.estaEnPeriodoActual
+                (textoBusqueda);
+
+            if (estaEnPeriodo) {
+                llenarCamposEstudiante(estudianteEncontrado);
+            } else {
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING,
+                    "Estudiante fuera de periodo",
+                    "El estudiante no pertenece al periodo actual. "
+                    + "Por favor, intente con otro.");
+                tblEntregas.getItems().clear();
+            }
         } else {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION, 
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION,
                 "No encontrado", "No se encontró ningún estudiante con la "
-                    + "matrícula ingresada.");
+                + "matrícula ingresada.");
         }
     }
     

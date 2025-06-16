@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import sistemapracticasis.modelo.conexion.ConexionBD;
 import sistemapracticasis.modelo.pojo.EstadoExpediente;
 import sistemapracticasis.modelo.pojo.Expediente;
@@ -22,8 +23,8 @@ public class ExpedienteDAO {
             + "AND exp.estado = 'en curso' "
             + "AND CURDATE() BETWEEN per.fecha_inicio AND per.fecha_fin";
 
-        try (Connection conn = ConexionBD.abrirConexion();
-             PreparedStatement sentencia = conn.prepareStatement(consulta)) {
+        try (Connection conexion = ConexionBD.abrirConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(consulta)){
 
             sentencia.setString(1, matriculaEstudiante);
 
@@ -42,8 +43,8 @@ public class ExpedienteDAO {
             String consulta = "UPDATE expediente SET calif_eval_org_vinc = ? "
                 + "WHERE id_expediente = ?";
 
-            try (Connection conn = ConexionBD.abrirConexion();
-                 PreparedStatement sentencia = conn.prepareStatement
+            try (Connection conexion = ConexionBD.abrirConexion();
+                 PreparedStatement sentencia = conexion.prepareStatement
                     (consulta)) {
 
                 sentencia.setDouble(1, calificacion);
@@ -90,6 +91,29 @@ public class ExpedienteDAO {
                 e.getMessage());
         }
         return null;
+    }
+    
+    public static int insertarExpedienteVacio() {
+        String consulta = "INSERT INTO expediente (horas_acumuladas, estado) "
+            + "VALUES (0, 'en curso')";
+
+        try (Connection conexion = ConexionBD.abrirConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(consulta,
+                Statement.RETURN_GENERATED_KEYS)) {
+
+            int filasAfectadas = sentencia.executeUpdate();
+
+            if (filasAfectadas > 0) {
+                try (ResultSet generatedKeys = sentencia.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        return generatedKeys.getInt(1);
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return -1;
     }
 }
 

@@ -16,6 +16,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import sistemapracticasis.modelo.dao.EstudianteDAO;
+import sistemapracticasis.modelo.dao.ExpedienteDAO;
+import sistemapracticasis.modelo.dao.PeriodoDAO;
+import sistemapracticasis.modelo.dao.ProyectoDAO;
 import sistemapracticasis.modelo.dto.ParametrosProyectosDisponibles;
 import sistemapracticasis.modelo.pojo.Estudiante;
 import sistemapracticasis.modelo.pojo.Proyecto;
@@ -109,34 +112,86 @@ public class FXMLProyectosDisponiblesController implements Initializable {
      */
     @FXML
     private void clicAsignarProyecto(ActionEvent event) {
-        if(Utilidad.mostrarConfirmacion(
+        if (Utilidad.mostrarConfirmacion(
             "Confirmación de asignación",
             "Confirmación de asignación",
-            "¿Desea guardar la asignación de este proyecto?")){
-                Proyecto proyectoSeleccionado = tblProyectos.
-                    getSelectionModel().getSelectedItem();
-                if (proyectoSeleccionado != null) {
-                    int idProyecto = proyectoSeleccionado.getIdProyecto();
-                    boolean actualizado = estudianteDAO.asignarProyecto(
-                        estudiante.getMatricula(), idProyecto);
+            "¿Desea guardar la asignación de este proyecto?")) {
 
-                    if (actualizado) {
+            Proyecto proyectoSeleccionado = tblProyectos.getSelectionModel()
+                .getSelectedItem();
+
+            if (proyectoSeleccionado != null) {
+                int idProyecto = proyectoSeleccionado.getIdProyecto();
+                boolean actualizado = estudianteDAO.asignarProyecto
+                    (estudiante.getMatricula(), idProyecto);
+
+                if (actualizado) {
+                    try {
+                        int idExpediente = ExpedienteDAO.
+                            insertarExpedienteVacio();
+
+                        if (idExpediente > 0) {
+                            boolean actualizadoPeriodo = PeriodoDAO
+                                .actualizarExpedienteEstudiante(estudiante.
+                                    getIdEstudiante(), idExpediente);
+
+                            if (!actualizadoPeriodo) {
+                                Utilidad.mostrarAlertaSimple(
+                                    Alert.AlertType.ERROR,
+                                    "Error",
+                                    "No se pudo asociar el expediente al "
+                                    + "estudiante."
+                                );
+                                return;
+                            }
+                        } else {
+                            Utilidad.mostrarAlertaSimple(
+                                Alert.AlertType.ERROR,
+                                "Error",
+                                "No se pudo crear el expediente vacío."
+                            );
+                            return;
+                        }
+                        boolean cupoActualizado = ProyectoDAO
+                                .decrementarCupoProyecto(idProyecto);
+
+                        if (!cupoActualizado) {
+                            Utilidad.mostrarAlertaSimple(
+                                Alert.AlertType.WARNING,
+                                "Aviso",
+                                "El proyecto fue asignado, pero no se pudo "
+                                + "actualizar el cupo."
+                            );
+                        }
+
                         if (proyectoAsignadoCallback != null) {
                             proyectoAsignadoCallback.accept
                                 (proyectoSeleccionado.getNombre());
                         }
+
                         Navegador.cerrarVentana(txtProyectoSeleccionado);
                         Utilidad.mostrarAlertaSimple(
-                            Alert.AlertType.INFORMATION, 
-                            "Proyecto Asignado", 
-                            "Proyecto asignado con éxito"
+                            Alert.AlertType.INFORMATION,
+                            "Proyecto Asignado",
+                            "Proyecto asignado con éxito."
                         );
-                    } else {
-                        Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, 
-                            "Error", "No se pudo asignar el proyecto."
+
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        Utilidad.mostrarAlertaSimple(
+                            Alert.AlertType.ERROR,
+                            "ErrorBD",
+                            "No hay conexión con la base de datos."
                         );
                     }
+                } else {
+                    Utilidad.mostrarAlertaSimple(
+                        Alert.AlertType.ERROR,
+                        "Error",
+                        "No se pudo asignar el proyecto al estudiante."
+                    );
                 }
+            }
         }
     }
 

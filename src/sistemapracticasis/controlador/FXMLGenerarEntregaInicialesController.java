@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package sistemapracticasis.controlador;
 
 import java.net.URL;
@@ -18,16 +14,12 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.util.converter.DoubleStringConverter;
 import sistemapracticasis.modelo.dao.EntregaDocumentoDAO;
 import sistemapracticasis.modelo.pojo.EntregaDocumento;
 import sistemapracticasis.util.Navegador;
 import sistemapracticasis.util.Utilidad;
 
-/**
- * FXML Controller class
- *
- * @author Kaiser
- */
 public class FXMLGenerarEntregaInicialesController implements Initializable {
 
     @FXML
@@ -47,99 +39,66 @@ public class FXMLGenerarEntregaInicialesController implements Initializable {
     @FXML
     private Button btnCancelar;
 
-    private int idExpediente;
     private ObservableList<EntregaDocumento> entregas;
-    
-    /**
-     * Initializes the controller class.
-     */
+    private String fechaInicio, fechaFin;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         configurarColumnas();
         tvEntregasIniciales.setEditable(true);
-        colFechaInicio.setEditable(true);
-        colFechaFin.setEditable(true);
-        colCalificacion.setEditable(true);
     }
-    
-    private void configurarColumnas() {
-        tvEntregasIniciales.setEditable(true);
 
-        // Columna Nombre (editable con validación)
+    private void configurarColumnas() {
         colNombreEntrega.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colNombreEntrega.setCellFactory(TextFieldTableCell.forTableColumn());
         colNombreEntrega.setOnEditCommit(event -> {
-            if (event.getNewValue() == null || event.getNewValue().trim().isEmpty()) {
-                Utilidad.mostrarAlertaSimple(
-                    Alert.AlertType.WARNING,
-                    "Campo vacío",
-                    "El nombre no puede estar vacío"
-                );
+            String nuevo = event.getNewValue();
+            if (nuevo == null || nuevo.trim().isEmpty()) {
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Campo vacío", "El nombre no puede estar vacío");
                 tvEntregasIniciales.refresh();
             } else {
-                event.getRowValue().setNombre(event.getNewValue());
+                event.getRowValue().setNombre(nuevo);
             }
         });
 
-        // Columna Descripción (editable con validación)
         colDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
         colDescripcion.setCellFactory(TextFieldTableCell.forTableColumn());
         colDescripcion.setOnEditCommit(event -> {
-            if (event.getNewValue() == null || event.getNewValue().trim().isEmpty()) {
-                Utilidad.mostrarAlertaSimple(
-                    Alert.AlertType.WARNING,
-                    "Campo vacío",
-                    "La descripción no puede estar vacía"
-                );
+            String nueva = event.getNewValue();
+            if (nueva == null || nueva.trim().isEmpty()) {
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Campo vacío", "La descripción no puede estar vacía");
                 tvEntregasIniciales.refresh();
             } else {
-                event.getRowValue().setDescripcion(event.getNewValue());
+                event.getRowValue().setDescripcion(nueva);
             }
         });
 
-        // Columna Fecha Inicio (NO editable)
         colFechaInicio.setCellValueFactory(new PropertyValueFactory<>("fechaInicio"));
-        
-        // Columna Fecha Fin (NO editable)
         colFechaFin.setCellValueFactory(new PropertyValueFactory<>("fechaFin"));
-        
-        // Columna Calificación con validación (editable)
+
         colCalificacion.setCellValueFactory(new PropertyValueFactory<>("calificacion"));
-        colCalificacion.setCellFactory(TextFieldTableCell.<EntregaDocumento, Double>forTableColumn(new javafx.util.converter.DoubleStringConverter()));
+        colCalificacion.setCellFactory(TextFieldTableCell.<EntregaDocumento, Double>forTableColumn(new DoubleStringConverter()));
         colCalificacion.setOnEditCommit(event -> {
             try {
-                Double nuevaCalificacion = event.getNewValue();
-                if (nuevaCalificacion == null) {
-                    throw new IllegalArgumentException("La calificación no puede estar vacía");
+                Double cal = event.getNewValue();
+                if (cal == null || cal < 0.0 || cal > 10.0) {
+                    throw new IllegalArgumentException("Debe estar entre 0.0 y 10.0");
                 }
-                
-                if (nuevaCalificacion < 0.0 || nuevaCalificacion > 10.0) {
-                    Utilidad.mostrarAlertaSimple(
-                        Alert.AlertType.WARNING, 
-                        "Calificación inválida", 
-                        "La calificación debe estar entre 0.0 y 10.0"
-                    );
-                    tvEntregasIniciales.refresh();
-                } else {
-                    event.getRowValue().setCalificacion(nuevaCalificacion);
-                }
+                event.getRowValue().setCalificacion(cal);
             } catch (Exception e) {
-                Utilidad.mostrarAlertaSimple(
-                    Alert.AlertType.WARNING, 
-                    "Valor inválido", 
-                    e.getMessage() != null ? e.getMessage() : "Ingrese un valor numérico entre 0.0 y 10.0"
-                );
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Valor inválido", e.getMessage());
                 tvEntregasIniciales.refresh();
             }
         });
     }
-    
-    public void inicializarInformacion(String fechaInicio, String fechaFin, Integer idExpediente) {
-        this.idExpediente = idExpediente; // ← nombre correcto
-        ArrayList<EntregaDocumento> entregasList =
-            EntregaDocumentoDAO.generarEntregasInicialesPorDefecto(fechaInicio, fechaFin);
-        this.entregas = FXCollections.observableArrayList(entregasList);
-        tvEntregasIniciales.setItems(this.entregas);
+
+    public void inicializarInformacion(String fechaInicio, String fechaFin, Integer idExpedienteIgnorado) {
+        this.fechaInicio = fechaInicio;
+        this.fechaFin = fechaFin;
+
+        ArrayList<EntregaDocumento> lista = EntregaDocumentoDAO.generarEntregasInicialesPorDefecto(fechaInicio, fechaFin);
+        entregas = FXCollections.observableArrayList(lista);
+        tvEntregasIniciales.setItems(entregas);
     }
 
     @FXML
@@ -150,72 +109,43 @@ public class FXMLGenerarEntregaInicialesController implements Initializable {
             "Estas entregas se asignarán a todos los expedientes del periodo actual."
         );
 
-        if (confirmar) {
-            try {
-                // Validación completa antes de guardar
-                if (!validarDatosCompletos()) {
-                    return;
-                }
+        if (!confirmar || !validarDatos()) return;
 
-                if (EntregaDocumentoDAO.existenEntregasInicialesParaPeriodo(idExpediente)) {
-                    Utilidad.mostrarAlertaSimple(
-                        Alert.AlertType.WARNING, 
-                        "Ya existen entregas",
-                        "No se puede generar porque ya existen entregas iniciales para este periodo."
-                    );
-                    return;
-                }
-
-                EntregaDocumentoDAO.guardarEntregasIniciales(
-                    new ArrayList<>(tvEntregasIniciales.getItems()), 
-                    idExpediente
-                );
+        try {
+            if (EntregaDocumentoDAO.existenEntregasInicialesParaPeriodo(fechaInicio, fechaFin)) {
                 Utilidad.mostrarAlertaSimple(
-                    Alert.AlertType.INFORMATION, 
-                    "Éxito", 
-                    "Operación exitosa."
+                    Alert.AlertType.WARNING,
+                    "Ya existen entregas",
+                    "Ya hay entregas iniciales generadas para este periodo."
                 );
-                Navegador.cerrarVentana(btnGenerar);
-            } catch (RuntimeException e) {
-                // El DAO ya mostró el mensaje de error
+                return;
             }
+
+            EntregaDocumentoDAO.guardarEntregasIniciales(new ArrayList<>(entregas), fechaInicio, fechaFin);
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION, "Éxito", "Entregas generadas correctamente.");
+            Navegador.cerrarVentana(btnGenerar);
+
+        } catch (RuntimeException e) {
+            // Ya se muestra error desde el DAO
         }
     }
-    
-    private boolean validarDatosCompletos() {
+
+    private boolean validarDatos() {
         for (EntregaDocumento entrega : entregas) {
-            // 1. Validar nombre (no vacío)
             if (entrega.getNombre() == null || entrega.getNombre().trim().isEmpty()) {
-                Utilidad.mostrarAlertaSimple(
-                    Alert.AlertType.WARNING,
-                    "Campo requerido",
-                    "El nombre no puede estar vacío"
-                );
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Campo requerido", "El nombre no puede estar vacío.");
                 return false;
             }
-
-            // 2. Validar descripción (no vacía)
             if (entrega.getDescripcion() == null || entrega.getDescripcion().trim().isEmpty()) {
-                Utilidad.mostrarAlertaSimple(
-                    Alert.AlertType.WARNING,
-                    "Campo requerido",
-                    "La descripción no puede estar vacía"
-                );
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Campo requerido", "La descripción no puede estar vacía.");
                 return false;
             }
-
-            // 3. Validar calificación (rango 0.0 a 10.0)
-            // Nota: Usamos Double.isNaN() para evitar el error con '== null' en primitivos
-            if (Double.isNaN(entrega.getCalificacion()) || entrega.getCalificacion() < 0.0 || entrega.getCalificacion() > 10.0) {
-                Utilidad.mostrarAlertaSimple(
-                    Alert.AlertType.WARNING,
-                    "Calificación inválida",
-                    "La calificación debe estar entre 0.0 y 10.0"
-                );
+            if (entrega.getCalificacion() < 0.0 || entrega.getCalificacion() > 10.0) {
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Calificación inválida", "Debe estar entre 0.0 y 10.0.");
                 return false;
             }
         }
-        return true; // Si pasa todas las validaciones
+        return true;
     }
 
     @FXML

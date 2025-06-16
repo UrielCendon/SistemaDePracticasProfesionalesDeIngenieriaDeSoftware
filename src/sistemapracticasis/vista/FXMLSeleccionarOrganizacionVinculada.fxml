@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="500.0" prefWidth="800.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="sistemapracticasis.controlador.FXMLSeleccionarOrganizacionVinculadaController">
+   <children>
+      <TextField fx:id="txtBuscar" layoutX="220.0" layoutY="181.0" prefHeight="39.0" prefWidth="393.0" promptText="Buscar nombre (sistema de gestión)" style="-fx-cursor: text;" />
+      <ImageView fitHeight="39.0" fitWidth="51.0" layoutX="574.0" layoutY="181.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../recursos/icons8-buscar-50.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="42.0" fitWidth="47.0" layoutX="826.0" layoutY="33.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../recursos/imagenIcono.png" />
+         </image>
+      </ImageView>
+      <Label layoutX="80.0" layoutY="41.0" prefHeight="51.0" prefWidth="673.0" style="-fx-background-color: #9faec2; -fx-alignment: CENTER;" text="Seleccionar organización vinculada" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+         <font>
+            <Font name="Arial Black" size="34.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblNombreUsuario" layoutX="810.0" layoutY="87.0" />
+      <Line endX="807.0" layoutX="120.0" layoutY="113.0" startX="-120.0" stroke="#6f6f6f" />
+      <Label alignment="CENTER" contentDisplay="RIGHT" layoutX="122.0" layoutY="120.0" prefHeight="42.0" prefWidth="590.0" text="Busque y seleccione la organización vinculada a la que pertenece este encargado de proyecto">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="170.0" layoutY="256.0" text="Organización" />
+      <Line layoutX="272.0" layoutY="294.0" startX="-110.0" stroke="#3768b2" />
+      <ComboBox layoutX="355.0" layoutY="250.0" prefHeight="39.0" prefWidth="258.0" promptText="Organizaciones " />
+      <Button fx:id="btnRegresar" layoutX="28.0" layoutY="439.0" mnemonicParsing="false" onAction="#clicBtnRegresar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Regresar" />
+      <Button fx:id="btnGuardar" layoutX="780.0" layoutY="439.0" mnemonicParsing="false" onAction="#clicBtnGuardar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Guardar" textFill="#1aa01a" />
+   </children>
+</AnchorPane>

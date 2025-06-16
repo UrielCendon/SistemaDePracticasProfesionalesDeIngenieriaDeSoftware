@@ -13,6 +13,7 @@ public class EntregaReporte {
     private double calificacion;
     private int idExpediente;
     private int idObservacion;
+    private String observacion; // campo nuevo para la descripción
 
     public EntregaReporte(int idEntregaReporte, String nombre, String fechaInicio, String fechaFin, int validado, double calificacion, int idExpediente, int idObservacion) {
         this.idEntregaReporte = idEntregaReporte;
@@ -88,6 +89,12 @@ public class EntregaReporte {
     public void setIdObservacion(int idObservacion) {
         this.idObservacion = idObservacion;
     }
-    
-    
+
+    public String getObservacion() {
+        return observacion;
+    }
+
+    public void setObservacion(String observacion) {
+        this.observacion = observacion;
+    }
 }

@@ -88,7 +88,14 @@ public class FXMLRegistrarResponsableDeProyectoController implements Initializab
                 Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION,
                         "RegistroExitoso",
                         resultado.getMensaje());
-                limpiarCampos();
+                Navegador.cambiarEscenaParametrizada(
+                        Utilidad.getEscenarioComponente(btnGuardar),
+                        "/sistemapracticasis/vista/FXMLPrincipalCoordinador.fxml",
+                        sistemapracticasis.controlador.FXMLPrincipalCoordinadorController.class,
+                        "inicializarInformacion",
+                        coordinadorSesion
+                );
+             
             } else {
                 Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR,
                         "No hay conexión con la base de datos",
@@ -158,16 +165,6 @@ public class FXMLRegistrarResponsableDeProyectoController implements Initializab
         txtPuesto.setStyle("");
     }
 
-    private void limpiarCampos() {
-        txtNombre.clear();
-        txtAPaterno.clear();
-        txtAMaterno.clear();
-        txtTelefono.clear();
-        txtCorreo.clear();
-        txtDepartamento.clear();
-        txtPuesto.clear();
-        limpiarEstilos();
-    }
 }
 
 

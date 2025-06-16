@@ -155,13 +155,6 @@ public class FXMLRegistrarOrganizacionVinculadaController implements Initializab
         txtCorreo.setStyle("");
     }
 
-    private void limpiarCampos() {
-        txtNombre.clear();
-        txtTelefono.clear();
-        txtDireccion.clear();
-        txtCorreo.clear();
-        limpiarEstilos();
-    }
 }
 
 

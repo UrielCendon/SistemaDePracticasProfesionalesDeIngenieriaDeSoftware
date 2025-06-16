@@ -118,8 +118,9 @@ public class FXMLRegistrarProyectoController implements Initializable {
 
         if (!resultado.isError()) {
             String mensaje = esEdicion ? "Proyecto actualizado con éxito" : "Proyecto registrado con éxito";
+            String titulo = esEdicion ? "Actualizacion exitosa" : "registro exitoso";
             Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION,
-                    "Operación exitosa", mensaje);
+                    titulo, mensaje);
 
             Navegador.cambiarEscenaParametrizada(
                     Utilidad.getEscenarioComponente(btnGuardar),
@@ -138,20 +139,23 @@ public class FXMLRegistrarProyectoController implements Initializable {
 
     @FXML
     private void clicBtnCancelar(ActionEvent event) {
-        if (Utilidad.mostrarConfirmacion(
-                "Cancelar registro",
-                "¿Desea cancelar el registro del proyecto?",
-                "Los datos ingresados se perderán.")) {
+        String titulo = esEdicion ? "Cancelar actualización" : "Cancelar registro";
+        String mensaje = esEdicion
+            ? "¿Desea cancelar la actualización del proyecto?"
+            : "¿Desea cancelar el registro del proyecto?";
+        String contenido = "Los datos ingresados se perderán.";
 
+        if (Utilidad.mostrarConfirmacion(titulo, mensaje, contenido)) {
             Navegador.cambiarEscenaParametrizada(
-                    Utilidad.getEscenarioComponente(btnCancelar),
-                    "/sistemapracticasis/vista/FXMLPrincipalCoordinador.fxml",
-                    FXMLPrincipalCoordinadorController.class,
-                    "inicializarInformacion",
-                    coordinadorSesion
+                Utilidad.getEscenarioComponente(btnCancelar),
+                "/sistemapracticasis/vista/FXMLPrincipalCoordinador.fxml",
+                FXMLPrincipalCoordinadorController.class,
+                "inicializarInformacion",
+                coordinadorSesion
             );
         }
     }
+
     
     private Proyecto construirProyecto() {
         OrganizacionVinculada orgSeleccionada = cbOrganizacionVinculada.getSelectionModel().getSelectedItem();

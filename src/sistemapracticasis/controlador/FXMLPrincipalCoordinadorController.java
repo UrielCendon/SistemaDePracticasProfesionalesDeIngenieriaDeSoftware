@@ -49,6 +49,13 @@ public class FXMLPrincipalCoordinadorController implements Initializable {
 
     @FXML
     private void clicRegistrarOV(ActionEvent event) {
+        Navegador.cambiarEscenaParametrizada(
+            Utilidad.getEscenarioComponente(lblNombreUsuario),
+            "/sistemapracticasis/vista/FXMLRegistrarOrganizacionVinculada.fxml",
+            sistemapracticasis.controlador.FXMLRegistrarOrganizacionVinculadaController.class,
+            "inicializarInformacion",
+            coordinadorSesion
+        );
     }
 
     @FXML

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="sistemapracticasis.controlador.FXMLSeleccionarOVYResponsableController">
+   <children>
+      <Button fx:id="btnGuardar" layoutX="790.0" layoutY="544.0" mnemonicParsing="false" onAction="#clicBtnGuardar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Guardar" textFill="#1aa01a" />
+      <Button fx:id="btnRegresar" layoutX="23.0" layoutY="544.0" mnemonicParsing="false" onAction="#clicBtnRegresar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Regresar" />
+      <ComboBox fx:id="cbOrganizaciones" layoutX="365.0" layoutY="260.0" prefHeight="39.0" prefWidth="258.0" promptText="Organizaciones " />
+      <Line layoutX="282.0" layoutY="304.0" startX="-110.0" stroke="#3768b2" />
+      <Label layoutX="180.0" layoutY="266.0" text="Organización" />
+      <Label alignment="CENTER" contentDisplay="RIGHT" layoutX="213.0" layoutY="134.0" prefHeight="42.0" prefWidth="429.0" text="Busque y seleccione la organización vinculada dueña del proyecto">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Line endX="807.0" layoutX="130.0" layoutY="123.0" startX="-120.0" stroke="#6f6f6f" />
+      <Label fx:id="lblNombreUsuario" layoutX="820.0" layoutY="97.0" />
+      <Label layoutX="90.0" layoutY="51.0" prefHeight="51.0" prefWidth="673.0" style="-fx-background-color: #9faec2; -fx-alignment: CENTER;" text="Seleccionar organización vinculada" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+         <font>
+            <Font name="Arial Black" size="34.0" />
+         </font>
+      </Label>
+      <ImageView fitHeight="42.0" fitWidth="47.0" layoutX="836.0" layoutY="43.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../recursos/imagenIcono.png" />
+         </image>
+      </ImageView>
+      <TextField fx:id="txtBuscar" layoutX="230.0" layoutY="191.0" prefHeight="39.0" prefWidth="393.0" promptText="Buscar nombre (sistema de gestión)" style="-fx-cursor: text;" />
+      <ImageView fitHeight="39.0" fitWidth="51.0" layoutX="584.0" layoutY="191.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../recursos/icons8-buscar-50.png" />
+         </image>
+      </ImageView>
+      <Label layoutX="180.0" layoutY="400.0" text="Responsable" />
+      <Line layoutX="282.0" layoutY="438.0" startX="-110.0" stroke="#3768b2" />
+      <ComboBox fx:id="cbResponsables" layoutX="365.0" layoutY="394.0" prefHeight="39.0" prefWidth="258.0" promptText="Responsables" />
+      <Label alignment="CENTER" contentDisplay="RIGHT" layoutX="294.0" layoutY="327.0" prefHeight="42.0" prefWidth="265.0" text="Seleccione al encargado del proyecto">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

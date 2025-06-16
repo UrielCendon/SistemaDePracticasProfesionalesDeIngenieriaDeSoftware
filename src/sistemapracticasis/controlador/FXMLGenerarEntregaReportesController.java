@@ -1,57 +1,134 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package sistemapracticasis.controlador;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.util.converter.DoubleStringConverter;
+import sistemapracticasis.modelo.dao.EntregaReporteDAO;
+import sistemapracticasis.modelo.pojo.EntregaReporte;
+import sistemapracticasis.util.Navegador;
+import sistemapracticasis.util.Utilidad;
 
-/**
- * FXML Controller class
- *
- * @author Kaiser
- */
 public class FXMLGenerarEntregaReportesController implements Initializable {
 
     @FXML
-    private TableColumn<?, ?> colNombreEntrega;
+    private TableView<EntregaReporte> tvEntregasReportes;
     @FXML
-    private TableColumn<?, ?> colDescripcion;
+    private TableColumn<EntregaReporte, String> colNombreEntrega;
     @FXML
-    private TableColumn<?, ?> colFechaInicio;
+    private TableColumn<EntregaReporte, String> colFechaInicio;
     @FXML
-    private TableColumn<?, ?> colFechaFin;
+    private TableColumn<EntregaReporte, String> colFechaFin;
     @FXML
-    private TableColumn<?, ?> colCalificacion;
+    private TableColumn<EntregaReporte, Double> colCalificacion;
+    @FXML
+    private TableColumn<EntregaReporte, String> colDescripcion;
     @FXML
     private Button btnGenerar;
     @FXML
     private Button btnCancelar;
-    @FXML
-    private TableView<?> tvEntregasReportes;
 
-    /**
-     * Initializes the controller class.
-     */
+    private String fechaInicio, fechaFin;
+    private int idPeriodo;
+    private ObservableList<EntregaReporte> entregas;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
+        configurarColumnas();
+        tvEntregasReportes.setEditable(true);
+    }
+
+    public void inicializarInformacion(String fechaInicio, String fechaFin, Integer idPeriodoIgnored) {
+        this.fechaInicio = fechaInicio;
+        this.fechaFin = fechaFin;
+        this.idPeriodo = idPeriodo;
+
+        ArrayList<EntregaReporte> lista = EntregaReporteDAO.generarEntregasReportesPorDefecto(fechaInicio, fechaFin);
+        entregas = FXCollections.observableArrayList(lista);
+        tvEntregasReportes.setItems(entregas);
+    }
+
+    private void configurarColumnas() {
+        colNombreEntrega.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        colNombreEntrega.setCellFactory(TextFieldTableCell.forTableColumn());
+        colNombreEntrega.setOnEditCommit(event -> {
+            String nuevo = event.getNewValue();
+            if (nuevo == null || nuevo.trim().isEmpty()) {
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Campo vacío", "El nombre no puede estar vacío");
+                tvEntregasReportes.refresh();
+            } else {
+                event.getRowValue().setNombre(nuevo);
+            }
+        });
+
+        colFechaInicio.setCellValueFactory(new PropertyValueFactory<>("fechaInicio"));
+        colFechaFin.setCellValueFactory(new PropertyValueFactory<>("fechaFin"));
+
+        colCalificacion.setCellValueFactory(new PropertyValueFactory<>("calificacion"));
+        colCalificacion.setCellFactory(TextFieldTableCell.<EntregaReporte, Double>forTableColumn(new DoubleStringConverter()));
+        colCalificacion.setOnEditCommit(event -> {
+            try {
+                Double cal = event.getNewValue();
+                if (cal < 0.0 || cal > 10.0) {
+                    throw new IllegalArgumentException("La calificación debe estar entre 0.0 y 10.0");
+                }
+                event.getRowValue().setCalificacion(cal);
+            } catch (Exception e) {
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Valor inválido", e.getMessage());
+                tvEntregasReportes.refresh();
+            }
+        });
+
+        colDescripcion.setCellValueFactory(new PropertyValueFactory<>("observacion"));
+        colDescripcion.setCellFactory(TextFieldTableCell.forTableColumn());
+        colDescripcion.setOnEditCommit(event -> {
+            event.getRowValue().setObservacion(event.getNewValue());
+        });
+    }
 
     @FXML
     private void clicGenerar(ActionEvent event) {
+        boolean confirmado = Utilidad.mostrarConfirmacion("Confirmación", "¿Está seguro de generar las entregas?", "Estas entregas se asignarán a todos los expedientes del periodo actual.");
+
+        if (!confirmado || !validarDatos()) return;
+
+        try {
+            EntregaReporteDAO.guardarEntregasReportes(new ArrayList<>(entregas), fechaInicio, fechaFin);
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION, "Éxito", "Entregas generadas correctamente.");
+            Navegador.cerrarVentana(btnGenerar);
+        } catch (RuntimeException e) {
+            // ya se mostró la alerta en el DAO
+        }
     }
 
-  
+    private boolean validarDatos() {
+        for (EntregaReporte entrega : entregas) {
+            if (entrega.getNombre() == null || entrega.getNombre().trim().isEmpty()) {
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Campo requerido", "El nombre no puede estar vacío.");
+                return false;
+            }
+            if (entrega.getCalificacion() < 0.0 || entrega.getCalificacion() > 10.0) {
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Calificación inválida", "Debe estar entre 0.0 y 10.0");
+                return false;
+            }
+            if (entrega.getObservacion() == null || entrega.getObservacion().trim().isEmpty()) {
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Campo requerido", "La descripción no puede estar vacía.");
+                return false;
+            }
+        }
+        return true;
+    }
+
     @FXML
     private void clicCancelar(ActionEvent event) {
+        Navegador.cerrarVentana(btnCancelar);
     }
-    
 }

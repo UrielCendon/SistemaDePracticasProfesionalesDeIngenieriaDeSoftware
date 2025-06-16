@@ -134,11 +134,21 @@ public class FXMLProgramarEntregaController implements Initializable {
 
     @FXML
     private void clicGenerarEntregaReportes(ActionEvent event) {
-        Utilidad.mostrarAlertaSimple(
-            Alert.AlertType.INFORMATION,
-            "Funcionalidad no disponible",
-            "Esta sección del sistema aún no ha sido desarrollada en esta versión."
-        );
+        if (periodoActual != null) {
+            Navegador.abrirVentanaModalParametrizada(
+                Utilidad.getEscenarioComponente(btnGenerarEntregaReportes),
+                "/sistemapracticasis/vista/FXMLGenerarEntregaReportes.fxml",
+                FXMLGenerarEntregaReportesController.class,
+                "inicializarInformacion",
+                periodoActual.getFechaInicio(),
+                periodoActual.getFechaFin(),
+                periodoActual.getIdExpediente()
+            );
+        } else {
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, 
+                "Error", 
+                "No hay periodo escolar vigente cargado.");
+        }
     }
     
 }

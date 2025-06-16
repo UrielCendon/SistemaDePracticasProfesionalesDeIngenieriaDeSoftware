@@ -58,6 +58,28 @@ public class EntregaDocumentoDAO {
 
         return false;
     }
+    
+    public static boolean existenEntregasInicialesParaPeriodo(String fechaInicio, String fechaFin) {
+        String consulta = "SELECT COUNT(*) FROM entrega_documento ed " +
+                          "JOIN periodo p ON ed.id_expediente = p.id_expediente " +
+                          "WHERE p.fecha_inicio = ? AND p.fecha_fin = ?";
+
+        try (Connection conn = ConexionBD.abrirConexion();
+             PreparedStatement ps = conn.prepareStatement(consulta)) {
+
+            ps.setString(1, fechaInicio);
+            ps.setString(2, fechaFin);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
     public static List<EntregaDocumento> obtenerEntregasInicialesPorExpediente(int idExpediente) {
         List<EntregaDocumento> entregas = new ArrayList<>();
@@ -98,29 +120,49 @@ public class EntregaDocumentoDAO {
         return entregas;
     }
 
-    public static void guardarEntregasIniciales(ArrayList<EntregaDocumento> entregas, int idExpediente) {
-        String consulta = "INSERT INTO entrega_documento(nombre, fecha_inicio, fecha_fin, tipo_entrega, calificacion, id_expediente) " +
-                         "VALUES (?, ?, ?, 'inicial', ?, ?)";
+    public static void guardarEntregasIniciales(ArrayList<EntregaDocumento> entregas, String fechaInicioPeriodo, String fechaFinPeriodo) {
+        String obtenerExpedientesSQL = "SELECT DISTINCT p.id_expediente FROM periodo p WHERE p.fecha_inicio = ? AND p.fecha_fin = ?";
+        String insertarEntregaSQL = "INSERT INTO entrega_documento(nombre, descripcion, fecha_inicio, fecha_fin, calificacion, id_expediente) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conexion = ConexionBD.abrirConexion();
-             PreparedStatement ps = conexion.prepareStatement(consulta)) {
+             PreparedStatement stmtExpedientes = conexion.prepareStatement(obtenerExpedientesSQL);
+             PreparedStatement stmtInsert = conexion.prepareStatement(insertarEntregaSQL)) {
+
+            stmtExpedientes.setString(1, fechaInicioPeriodo);
+            stmtExpedientes.setString(2, fechaFinPeriodo);
+            ResultSet rs = stmtExpedientes.executeQuery();
+
+            ArrayList<Integer> expedientes = new ArrayList<>();
+            while (rs.next()) {
+                expedientes.add(rs.getInt("id_expediente"));
+            }
+
+            if (expedientes.isEmpty()) {
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Sin expedientes", "No se encontraron expedientes para el periodo actual.");
+                return;
+            }
 
             for (EntregaDocumento entrega : entregas) {
-                ps.setString(1, entrega.getNombre());
-                ps.setString(2, entrega.getFechaInicio());
-                ps.setString(3, entrega.getFechaFin());
-                ps.setDouble(4, entrega.getCalificacion());
-                ps.setInt(5, idExpediente);
-                ps.addBatch();
+                for (int idExpediente : expedientes) {
+                    stmtInsert.setString(1, entrega.getNombre());
+                    stmtInsert.setString(2, entrega.getDescripcion());
+                    stmtInsert.setString(3, entrega.getFechaInicio());
+                    stmtInsert.setString(4, entrega.getFechaFin());
+                    stmtInsert.setDouble(5, entrega.getCalificacion());
+                    stmtInsert.setInt(6, idExpediente);
+                    stmtInsert.addBatch();
+                }
             }
-            ps.executeBatch();
+
+            stmtInsert.executeBatch();
+
         } catch (SQLException e) {
             Utilidad.mostrarAlertaSimple(
                 Alert.AlertType.ERROR,
-                "Error de base de datos",
-                "No se pudieron guardar las entregas: " + e.getMessage()
+                "Error al guardar",
+                "No se pudieron guardar las entregas iniciales: " + e.getMessage()
             );
-            throw new RuntimeException("Error al guardar las entregas iniciales", e);
+            throw new RuntimeException("Error al guardar entregas iniciales", e);
         }
     }
 

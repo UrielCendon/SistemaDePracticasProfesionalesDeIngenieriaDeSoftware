@@ -113,6 +113,13 @@ public class FXMLGenerarEntregaInicialesController implements Initializable {
         );
 
         if (confirmar) {
+            // Validación ANTES de guardar
+            if (EntregaDocumentoDAO.existenEntregasInicialesParaPeriodo(idPeriodoActual)) {
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Ya existen entregas",
+                        "No se puede generar porque ya existen entregas iniciales para este periodo.");
+                return;
+            }
+
             EntregaDocumentoDAO.guardarEntregasIniciales(new ArrayList<>(tvEntregasIniciales.getItems()), idPeriodoActual);
             Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION, "Éxito", "Operación exitosa.");
             Navegador.cerrarVentana(btnGenerar);

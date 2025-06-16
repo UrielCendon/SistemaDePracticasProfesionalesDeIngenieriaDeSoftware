@@ -44,6 +44,25 @@ public class EntregaDocumentoDAO {
 
         return false;
     }
+    
+    public static boolean existenEntregasInicialesParaPeriodo(int idPeriodo) {
+        String consulta = "SELECT 1 FROM entrega_documento WHERE tipo_entrega = 'inicial' AND id_expediente = ?";
+
+        try (Connection conn = ConexionBD.abrirConexion();
+             PreparedStatement sentencia = conn.prepareStatement(consulta)) {
+
+            sentencia.setInt(1, idPeriodo);
+
+            try (ResultSet resultado = sentencia.executeQuery()) {
+                return resultado.next();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 
     public static List<EntregaDocumento> obtenerEntregasInicialesPorExpediente(int idExpediente) {
         List<EntregaDocumento> entregas = new ArrayList<>();
@@ -102,8 +121,8 @@ public class EntregaDocumentoDAO {
                 ps.addBatch();
             }
             ps.executeBatch();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al guardar las entregas iniciales", e);
         }
     }
 }

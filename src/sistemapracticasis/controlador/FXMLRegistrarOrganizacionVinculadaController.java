@@ -62,7 +62,7 @@ public class FXMLRegistrarOrganizacionVinculadaController implements Initializab
             if (!resultado.isError()) {
                 Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION,
                         "RegistroExitoso",
-                        "Organización registrada con éxito");
+                        resultado.getMensaje());
 
                 Navegador.cambiarEscenaParametrizada(
                         Utilidad.getEscenarioComponente(btnGuardar),

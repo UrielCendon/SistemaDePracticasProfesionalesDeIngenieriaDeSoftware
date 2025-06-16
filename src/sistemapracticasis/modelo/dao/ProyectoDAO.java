@@ -132,7 +132,7 @@ public class ProyectoDAO {
 
         } catch (SQLException e) {
             resultado.setError(true);
-            resultado.setMensaje("Error en la base de datos: " + e.getMessage());
+            resultado.setMensaje("Error en la base de datos.");
         }
 
         return resultado;

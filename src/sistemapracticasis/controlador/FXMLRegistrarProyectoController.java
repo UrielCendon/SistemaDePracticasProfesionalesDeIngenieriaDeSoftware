@@ -130,8 +130,8 @@ public class FXMLRegistrarProyectoController implements Initializable {
             );
         } else {
             Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR,
-                    "Error de operación",
-                    "No se pudo completar la operación en la base de datos.");
+                    "No hay conexión con la base de datos",
+                    resultado.getMensaje());
         }
     }
 

@@ -116,7 +116,8 @@ public class FXMLAsignarProyectoController implements Initializable {
                 proyectos,
                 (nombreProyecto) -> {
                     try {
-                        int idExpediente = ExpedienteDAO.insertarExpedienteVacio();
+                        int idExpediente = ExpedienteDAO.
+                            insertarExpedienteVacio();
 
                         if (idExpediente > 0) {
                             boolean periodoActualizado = PeriodoDAO.

@@ -44,26 +44,6 @@ public class OrganizacionVinculadaDAO {
             return organizacionVinculada;
     }
         
-    public static Integer obtenerIdExpedientePorEstudiante(int idEstudiante) {
-        Integer idExpediente = null;
-        String query = "SELECT id_expediente FROM periodo WHERE id_estudiante "
-            + "= ?";
-
-        try (Connection conn = ConexionBD.abrirConexion();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-
-            stmt.setInt(1, idEstudiante);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                idExpediente = rs.getInt("id_expediente");
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-
-        return idExpediente;
-    }
 
     public static List<OrganizacionVinculada> obtenerOrganizaciones() {
         List<OrganizacionVinculada> organizaciones = new ArrayList<>();
@@ -135,5 +115,32 @@ public class OrganizacionVinculadaDAO {
         }
         return existe;
     }
+    
+    public static OrganizacionVinculada obtenerOrganizacionPorId(int idOrganizacion) {
+        String consulta = "SELECT * FROM organizacion_vinculada WHERE id_organizacion_vinculada = ?";
+        OrganizacionVinculada organizacion = null;
+
+        try (Connection conexion = ConexionBD.abrirConexion();
+             PreparedStatement stmt = conexion.prepareStatement(consulta)) {
+
+            stmt.setInt(1, idOrganizacion);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                organizacion = new OrganizacionVinculada();
+                organizacion.setIdOrganizacionVinculada(rs.getInt("id_organizacion_vinculada"));
+                organizacion.setRazonSocial(rs.getString("razon_social"));
+                organizacion.setTelefono(rs.getString("telefono"));
+                organizacion.setDireccion(rs.getString("direccion"));
+                organizacion.setCorreo(rs.getString("correo"));
+            }
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return organizacion;
+    }
+
     
 }

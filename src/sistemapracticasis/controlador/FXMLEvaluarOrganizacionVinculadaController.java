@@ -18,6 +18,7 @@ import javafx.scene.control.TextFormatter;
 import sistemapracticasis.modelo.dao.EvaluacionOrgVinDAO;
 import sistemapracticasis.modelo.dao.ExpedienteDAO;
 import sistemapracticasis.modelo.dao.OrganizacionVinculadaDAO;
+import sistemapracticasis.modelo.dao.PeriodoDAO;
 import sistemapracticasis.modelo.pojo.Estudiante;
 import sistemapracticasis.modelo.pojo.EvaluacionOrgVin;
 import sistemapracticasis.modelo.pojo.OrganizacionVinculada;
@@ -135,7 +136,7 @@ public class FXMLEvaluarOrganizacionVinculadaController implements
                 "Guardar Evaluación", 
                 "¿Está seguro de querer guardar la evaluación?"
             )){
-                    Integer idExpediente = OrganizacionVinculadaDAO
+                    Integer idExpediente = PeriodoDAO
                         .obtenerIdExpedientePorEstudiante(estudianteSesion.
                             getIdEstudiante());
 

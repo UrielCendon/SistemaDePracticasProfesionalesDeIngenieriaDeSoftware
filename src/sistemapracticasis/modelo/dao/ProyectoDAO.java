@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import sistemapracticasis.modelo.conexion.ConexionBD;
 import sistemapracticasis.modelo.pojo.EstadoProyecto;
 import sistemapracticasis.modelo.pojo.Proyecto;
+import sistemapracticasis.modelo.pojo.ResultadoOperacion;
 
 /**
  *
@@ -123,4 +124,141 @@ public class ProyectoDAO {
 
         return proyecto;
     }
+    
+    public static ResultadoOperacion registrarProyecto(Proyecto proyecto) {
+        ResultadoOperacion resultado = new ResultadoOperacion();
+
+        String sql = "INSERT INTO proyecto (nombre, descripcion, estado, cupo, fecha_inicio, fecha_fin, id_organizacion_vinculada, id_responsable_proyecto) "
+                   + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conexion = ConexionBD.abrirConexion();
+             PreparedStatement stmt = conexion.prepareStatement(sql)) {
+
+            stmt.setString(1, proyecto.getNombre());
+            stmt.setString(2, proyecto.getDescripcion());
+            stmt.setString(3, proyecto.getEstado().toString().toLowerCase()); // activo, concluido, etc.
+            stmt.setInt(4, proyecto.getCupo());
+            stmt.setDate(5, java.sql.Date.valueOf(proyecto.getFecha_inicio()));
+            stmt.setDate(6, java.sql.Date.valueOf(proyecto.getFecha_fin()));
+            stmt.setInt(7, proyecto.getIdOrganizacionVinculada());
+            stmt.setInt(8, proyecto.getIdResponsableProyecto());
+
+            int filasAfectadas = stmt.executeUpdate();
+
+            if (filasAfectadas > 0) {
+                resultado.setError(false);
+                resultado.setMensaje("Proyecto registrado exitosamente.");
+            } else {
+                resultado.setError(true);
+                resultado.setMensaje("No se pudo registrar el proyecto.");
+            }
+
+        } catch (SQLException e) {
+            resultado.setError(true);
+            resultado.setMensaje("Error en la base de datos: " + e.getMessage());
+        }
+
+        return resultado;
+    }
+    
+    public static ArrayList<Proyecto> obtenerTodosLosProyectos() throws SQLException {
+        ArrayList<Proyecto> proyectos = new ArrayList<>();
+        Connection conexion = ConexionBD.abrirConexion();
+
+        if (conexion != null) {
+            String consulta = "SELECT id_proyecto, nombre, descripcion, estado, cupo, "
+                    + "fecha_inicio, fecha_fin, id_organizacion_vinculada, id_responsable_proyecto "
+                    + "FROM proyecto";
+
+            PreparedStatement sentencia = conexion.prepareStatement(consulta);
+            ResultSet resultado = sentencia.executeQuery();
+
+            while (resultado.next()) {
+                Proyecto proyecto = new Proyecto();
+                proyecto.setIdProyecto(resultado.getInt("id_proyecto"));
+                proyecto.setNombre(resultado.getString("nombre"));
+                proyecto.setDescripcion(resultado.getString("descripcion"));
+                proyecto.setEstado(EstadoProyecto.fromValor(resultado.getString("estado")));
+                proyecto.setCupo(resultado.getInt("cupo"));
+                proyecto.setFecha_inicio(resultado.getDate("fecha_inicio").toString());
+                proyecto.setFecha_fin(resultado.getDate("fecha_fin").toString());
+                proyecto.setIdOrganizacionVinculada(resultado.getInt("id_organizacion_vinculada"));
+                proyecto.setIdResponsableProyecto(resultado.getInt("id_responsable_proyecto"));
+
+                proyectos.add(proyecto);
+            }
+
+            resultado.close();
+            sentencia.close();
+            conexion.close();
+        }
+
+        return proyectos;
+    }
+
+    public static ResultadoOperacion eliminarProyectoPorId(int idProyecto) {
+        ResultadoOperacion resultado = new ResultadoOperacion();
+        String sql = "DELETE FROM proyecto WHERE id_proyecto = ?";
+
+        try (Connection conexion = ConexionBD.abrirConexion();
+             PreparedStatement stmt = conexion.prepareStatement(sql)) {
+
+            stmt.setInt(1, idProyecto);
+            int filasAfectadas = stmt.executeUpdate();
+
+            if (filasAfectadas > 0) {
+                resultado.setError(false);
+                resultado.setMensaje("Proyecto eliminado con éxito.");
+            } else {
+                resultado.setError(true);
+                resultado.setMensaje("No se encontró el proyecto a eliminar.");
+            }
+
+        } catch (SQLException e) {
+            resultado.setError(true);
+            resultado.setMensaje("Error: no se pudo eliminar el proyecto o ya tiene alguna relacion.");
+        }
+
+        return resultado;
+    }
+
+    public static ResultadoOperacion actualizarProyecto(Proyecto proyecto) {
+        ResultadoOperacion resultado = new ResultadoOperacion();
+
+        String sql = "UPDATE proyecto SET nombre = ?, descripcion = ?, estado = ?, cupo = ?, "
+                   + "fecha_inicio = ?, fecha_fin = ?, id_organizacion_vinculada = ?, id_responsable_proyecto = ? "
+                   + "WHERE id_proyecto = ?";
+
+        try (Connection conexion = ConexionBD.abrirConexion();
+             PreparedStatement stmt = conexion.prepareStatement(sql)) {
+
+            stmt.setString(1, proyecto.getNombre());
+            stmt.setString(2, proyecto.getDescripcion());
+            stmt.setString(3, proyecto.getEstado().toString().toLowerCase());
+            stmt.setInt(4, proyecto.getCupo());
+            stmt.setDate(5, java.sql.Date.valueOf(proyecto.getFecha_inicio()));
+            stmt.setDate(6, java.sql.Date.valueOf(proyecto.getFecha_fin()));
+            stmt.setInt(7, proyecto.getIdOrganizacionVinculada());
+            stmt.setInt(8, proyecto.getIdResponsableProyecto());
+            stmt.setInt(9, proyecto.getIdProyecto());
+
+            int filas = stmt.executeUpdate();
+
+            if (filas > 0) {
+                resultado.setError(false);
+                resultado.setMensaje("Proyecto actualizado correctamente.");
+            } else {
+                resultado.setError(true);
+                resultado.setMensaje("No se pudo actualizar el proyecto.");
+            }
+
+        } catch (SQLException e) {
+            resultado.setError(true);
+            resultado.setMensaje("Error: no se pudo actualizar el proyecto.");
+        }
+
+        return resultado;
+    }
+
+    
 }

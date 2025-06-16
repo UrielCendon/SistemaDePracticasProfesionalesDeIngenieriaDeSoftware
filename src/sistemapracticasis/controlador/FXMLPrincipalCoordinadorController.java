@@ -41,11 +41,27 @@ public class FXMLPrincipalCoordinadorController implements Initializable {
 
     @FXML
     private void clicRegistrarProyecto(ActionEvent event) {
+        Navegador.cambiarEscenaParametrizada(
+            Utilidad.getEscenarioComponente(lblNombreUsuario),
+            "/sistemapracticasis/vista/FXMLSeleccionarOVYResponsable.fxml",
+            sistemapracticasis.controlador.FXMLSeleccionarOVYResponsableController.class,
+            "inicializarInformacion",
+            coordinadorSesion
+        );
     }
+
 
     @FXML
     private void clicRegistrarResponsable(ActionEvent event) {
+        Navegador.cambiarEscenaParametrizada(
+            Utilidad.getEscenarioComponente(lblNombreUsuario),
+            "/sistemapracticasis/vista/FXMLSeleccionarOrganizacionVinculada.fxml",
+            sistemapracticasis.controlador.FXMLSeleccionarOrganizacionVinculadaController.class,
+            "inicializarInformacion",
+            coordinadorSesion
+        );
     }
+
 
     @FXML
     private void clicRegistrarOV(ActionEvent event) {
@@ -60,7 +76,15 @@ public class FXMLPrincipalCoordinadorController implements Initializable {
 
     @FXML
     private void clicActualizarProyecto(ActionEvent event) {
+        Navegador.cambiarEscenaParametrizada(
+            Utilidad.getEscenarioComponente(lblNombreUsuario),
+            "/sistemapracticasis/vista/FXMLProyecto.fxml",
+            sistemapracticasis.controlador.FXMLProyectoController.class,
+            "inicializarInformacion",
+            coordinadorSesion
+        );
     }
+
 
     @FXML
     private void clicActualizarResponsable(ActionEvent event) {

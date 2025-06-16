@@ -36,11 +36,11 @@
       <TextField fx:id="txtCorreo" layoutX="178.0" layoutY="329.0" prefHeight="33.0" prefWidth="341.0" promptText="Correo" style="-fx-border-color: BLACK;" />
       <TextField fx:id="txtDireccion" layoutX="178.0" layoutY="280.0" prefHeight="33.0" prefWidth="341.0" promptText="Direccion" style="-fx-border-color: BLACK;" />
       <TextField fx:id="txtTelefono" layoutX="178.0" layoutY="231.0" prefHeight="33.0" prefWidth="341.0" promptText="Telefono" style="-fx-border-color: BLACK;" />
-      <TextField fx:id="txtNombre" layoutX="178.0" layoutY="186.0" prefHeight="33.0" prefWidth="341.0" promptText="Nombre" style="-fx-border-color: BLACK;" />
-      <Label layoutX="73.0" layoutY="336.0" text="Correo:" />
-      <Label layoutX="52.0" layoutY="287.0" text="Dirección:" />
-      <Label layoutX="58.0" layoutY="238.0" text="Teléfono:" />
-      <Label layoutX="60.0" layoutY="193.0" text="Nombre:" />
+      <TextField fx:id="txtNombre" layoutX="178.0" layoutY="186.0" prefHeight="33.0" prefWidth="341.0" promptText="Razon social" style="-fx-border-color: BLACK;" />
+      <Label layoutX="91.0" layoutY="337.0" text="Correo:" />
+      <Label layoutX="79.0" layoutY="297.0" text="Dirección:" />
+      <Label layoutX="81.0" layoutY="239.0" text="Teléfono:" />
+      <Label layoutX="60.0" layoutY="193.0" text="Razón social:" />
       <Button fx:id="btnCancelar" layoutX="770.0" layoutY="450.0" mnemonicParsing="false" onAction="#clicBtnCancelar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Cancelar" textFill="RED" />
    </children>
 </AnchorPane>

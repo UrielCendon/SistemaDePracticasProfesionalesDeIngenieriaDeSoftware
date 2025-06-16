@@ -9,7 +9,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="750.0" prefWidth="1071.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sistemapracticasis.controlador.FXMLRegistrarProyectoController">
+<AnchorPane id="AnchorPane" prefHeight="719.0" prefWidth="1116.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sistemapracticasis.controlador.FXMLRegistrarProyectoController">
    <children>
       <ImageView fitHeight="42.0" fitWidth="47.0" layoutX="836.0" layoutY="43.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -35,13 +35,13 @@
       <Line layoutX="150.0" layoutY="428.0" startX="-100.0" stroke="#3768b2" />
       <Line layoutX="706.0" layoutY="241.0" startX="-100.0" stroke="#3768b2" />
       <Line layoutX="150.0" layoutY="240.0" startX="-100.0" stroke="#3768b2" />
-      <Button fx:id="btnGuardar" layoutX="820.0" layoutY="678.0" mnemonicParsing="false" onAction="#clicBtnGuardar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Guardar" textFill="#1aa01a" />
+      <Button fx:id="btnGuardar" layoutX="811.0" layoutY="657.0" mnemonicParsing="false" onAction="#clicBtnGuardar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Guardar" textFill="#1aa01a" />
       <TextField fx:id="txtCupo" layoutX="754.0" layoutY="206.0" prefHeight="33.0" prefWidth="341.0" promptText="Cupo" style="-fx-border-color: BLACK;" />
       <TextField fx:id="txtNombre" layoutX="198.0" layoutY="206.0" prefHeight="33.0" prefWidth="341.0" promptText="Nombre" style="-fx-border-color: BLACK;" />
       <Label layoutX="58.0" layoutY="399.0" text="Descripción:" />
       <Label layoutX="665.0" layoutY="213.0" text="cupo:" />
       <Label layoutX="84.0" layoutY="213.0" text="Nombre:" />
-      <Button fx:id="btnCancelar" layoutX="983.0" layoutY="678.0" mnemonicParsing="false" onAction="#clicBtnCancelar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Cancelar" textFill="RED" />
+      <Button fx:id="btnCancelar" layoutX="968.0" layoutY="657.0" mnemonicParsing="false" onAction="#clicBtnCancelar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Cancelar" textFill="RED" />
       <Line layoutX="706.0" layoutY="427.0" startX="-100.0" stroke="#3768b2" />
       <Label layoutX="634.0" layoutY="399.0" text="Fecha fin:" />
       <ComboBox fx:id="cbEstado" layoutX="198.0" layoutY="299.0" prefHeight="39.0" prefWidth="341.0" promptText="Estado" />

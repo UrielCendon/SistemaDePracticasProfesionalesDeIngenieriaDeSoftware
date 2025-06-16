@@ -9,8 +9,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="900.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="sistemapracticasis.controlador.FXMLProyectoController">
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sistemapracticasis.controlador.FXMLProyectoController">
    <children>
       <TableView fx:id="tblEntregas" layoutX="126.0" layoutY="184.0" prefHeight="259.0" prefWidth="676.0">
          <columns>
@@ -22,17 +21,17 @@
          </columns>
       </TableView>
       <Button layoutX="543.0" layoutY="126.0" mnemonicParsing="false" onAction="#clicBtnBuscar" prefHeight="42.0" prefWidth="91.0" style="-fx-cursor: hand;" text="Buscar" />
-      <Button fx:id="btnCancelar" layoutX="770.0" layoutY="533.0" mnemonicParsing="false" onAction="#clicBtnCancelar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Eliminar" textFill="RED" />
+      <Button fx:id="btnEliminar" layoutX="770.0" layoutY="533.0" mnemonicParsing="false" onAction="#clicBtnEliminar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Eliminar" textFill="RED" />
       <ImageView fitHeight="39.0" fitWidth="51.0" layoutX="491.0" layoutY="127.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../recursos/icons8-buscar-50.png" />
          </image>
       </ImageView>
-      <TextField fx:id="txtBuscar" layoutX="137.0" layoutY="127.0" prefHeight="39.0" prefWidth="393.0" promptText="Buscar matrícula (S12345678)" style="-fx-cursor: text;" text="Buscar un proyecto" />
+      <TextField fx:id="txtBuscar" layoutX="137.0" layoutY="127.0" prefHeight="39.0" prefWidth="393.0" promptText="Buscar un proyecto" style="-fx-cursor: text;" />
       <Line endX="807.0" layoutX="110.0" layoutY="103.0" startX="-110.0" stroke="#6f6f6f" />
       <Label fx:id="lblNombreUsuario" layoutX="743.0" layoutY="78.0" />
       <Button layoutX="609.0" layoutY="533.0" mnemonicParsing="false" onAction="#clicBtnActualizar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Actualizar" textFill="#1aa01a" />
-      <Label layoutX="126.0" layoutY="31.0" prefHeight="51.0" prefWidth="549.0" style="-fx-background-color: #9faec2; -fx-alignment: CENTER;" text="Actualizar proyecto" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+      <Label layoutX="126.0" layoutY="31.0" prefHeight="51.0" prefWidth="549.0" style="-fx-background-color: #9faec2; -fx-alignment: CENTER;" text=" Proyecto" textAlignment="CENTER" textFill="WHITE" wrapText="true">
          <font>
             <Font name="Arial Black" size="34.0" />
          </font>

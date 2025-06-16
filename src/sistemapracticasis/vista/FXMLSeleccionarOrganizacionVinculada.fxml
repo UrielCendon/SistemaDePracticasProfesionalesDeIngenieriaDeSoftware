@@ -9,8 +9,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<AnchorPane id="AnchorPane" prefHeight="500.0" prefWidth="800.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="sistemapracticasis.controlador.FXMLSeleccionarOrganizacionVinculadaController">
+<AnchorPane id="AnchorPane" prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sistemapracticasis.controlador.FXMLSeleccionarOrganizacionVinculadaController">
    <children>
       <TextField fx:id="txtBuscar" layoutX="220.0" layoutY="181.0" prefHeight="39.0" prefWidth="393.0" promptText="Buscar nombre (sistema de gestión)" style="-fx-cursor: text;" />
       <ImageView fitHeight="39.0" fitWidth="51.0" layoutX="574.0" layoutY="181.0" pickOnBounds="true" preserveRatio="true">
@@ -37,7 +36,7 @@
       </Label>
       <Label layoutX="170.0" layoutY="256.0" text="Organización" />
       <Line layoutX="272.0" layoutY="294.0" startX="-110.0" stroke="#3768b2" />
-      <ComboBox layoutX="355.0" layoutY="250.0" prefHeight="39.0" prefWidth="258.0" promptText="Organizaciones " />
+      <ComboBox fx:id="cbOrganizacionVinculada" layoutX="355.0" layoutY="250.0" prefHeight="39.0" prefWidth="258.0" promptText="Organizaciones " />
       <Button fx:id="btnRegresar" layoutX="28.0" layoutY="439.0" mnemonicParsing="false" onAction="#clicBtnRegresar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Regresar" />
       <Button fx:id="btnGuardar" layoutX="780.0" layoutY="439.0" mnemonicParsing="false" onAction="#clicBtnGuardar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Guardar" textFill="#1aa01a" />
    </children>

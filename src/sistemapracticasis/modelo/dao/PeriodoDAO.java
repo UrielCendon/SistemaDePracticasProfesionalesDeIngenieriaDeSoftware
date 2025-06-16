@@ -95,4 +95,25 @@ public class PeriodoDAO {
             return filasAfectadas > 0;
         }
     }
+    
+    public static Integer obtenerIdExpedientePorEstudiante(int idEstudiante) {
+        Integer idExpediente = null;
+        String query = "SELECT id_expediente FROM periodo WHERE id_estudiante "
+            + "= ?";
+
+        try (Connection conn = ConexionBD.abrirConexion();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, idEstudiante);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                idExpediente = rs.getInt("id_expediente");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return idExpediente;
+    }
 }

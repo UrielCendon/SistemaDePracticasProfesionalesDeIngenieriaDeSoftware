@@ -1,9 +1,5 @@
 package sistemapracticasis.modelo.pojo;
 
-/**
- *
- * @author uriel
- */
 public class Proyecto {
     private int idProyecto;
     private String nombre;
@@ -12,6 +8,7 @@ public class Proyecto {
     private String fecha_inicio;
     private String fecha_fin;
     private int idOrganizacionVinculada;
+    private int idResponsableProyecto; // NUEVO
     private String nombreOV;
     private EstadoProyecto estado;
 
@@ -79,11 +76,13 @@ public class Proyecto {
         this.idOrganizacionVinculada = idOrganizacionVinculada;
     }
 
-    public String getNombreOV() {
-        return nombreOV;
+    public int getIdResponsableProyecto() {
+        return idResponsableProyecto;
     }
 
-    public void setNombreOV(String nombreOV) {
-        this.nombreOV = nombreOV;
+    public void setIdResponsableProyecto(int idResponsableProyecto) {
+        this.idResponsableProyecto = idResponsableProyecto;
     }
+
+
 }

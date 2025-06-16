@@ -1,19 +1,28 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package sistemapracticasis.controlador;
 
 import java.net.URL;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import sistemapracticasis.modelo.dao.ProyectoDAO;
+import sistemapracticasis.modelo.pojo.Coordinador;
+import sistemapracticasis.modelo.pojo.Proyecto;
+import sistemapracticasis.modelo.pojo.ResultadoOperacion;
+import sistemapracticasis.util.Navegador;
+import sistemapracticasis.util.Utilidad;
+
+
 
 /**
  * FXML Controller class
@@ -23,48 +32,192 @@ import javafx.scene.control.TextField;
 public class FXMLProyectoController implements Initializable {
 
     @FXML
-    private TableView<?> tblEntregas;
+    private TableView<Proyecto> tblEntregas;
     @FXML
-    private TableColumn<?, ?> tbcNombre;
+    private TableColumn<Proyecto, String> tbcNombre;
     @FXML
-    private TableColumn<?, ?> tbcEstado;
+    private TableColumn<Proyecto, String> tbcEstado;
     @FXML
-    private TableColumn<?, ?> tbcCupo;
+    private TableColumn<Proyecto, Integer> tbcCupo;
     @FXML
-    private TableColumn<?, ?> tbcFechaInicio;
+    private TableColumn<Proyecto, String> tbcFechaInicio;
     @FXML
-    private TableColumn<?, ?> tbcFechaFin;
-    @FXML
-    private Button btnCancelar;
+    private TableColumn<Proyecto, String> tbcFechaFin;
+
     @FXML
     private TextField txtBuscar;
     @FXML
     private Label lblNombreUsuario;
     @FXML
     private Button btnRegresar;
+    private Coordinador coordinadorSesion;
+    @FXML
+    private Button btnEliminar;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
+        configurarColumnas();
+        cargarProyectos();
+    }  
+    
+    public void inicializarInformacion(Coordinador coordinadorSesion) {
+        this.coordinadorSesion = coordinadorSesion;
+        cargarInformacionUsuario();
+    }
 
+    private void cargarInformacionUsuario() {
+        if (coordinadorSesion != null) {
+            lblNombreUsuario.setText(coordinadorSesion.toString());
+        }
+    }
+    
+    private void configurarColumnas() {
+        tbcNombre.setCellValueFactory(cellData ->
+            new SimpleStringProperty(cellData.getValue().getNombre()));
+
+        tbcEstado.setCellValueFactory(cellData ->
+            new SimpleStringProperty(cellData.getValue().getEstado().toString()));
+
+        tbcCupo.setCellValueFactory(cellData ->
+            new SimpleIntegerProperty(cellData.getValue().getCupo()).asObject());
+
+        tbcFechaInicio.setCellValueFactory(cellData ->
+            new SimpleStringProperty(cellData.getValue().getFecha_inicio()));
+
+        tbcFechaFin.setCellValueFactory(cellData ->
+            new SimpleStringProperty(cellData.getValue().getFecha_fin()));
+    }
+    
+    private void cargarProyectos() {
+        try {
+            ArrayList<Proyecto> listaProyectos = ProyectoDAO.obtenerTodosLosProyectos();
+            tblEntregas.getItems().clear();
+            tblEntregas.getItems().addAll(listaProyectos);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR,
+                "Error de conexión",
+                "No hay conexión con la base de datos."); 
+        }
+    }
+    
     @FXML
     private void clicBtnBuscar(ActionEvent event) {
+        String textoBusqueda = txtBuscar.getText().trim();
+
+        if (!validarCampoBusqueda(textoBusqueda)) return;
+
+        ArrayList<Proyecto> proyectosFiltrados = buscarProyectosPorNombre(textoBusqueda);
+
+        if (!proyectosFiltrados.isEmpty()) {
+            tblEntregas.getItems().setAll(proyectosFiltrados);
+        } else {
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION,
+                "Sin coincidencias",
+                "No se encontró ningún proyecto con el nombre ingresado.");
+        }
     }
 
-    @FXML
-    private void clicBtnCancelar(ActionEvent event) {
-    }
 
     @FXML
     private void clicBtnActualizar(ActionEvent event) {
+        Proyecto proyectoSeleccionado = tblEntregas.getSelectionModel().getSelectedItem();
+
+        if (proyectoSeleccionado == null) {
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING,
+                "Proyecto no seleccionado",
+                "Por favor, selecciona un proyecto para actualizar.");
+            return;
+        }
+
+        Navegador.cambiarEscenaParametrizada(
+            Utilidad.getEscenarioComponente(btnEliminar),
+            "/sistemapracticasis/vista/FXMLRegistrarProyecto.fxml",
+            FXMLRegistrarProyectoController.class,
+            "cargarDatosProyectoParaEditar",
+            proyectoSeleccionado,
+            coordinadorSesion
+        );
     }
+
+
 
     @FXML
     private void clicBtnRegresar(ActionEvent event) {
+        Navegador.cambiarEscenaParametrizada(
+            Utilidad.getEscenarioComponente(lblNombreUsuario),
+            "/sistemapracticasis/vista/FXMLPrincipalCoordinador.fxml",
+            FXMLPrincipalCoordinadorController.class,
+            "inicializarInformacion",
+            coordinadorSesion
+        );
     }
+
+    @FXML
+    private void clicBtnEliminar(ActionEvent event) {
+        Proyecto proyectoSeleccionado = tblEntregas.getSelectionModel().getSelectedItem();
+
+        if (proyectoSeleccionado == null) {
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING,
+                "Proyecto no seleccionado",
+                "Por favor, selecciona un proyecto para eliminar.");
+            return;
+        }
+
+        boolean confirmar = Utilidad.mostrarConfirmacion(
+            "Confirmar eliminación",
+            "¿Está seguro que desea eliminar el proyecto?",
+            "Esta acción no se puede deshacer."
+        );
+
+        if (confirmar) {
+            ResultadoOperacion resultado = ProyectoDAO.eliminarProyectoPorId(proyectoSeleccionado.getIdProyecto());
+
+            if (!resultado.isError()) {
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION,
+                    "Proyecto eliminado",
+                    resultado.getMensaje());
+                cargarProyectos(); // refrescar tabla
+            } else {
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR,
+                    "Error al eliminar",
+                    resultado.getMensaje());
+            }
+        }
+    }
+
+    
+    private boolean validarCampoBusqueda(String texto) {
+        if (texto.isEmpty()) {
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING,
+                "Campo vacío",
+                "Ingrese un nombre para buscar un proyecto.");
+            return false;
+        }
+        return true;
+    }
+
+    private ArrayList<Proyecto> buscarProyectosPorNombre(String textoBusqueda) {
+        ArrayList<Proyecto> proyectosCoincidentes = new ArrayList<>();
+        try {
+            ArrayList<Proyecto> todosLosProyectos = ProyectoDAO.obtenerTodosLosProyectos();
+            String textoLower = textoBusqueda.toLowerCase();
+
+            for (Proyecto proyecto : todosLosProyectos) {
+                if (proyecto.getNombre().toLowerCase().contains(textoLower)) {
+                    proyectosCoincidentes.add(proyecto);
+                }
+            }
+        } catch (SQLException e) {
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR,
+                "Error de conexión",
+                "No hay conexión con la base de datos.");
+        }
+        return proyectosCoincidentes;
+    }
+
     
 }

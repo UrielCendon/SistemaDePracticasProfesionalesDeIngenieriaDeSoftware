@@ -14,8 +14,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import sistemapracticasis.modelo.dao.EstudianteDAO;
-import sistemapracticasis.modelo.dao.ExpedienteDAO;
-import sistemapracticasis.modelo.dao.PeriodoDAO;
 import sistemapracticasis.modelo.dao.ProyectoDAO;
 import sistemapracticasis.modelo.dto.ParametrosProyectosDisponibles;
 import sistemapracticasis.modelo.pojo.Coordinador;
@@ -111,45 +109,15 @@ public class FXMLAsignarProyectoController implements Initializable {
                 obtenerProyectosDisponibles();
             Estudiante estudiante = obtenerEstudiante(textoBusqueda);
 
+            if (estudiante.getIdProyecto() > 0) {
+                btnAsignarProyecto.setDisable(true);
+            }
+            
             ParametrosProyectosDisponibles parametros = new 
                     ParametrosProyectosDisponibles(
                 proyectos,
                 (nombreProyecto) -> {
-                    try {
-                        int idExpediente = ExpedienteDAO.
-                            insertarExpedienteVacio();
-
-                        if (idExpediente > 0) {
-                            boolean periodoActualizado = PeriodoDAO.
-                                    actualizarExpedienteEstudiante(
-                                        estudiante.getIdEstudiante(), 
-                                        idExpediente);
-
-                            if (periodoActualizado) {
-                                actualizarProyectoAsignado(nombreProyecto);
-                            } else {
-                                Utilidad.mostrarAlertaSimple(
-                                    Alert.AlertType.ERROR,
-                                    "Error",
-                                    "No se pudo actualizar el periodo del "
-                                    + "estudiante"
-                                );
-                            }
-                        } else {
-                            Utilidad.mostrarAlertaSimple(
-                                Alert.AlertType.ERROR,
-                                "Error",
-                                "No se pudo crear el expediente vacío"
-                            );
-                        }
-                    } catch (SQLException ex) {
-                        ex.printStackTrace();
-                        Utilidad.mostrarAlertaSimple(
-                            Alert.AlertType.ERROR,
-                            "Error",
-                            "Ocurrió un error al asignar el proyecto"
-                        );
-                    }
+                    actualizarProyectoAsignado(nombreProyecto);
                 },
                 estudiante
             );

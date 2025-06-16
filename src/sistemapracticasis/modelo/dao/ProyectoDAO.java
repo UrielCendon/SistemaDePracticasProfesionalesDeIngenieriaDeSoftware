@@ -15,17 +15,18 @@ import sistemapracticasis.modelo.pojo.ResultadoOperacion;
  * @author uriel
  */
 public class ProyectoDAO {
-    public static ArrayList<Proyecto> obtenerProyectosDisponibles() 
-            throws SQLException {
+    public static ArrayList<Proyecto> obtenerProyectosDisponibles() throws 
+            SQLException {
         ArrayList<Proyecto> proyectos = new ArrayList<>();
         Connection conexion = ConexionBD.abrirConexion();
 
         if (conexion != null) {
             String consulta = "SELECT p.id_proyecto, p.nombre, p.descripcion, "
-                    + "p.estado, p.cupo, p.fecha_inicio, p.fecha_fin, "
-                    + "p.id_organizacion_vinculada FROM proyecto p "
-                    + "LEFT JOIN estudiante e ON p.id_proyecto = "
-                    + "e.id_proyecto WHERE e.id_proyecto IS NULL;";
+                + "p.estado, p.cupo, p.fecha_inicio, p.fecha_fin, " 
+                + "p.id_organizacion_vinculada " 
+                + "FROM proyecto p " 
+                + "WHERE p.cupo > 0 " 
+                + "AND CURDATE() BETWEEN p.fecha_inicio AND p.fecha_fin;";
 
             PreparedStatement sentencia = conexion.prepareStatement(consulta);
             ResultSet resultado = sentencia.executeQuery();
@@ -35,8 +36,8 @@ public class ProyectoDAO {
                 proyecto.setIdProyecto(resultado.getInt("id_proyecto"));
                 proyecto.setNombre(resultado.getString("nombre"));
                 proyecto.setDescripcion(resultado.getString("descripcion"));
-                proyecto.setEstado(EstadoProyecto.fromValor
-                    (resultado.getString("estado")));
+                proyecto.setEstado(EstadoProyecto.fromValor(resultado.
+                    getString("estado")));
                 proyecto.setCupo(resultado.getInt("cupo"));
                 proyecto.setFecha_inicio(resultado.getDate("fecha_inicio").
                     toString());
@@ -55,6 +56,28 @@ public class ProyectoDAO {
 
         return proyectos;
     }
+
+    public static boolean decrementarCupoProyecto(int idProyecto) throws 
+            SQLException {
+        boolean actualizado = false;
+        Connection conexion = ConexionBD.abrirConexion();
+
+        if (conexion != null) {
+            String consulta = "UPDATE proyecto SET cupo = cupo - 1 WHERE "
+                + "id_proyecto = ? AND cupo > 0;";
+            PreparedStatement sentencia = conexion.prepareStatement(consulta);
+            sentencia.setInt(1, idProyecto);
+
+            int filasAfectadas = sentencia.executeUpdate();
+            actualizado = filasAfectadas > 0;
+
+            sentencia.close();
+            conexion.close();
+        }
+
+        return actualizado;
+        }
+
     
     public static Proyecto obtenerProyectoPorIdEstudiante(int idEstudiante) {
         Proyecto proyecto = null;

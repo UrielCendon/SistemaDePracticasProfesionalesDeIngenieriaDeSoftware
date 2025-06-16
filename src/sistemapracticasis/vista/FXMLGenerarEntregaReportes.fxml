@@ -7,9 +7,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="628.0" prefWidth="1011.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sistemapracticasis.controlador.FXMLGenerarEntregaIntermediosController">
+<AnchorPane id="AnchorPane" prefHeight="628.0" prefWidth="1011.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sistemapracticasis.controlador.FXMLGenerarEntregaReportesController">
    <children>
-      <TableView fx:id="tvEntregasIntermedios" layoutX="81.0" layoutY="121.0" prefHeight="426.0" prefWidth="849.0">
+      <TableView fx:id="tvEntregasReportes" layoutX="81.0" layoutY="121.0" prefHeight="426.0" prefWidth="849.0">
          <columns>
             <TableColumn fx:id="colNombreEntrega" prefWidth="178.0" text="Nombre de Entrega" />
             <TableColumn fx:id="colDescripcion" prefWidth="310.0" text="Descripción" />

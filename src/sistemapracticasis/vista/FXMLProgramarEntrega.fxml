@@ -24,7 +24,6 @@
       <Button fx:id="btnCancelar" layoutX="14.0" layoutY="531.0" mnemonicParsing="false" onAction="#clicCancelar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Cancelar" textFill="RED" />
       <Label fx:id="lblNombreUsuario" layoutX="958.0" layoutY="63.0" />
       <Line endX="1011.0" layoutX="100.0" layoutY="93.0" startX="-100.0" stroke="#6f6f6f" />
-      <Button fx:id="btnGenerar" layoutX="475.0" layoutY="510.0" mnemonicParsing="false" onAction="#clicGenerar" prefHeight="42.0" prefWidth="161.0" style="-fx-cursor: hand;" text="Generar" textFill="#1aa01a" />
       <Button fx:id="btnGenerarEntregaIniciales" layoutX="15.0" layoutY="252.0" mnemonicParsing="false" onAction="#clicGenerarEntregaIniciales" prefHeight="60.0" prefWidth="250.0" text="Generar Entrega Iniciales" textFill="#1b8b9e">
          <font>
             <Font size="18.0" />

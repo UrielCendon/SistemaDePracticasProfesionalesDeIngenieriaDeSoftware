@@ -86,6 +86,13 @@ public class FXMLPrincipalCoordinadorController implements Initializable {
 
     @FXML
     private void clicProgramarEntregas(ActionEvent event) {
+        Navegador.cambiarEscenaParametrizada(
+            Utilidad.getEscenarioComponente(lblNombreUsuario),
+            "/sistemapracticasis/vista/FXMLProgramarEntrega.fxml",
+            FXMLProgramarEntregaController.class,
+            "inicializarInformacion",
+            coordinadorSesion // → se lo vamos a pasar para que muestre nombre o más datos si quieres
+        );
     }
 
     @FXML

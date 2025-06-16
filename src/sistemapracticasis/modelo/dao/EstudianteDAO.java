@@ -167,5 +167,27 @@ public class EstudianteDAO {
         }
         return false;
     }
+    
+    public static int obtenerIdExpedientePorEstudiante(int idEstudiante) {
+        int idExpediente = -1;
+
+        try (Connection conexion = ConexionBD.abrirConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(
+                 "SELECT id_expediente FROM periodo WHERE id_estudiante = ?")) {
+
+            sentencia.setInt(1, idEstudiante);
+
+            try (ResultSet resultado = sentencia.executeQuery()) {
+                if (resultado.next()) {
+                    idExpediente = resultado.getInt("id_expediente");
+                }
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return idExpediente;
+    }
 
 }

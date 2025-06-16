@@ -70,5 +70,27 @@ public class EntregaDocumentoDAO {
                 e.printStackTrace();
             }
             return entregas;
+    }
+    
+    public static boolean validarEntregaDocumento(int idDocumento, 
+            float calificacion) {
+        String consulta = "UPDATE entrega_documento ed "
+            + "JOIN documento d ON ed.id_entrega_documento = "
+            + "d.id_entrega_documento "
+            + "SET ed.validado = 1, ed.calificacion = ? "
+            + "WHERE d.id_documento = ?";
+
+        try (Connection conexion = ConexionBD.abrirConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(consulta)){
+
+            sentencia.setFloat(1, calificacion);
+            sentencia.setInt(2, idDocumento);
+
+            int filasAfectadas = sentencia.executeUpdate();
+            return filasAfectadas > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
+    }
 }

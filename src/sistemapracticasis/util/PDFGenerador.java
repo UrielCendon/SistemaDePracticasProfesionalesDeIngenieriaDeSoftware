@@ -1,12 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package sistemapracticasis.util;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
+import org.apache.pdfbox.Loader;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -14,6 +12,9 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
+import sistemapracticasis.modelo.dao.DocumentoDAO;
+import sistemapracticasis.modelo.dao.ReporteDAO;
+import sistemapracticasis.modelo.pojo.EntregaVisual;
 
 import sistemapracticasis.modelo.pojo.EstudianteAsignado;
 /**
@@ -69,5 +70,45 @@ public class PDFGenerador {
             e.printStackTrace();
             return false;
         }
+    }
+    
+    public static boolean descargarPDF(EntregaVisual entrega, 
+            String rutaDestino) {
+        try {
+            byte[] datosPDF = entrega.getTipo().equals("documento") 
+                ? DocumentoDAO.obtenerArchivoPorId(entrega.getId())
+                : ReporteDAO.obtenerArchivoPorId(entrega.getId());
+            
+            if (datosPDF == null || datosPDF.length == 0) {
+                return false;
+            }
+            
+            File directorio = new File(rutaDestino);
+            if (!directorio.exists()) {
+                directorio.mkdirs();
+            }
+            
+            String nombreArchivo = generarNombreArchivo(entrega);
+            File archivoDestino = new File(directorio, nombreArchivo);
+            
+            try (PDDocument documento = Loader.loadPDF(datosPDF);
+               FileOutputStream fos = new FileOutputStream(archivoDestino)) {
+
+               documento.save(fos);
+               return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    private static String generarNombreArchivo(EntregaVisual entrega) {
+        String tipo = entrega.getTipo().equals("documento") ? "Documento" : 
+            "Reporte";
+        return String.format("%s_%s_%d.pdf", 
+            tipo, 
+            entrega.getNombreEntrega().replaceAll("[^a-zA-Z0-9]", "_"),
+            System.currentTimeMillis());
     }
 }

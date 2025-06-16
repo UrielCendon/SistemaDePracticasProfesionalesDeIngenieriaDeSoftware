@@ -3,6 +3,7 @@ package sistemapracticasis.controlador;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
+import java.util.function.UnaryOperator;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -11,6 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import sistemapracticasis.modelo.dao.EvaluacionOrgVinDAO;
 import sistemapracticasis.modelo.dao.ExpedienteDAO;
 import sistemapracticasis.modelo.dao.OrganizacionVinculadaDAO;
@@ -210,6 +212,11 @@ public class FXMLEvaluarOrganizacionVinculadaController implements Initializable
     }
     
     private void agregarListenersValidacion() {
+        configurarCampoNumerico(txtAmbienteLaboral);
+        configurarCampoNumerico(txtSupervisionEncargado);
+        configurarCampoNumerico(txtCumplimientoActividades);
+        configurarCampoNumerico(txtCargaLaboral);
+        
         txtAmbienteLaboral.textProperty().addListener
             ((obs, oldVal, newVal) -> verificarCamposLlenos());
         txtSupervisionEncargado.textProperty().addListener
@@ -220,6 +227,17 @@ public class FXMLEvaluarOrganizacionVinculadaController implements Initializable
             ((obs, oldVal, newVal) -> verificarCamposLlenos());
         txaRecomendaciones.textProperty().addListener
             ((obs, oldVal, newVal) -> verificarCamposLlenos());
+    }
+    
+    private void configurarCampoNumerico(TextField campo) {
+        UnaryOperator<TextFormatter.Change> filtro = change -> {
+            if (change.getText().matches("\\d*")) {
+                return change;
+            }
+            return null;
+        };
+
+        campo.setTextFormatter(new TextFormatter<>(filtro));
     }
     
     private EvaluacionOrgVin crearEvaluacion(Integer idExpediente) {
@@ -240,7 +258,8 @@ public class FXMLEvaluarOrganizacionVinculadaController implements Initializable
     }
     
     private void guardarEvaluacion(EvaluacionOrgVin evaluacion) {
-        boolean exito = EvaluacionOrgVinDAO.guardarEvaluacionOrganizacionVinculada(evaluacion);
+        boolean exito = EvaluacionOrgVinDAO.
+            guardarEvaluacionOrganizacionVinculada(evaluacion);
 
         if (exito) {
             double calif = Double.parseDouble(txtPuntajeTotal.getText().replace

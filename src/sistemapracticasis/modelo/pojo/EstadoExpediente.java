@@ -9,19 +9,19 @@ public enum EstadoExpediente {
     CONCLUIDO("concluido"),
     CERRADO("cerrado");
 
-    private final String valorEnDB;
+    private final String VALOR_EN_DB;
 
     private EstadoExpediente (String valorEnDB) {
-        this.valorEnDB = valorEnDB;
+        this.VALOR_EN_DB = valorEnDB;
     }
 
     public String getValorEnDB() {
-        return valorEnDB;
+        return VALOR_EN_DB;
     }
 
     public static EstadoExpediente fromValor(String texto) {
         for (EstadoExpediente estado : values()) {
-            if (estado.valorEnDB.equalsIgnoreCase(texto)) {
+            if (estado.VALOR_EN_DB.equalsIgnoreCase(texto)) {
                 return estado;
             }
         }

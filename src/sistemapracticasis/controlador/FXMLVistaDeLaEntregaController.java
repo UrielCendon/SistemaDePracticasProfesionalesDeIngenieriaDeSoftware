@@ -1,16 +1,16 @@
 package sistemapracticasis.controlador;
 
-import org.apache.pdfbox.Loader;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.rendering.PDFRenderer;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.image.Image;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.function.UnaryOperator;
+
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.PDFRenderer;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -18,7 +18,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+
 import sistemapracticasis.modelo.dao.DocumentoDAO;
 import sistemapracticasis.modelo.dao.EntregaDocumentoDAO;
 import sistemapracticasis.modelo.dao.EntregaReporteDAO;
@@ -29,29 +31,50 @@ import sistemapracticasis.util.PDFGenerador;
 import sistemapracticasis.util.Utilidad;
 
 /**
- * FXML Controller class
- *
- * @author uriel
+ * Autor: Uriel Cendón
+ * Fecha de creación: 15/06/2025
+ * Descripción: Controlador de la vista FXMLVistaDeLaEntrega,
+ * que permite al profesor visualizar la entrega que el estudiante ha mandado, 
+ * y darle las opciones de validarla o agregar una observación.
  */
 public class FXMLVistaDeLaEntregaController implements Initializable {
 
+    /* Sección: Declaración de variables
+     * Contiene todas las variables de instancia y componentes FXML
+     * utilizados en el controlador.
+     */
+    /** Entrega visual (documentos y reportes) que está 
+     * siendo gestionada actualmente */
     private EntregaVisual entregaActual;
-    
-    @FXML
-    private TextField txtNombreDocumento;
-    @FXML
-    private TextField txtFechaEntregado;
-    @FXML
-    private TextField txtCalificacion;
-    @FXML
-    private ImageView imvPDF;
-    @FXML
-    private Button btnAgregarObservacion;
-    @FXML
-    private Button btnValidar;
 
+    /** Campo de texto que muestra el nombre del documento */
+    @FXML private TextField txtNombreDocumento;
+
+    /** Campo de texto que muestra la fecha de entrega del documento */
+    @FXML private TextField txtFechaEntregado;
+
+    /** Campo de texto para ingresar la calificación del documento */
+    @FXML private TextField txtCalificacion;
+
+    /** Visor de imágenes para mostrar una vista previa del PDF */
+    @FXML private ImageView imvPDF;
+
+    /** Botón para agregar una nueva observación al documento */
+    @FXML private Button btnAgregarObservacion;
+
+    /** Botón para validar y guardar la calificación del documento */
+    @FXML private Button btnValidar;
+
+    /* Sección: Inicialización
+     * Métodos relacionados con la inicialización del controlador
+     * y carga de datos iniciales.
+     */
     /**
-     * Initializes the controller class.
+     * Inicializa el controlador después de que su elemento raíz haya sido 
+     * procesado.
+     * @param url Ubicación utilizada para resolver rutas relativas para el 
+     * objeto raíz.
+     * @param rb Recursos utilizados para localizar el objeto raíz.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -59,6 +82,11 @@ public class FXMLVistaDeLaEntregaController implements Initializable {
         agregarListenersValidacion();
     }    
     
+    /**
+     * Inicializa los datos de la entrega que se visualizará en la interfaz.
+     * @param entregaVisual Objeto que contiene los datos de la entrega a 
+     * visualizar.
+     */
     public void inicializarDatos(EntregaVisual entregaVisual) {
         this.entregaActual = entregaVisual;
         
@@ -78,37 +106,13 @@ public class FXMLVistaDeLaEntregaController implements Initializable {
         }
     }
     
-    private void verificarObservacionExistente() {
-        boolean tieneObservacion = false;
-
-        if (entregaActual.getTipo().equals("documento")) {
-            tieneObservacion = DocumentoDAO.tieneObservacion(entregaActual.getId());
-        } else {
-            tieneObservacion = ReporteDAO.tieneObservacion(entregaActual.getId());
-        }
-
-        if (tieneObservacion) {
-            btnAgregarObservacion.setDisable(true);
-        }
-    }
-    
-    private void mostrarArchivo(byte[] datos) {
-        try (PDDocument documento = Loader.loadPDF(datos)) {
-            PDFRenderer renderizador = new PDFRenderer(documento);
-            BufferedImage imagenPDF = renderizador.renderImageWithDPI(0, 150);
-            Image imagenFX = SwingFXUtils.toFXImage(imagenPDF, null);
-            imvPDF.setImage(imagenFX);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Utilidad.mostrarAlertaSimple(
-                Alert.AlertType.ERROR,
-                "Error",
-                "No se pudo cargar el archivo PDF: " + e.getMessage()
-            );
-        }
-    }
-
-
+    /* Sección: Manejo de eventos
+     * Métodos que gestionan las acciones del usuario en la interfaz.
+     */
+    /**
+     * Maneja el evento de clic en el botón para agregar observaciones.
+     * @param event Evento de acción generado por el clic.
+     */
     @FXML
     private void clicAgregarObservacion(ActionEvent event) {
         if (entregaActual != null) {
@@ -124,20 +128,10 @@ public class FXMLVistaDeLaEntregaController implements Initializable {
         }
     }
     
-    private void verificarObservacion() {
-        boolean tieneObservacion = false;
-
-        if (entregaActual.getTipo().equals("documento")) {
-            tieneObservacion = DocumentoDAO.tieneObservacion
-                (entregaActual.getId());
-        } else if (entregaActual.getTipo().equals("reporte")) {
-            tieneObservacion = ReporteDAO.tieneObservacion
-                (entregaActual.getId());
-        }
-        
-        btnAgregarObservacion.setDisable(tieneObservacion);
-    }
-
+    /**
+     * Maneja el evento de clic en el botón para validar la entrega.
+     * @param event Evento de acción generado por el clic.
+     */
     @FXML
     private void clicValidar(ActionEvent event) {
         if (validarCampos()) {
@@ -183,6 +177,102 @@ public class FXMLVistaDeLaEntregaController implements Initializable {
         }
     }
     
+    /**
+     * Maneja el evento de clic en el botón para cancelar la acción.
+     * @param event Evento de acción generado por el clic.
+     */
+    @FXML
+    private void clicCancelar(ActionEvent event) {
+        if (Utilidad.mostrarConfirmacion(
+            "Cancelar",
+            "Cancelar",
+            "¿Está seguro de que quiere cancelar?")) {
+                Navegador.cerrarVentana(txtCalificacion);
+        }
+    }
+
+    /**
+     * Maneja el evento de clic en el botón para descargar el pdf.
+     * @param event Evento de acción generado por el clic.
+     */
+    @FXML
+    private void clicDescargar(ActionEvent event) {
+        String directorioDescargas = System.getProperty("user.home") + 
+            File.separator + "Downloads";
+        
+        boolean exito = PDFGenerador.descargarPDF
+            (entregaActual, directorioDescargas);
+        
+        if (exito) {
+            Utilidad.mostrarAlertaSimple(
+                Alert.AlertType.INFORMATION,
+                "Éxito",
+                "Archivo descargado correctamente en: " + directorioDescargas
+            );
+        } else {
+            Utilidad.mostrarAlertaSimple(
+                Alert.AlertType.ERROR,
+                "Error",
+                "No se pudo descargar el archivo."
+            );
+        }
+    }
+    
+    /* Sección: Lógica de observaciones
+     * Métodos que gestionan las observaciones de las entregas.
+     */
+    private void verificarObservacionExistente() {
+        boolean tieneObservacion = false;
+
+        if (entregaActual.getTipo().equals("documento")) {
+            tieneObservacion = DocumentoDAO.tieneObservacion(entregaActual.
+                getId());
+        } else {
+            tieneObservacion = ReporteDAO.tieneObservacion(entregaActual.
+                getId());
+        }
+
+        if (tieneObservacion) {
+            btnAgregarObservacion.setDisable(true);
+        }
+    }
+    
+    private void verificarObservacion() {
+        boolean tieneObservacion = false;
+
+        if (entregaActual.getTipo().equals("documento")) {
+            tieneObservacion = DocumentoDAO.tieneObservacion
+                (entregaActual.getId());
+        } else if (entregaActual.getTipo().equals("reporte")) {
+            tieneObservacion = ReporteDAO.tieneObservacion
+                (entregaActual.getId());
+        }
+        
+        btnAgregarObservacion.setDisable(tieneObservacion);
+    }
+    
+    /* Sección: Manejo de archivos
+     * Métodos relacionados con la visualización y manejo de archivos PDF.
+     */
+    private void mostrarArchivo(byte[] datos) {
+        try (PDDocument documento = Loader.loadPDF(datos)) {
+            PDFRenderer renderizador = new PDFRenderer(documento);
+            BufferedImage imagenPDF = renderizador.renderImageWithDPI(0, 150);
+            Image imagenFX = SwingFXUtils.toFXImage(imagenPDF, null);
+            imvPDF.setImage(imagenFX);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Utilidad.mostrarAlertaSimple(
+                Alert.AlertType.ERROR,
+                "Error",
+                "No se pudo cargar el archivo PDF: " + e.getMessage()
+            );
+        }
+    }
+    
+    /* Sección: Lógica de validación
+     * Métodos que gestionan la validación de campos y datos.
+     */
     private boolean validarCampos() {
         boolean camposLlenados = true;
 
@@ -207,40 +297,10 @@ public class FXMLVistaDeLaEntregaController implements Initializable {
             return false;
         }
     }
-
-    @FXML
-    private void clicCancelar(ActionEvent event) {
-        if (Utilidad.mostrarConfirmacion(
-            "Cancelar",
-            "Cancelar",
-            "¿Está seguro de que quiere cancelar?")) {
-                Navegador.cerrarVentana(txtCalificacion);
-        }
-    }
-
-    @FXML
-    private void clicDescargar(ActionEvent event) {
-        String directorioDescargas = System.getProperty("user.home") + 
-            File.separator + "Downloads";
-        
-        boolean exito = PDFGenerador.descargarPDF
-            (entregaActual, directorioDescargas);
-        
-        if (exito) {
-            Utilidad.mostrarAlertaSimple(
-                Alert.AlertType.INFORMATION,
-                "Éxito",
-                "Archivo descargado correctamente en: " + directorioDescargas
-            );
-        } else {
-            Utilidad.mostrarAlertaSimple(
-                Alert.AlertType.ERROR,
-                "Error",
-                "No se pudo descargar el archivo."
-            );
-        }
-    }
     
+    /* Sección: Configuración de UI
+     * Métodos para configurar componentes de la interfaz de usuario.
+     */
     private void agregarListenersValidacion() {
         configurarCampoNumerico(txtCalificacion);
         txtCalificacion.textProperty().addListener

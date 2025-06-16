@@ -3,16 +3,18 @@ package sistemapracticasis.controlador;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import java.util.function.Consumer;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.cell.PropertyValueFactory;
+
 import sistemapracticasis.modelo.dao.EstudianteDAO;
 import sistemapracticasis.modelo.dto.ParametrosProyectosDisponibles;
 import sistemapracticasis.modelo.pojo.Estudiante;
@@ -21,40 +23,73 @@ import sistemapracticasis.util.Navegador;
 import sistemapracticasis.util.Utilidad;
 
 /**
- * FXML Controller class
- *
- * @author uriel
+ * Autor: Uriel Cendón
+ * Fecha de creación: 13/06/2025
+ * Descripción: Controlador de la vista FXMLProyectosDisponibles,
+ * que permite al coordinador visualizar y seleccionar un proyecto para
+ * asignarle al estudiante seleccionado un proyecto
  */
 public class FXMLProyectosDisponiblesController implements Initializable {
 
+    /* Sección: Declaración de variables
+    * Contiene todas las variables de instancia y componentes FXML
+    * utilizados en el controlador.
+    /** Instancia global de un DAO para usarse en varios puntos de la clase */
     private EstudianteDAO estudianteDAO = new EstudianteDAO();
     
-    @FXML
-    private TableView<Proyecto> tblProyectos;
-    @FXML
-    private TableColumn<Proyecto, String> tbcNombre;
-    @FXML
-    private TextField txtProyectoSeleccionado;
-    
-    private Consumer<String> proyectoAsignadoCallback;
-    private List<Proyecto> listaProyectos;
-    private Estudiante estudiante;
-    
-    @FXML
-    private Button btnAsignarProyecto;
+    /** Tabla que muestra el listado de proyectos disponibles */
+    @FXML private TableView<Proyecto> tblProyectos;
 
+    /** Columna que muestra el nombre del proyecto en la tabla */
+    @FXML private TableColumn<Proyecto, String> tbcNombre;
+
+    /** Campo de texto que muestra el proyecto seleccionado */
+    @FXML private TextField txtProyectoSeleccionado;
+
+    /** Botón para asignar el proyecto seleccionado */
+    @FXML private Button btnAsignarProyecto;
+
+    /** Callback para notificar la asignación de proyecto */
+    private Consumer<String> proyectoAsignadoCallback;
+
+    /** Lista de proyectos disponibles */
+    private List<Proyecto> listaProyectos;
+
+    /** Estudiante al que se asignará el proyecto */
+    private Estudiante estudiante;
+
+    /* Sección: Inicialización del controlador
+    * Contiene los métodos relacionados con la configuración inicial
+    * del controlador y carga de información básica.
+    */
     /**
-     * Initializes the controller class.
+     * Inicializa el controlador después de que su elemento raíz haya sido 
+     * procesado.
+     * Configura el estado inicial de los componentes.
+     * @param url Ubicación utilizada para resolver rutas relativas para el 
+     * objeto raíz.
+     * @param rb Recursos utilizados para localizar el objeto raíz.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         btnAsignarProyecto.setDisable(true);
     }    
 
+    /**
+     * Establece el callback para notificar la asignación de proyecto.
+     * @param callback Función de callback que se ejecutará al asignar un 
+     * proyecto.
+     */
     public void setProyectoAsignadoCallback(Consumer<String> callback) {
         this.proyectoAsignadoCallback = callback;
     }
     
+    /**
+     * Inicializa la información del estudiante y proyectos disponibles.
+     * @param estudiante Estudiante al que se asignará el proyecto.
+     * @param parametros Parámetros que contienen la lista de proyectos 
+     * disponibles y callback.
+     */
     public void inicializarInformacion(Estudiante estudiante,
             ParametrosProyectosDisponibles parametros) {
         this.estudiante = estudiante;
@@ -63,6 +98,15 @@ public class FXMLProyectosDisponiblesController implements Initializable {
         cargarProyectosEnTabla();
     }
     
+    /* Sección: Manejo de eventos de UI
+    * Contiene los métodos que gestionan las interacciones del usuario
+    * con los componentes de la interfaz.
+    */
+    /**
+     * Maneja el evento de clic en el botón para asignar proyecto.
+     * Asigna el proyecto seleccionado al estudiante y notifica el resultado.
+     * @param event Evento de acción generado por el clic.
+     */
     @FXML
     private void clicAsignarProyecto(ActionEvent event) {
         if(Utilidad.mostrarConfirmacion(
@@ -96,6 +140,11 @@ public class FXMLProyectosDisponiblesController implements Initializable {
         }
     }
 
+    /**
+     * Maneja el evento de clic en el botón para cancelar la operación.
+     * Cierra la ventana previa confirmación del usuario.
+     * @param event Evento de acción generado por el clic.
+     */
     @FXML
     private void clicCancelar(ActionEvent event) {
         if (Utilidad.mostrarConfirmacion(
@@ -106,6 +155,10 @@ public class FXMLProyectosDisponiblesController implements Initializable {
         }
     }
     
+    /* Sección: Lógica de negocio
+    * Contiene los métodos que implementan la funcionalidad principal
+    * de la aplicación.
+    */
     private void cargarProyectosEnTabla() {
         tbcNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         tblProyectos.getItems().setAll(listaProyectos);

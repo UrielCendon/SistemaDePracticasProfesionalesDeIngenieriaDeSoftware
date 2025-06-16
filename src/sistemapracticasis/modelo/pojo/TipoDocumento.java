@@ -11,19 +11,19 @@ public enum TipoDocumento {
     HORARIOUV("horario uv"),
     OFICIOASIGNACION("oficio asignacion");
 
-    private final String valorEnDB;
+    private final String VALOR_EN_DB;
 
     private TipoDocumento (String valorEnDB) {
-        this.valorEnDB = valorEnDB;
+        this.VALOR_EN_DB = valorEnDB;
     }
 
     public String getValorEnDB() {
-        return valorEnDB;
+        return VALOR_EN_DB;
     }
 
     public static TipoDocumento fromValor(String texto) {
         for (TipoDocumento tipo : values()) {
-            if (tipo.valorEnDB.equalsIgnoreCase(texto)) {
+            if (tipo.VALOR_EN_DB.equalsIgnoreCase(texto)) {
                 return tipo;
             }
         }

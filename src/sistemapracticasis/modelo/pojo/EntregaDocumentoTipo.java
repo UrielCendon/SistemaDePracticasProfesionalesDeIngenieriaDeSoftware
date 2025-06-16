@@ -9,19 +9,19 @@ public enum EntregaDocumentoTipo {
     INTERMEDIO("intermedio"),
     FINAL("final");
 
-    private final String valorEnDB;
+    private final String VALOR_EN_DB;
 
     private EntregaDocumentoTipo (String valorEnDB) {
-        this.valorEnDB = valorEnDB;
+        this.VALOR_EN_DB = valorEnDB;
     }
 
     public String getValorEnDB() {
-        return valorEnDB;
+        return VALOR_EN_DB;
     }
 
     public static EntregaDocumentoTipo fromValor(String texto) {
         for (EntregaDocumentoTipo tipo : values()) {
-            if (tipo.valorEnDB.equalsIgnoreCase(texto)) {
+            if (tipo.VALOR_EN_DB.equalsIgnoreCase(texto)) {
                 return tipo;
             }
         }

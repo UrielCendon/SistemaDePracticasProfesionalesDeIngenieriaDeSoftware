@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -43,54 +45,89 @@ public class PDFGenerador {
      * @return true si el oficio fue generado y guardado correctamente, false 
      *         en caso contrario.
      */
-    public static boolean generarOficio(EstudianteAsignado est, String 
-            rutaDirectorio) {
+    public static boolean generarOficio(EstudianteAsignado est, String rutaDirectorio) {
         PDDocument documento = new PDDocument();
         PDPage pagina = new PDPage(PDRectangle.LETTER);
         documento.addPage(pagina);
 
-        try (PDPageContentStream contenido = new PDPageContentStream(documento, 
-                pagina)) {
-            contenido.setLeading(18f);
+        try (PDPageContentStream contenido = new PDPageContentStream(documento, pagina)) {
+            contenido.setLeading(16f);
             contenido.beginText();
 
-            contenido.setFont(new PDType1Font(Standard14Fonts.FontName.
-                HELVETICA_BOLD), 14);
-            contenido.newLineAtOffset(50, 700);
-            contenido.showText("OFICIO DE ASIGNACIÓN DE PROYECTO");
+            float marginX = 50;
+            float yStart = 700;
+            contenido.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 12);
+            contenido.newLineAtOffset(marginX, yStart);
+
+            contenido.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 10);
+            contenido.showText("UNIVERSIDAD VERACRUZANA");
+            contenido.newLine();
+            contenido.showText("FACULTAD DE ESTADÍSTICA E INFORMÁTICA");
+            contenido.newLine();
+            contenido.showText("LIC. EN INGENIERÍA DE SOFTWARE");
+            contenido.newLine();
+            contenido.showText("PRÁCTICAS PROFESIONALES");
+            contenido.newLine();
+            contenido.newLine();
             contenido.newLine();
             contenido.newLine();
 
-            contenido.setFont(new PDType1Font(Standard14Fonts.FontName.
-                HELVETICA), 12);
-            contenido.showText("Por medio del presente se hace constar que "
-                + "el/la estudiante:");
-            contenido.newLine();
-            contenido.showText("Nombre: " + est.getNombreEstudiante());
-            contenido.newLine();
-            contenido.showText("Matrícula: " + est.getMatricula());
+            contenido.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 12);
+            contenido.showText("ASUNTO: ASIGNACIÓN DE PROYECTO");
             contenido.newLine();
             contenido.newLine();
-            contenido.showText("Ha sido asignado(a) al proyecto: " + est.
-                getNombreProyecto());
+
+            contenido.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 12);
+            contenido.showText("C. ESTUDIANTE: " + est.getNombreEstudiante().toUpperCase());
             contenido.newLine();
-            contenido.showText("Organización Vinculada: " + est.
-                getRazonSocialOrganizacion());
+            contenido.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 12);
+            contenido.showText("PRESENTE:");
             contenido.newLine();
             contenido.newLine();
-            contenido.showText("Fecha de generación: " + LocalDate.now());
+
+            contenido.setLeading(18f);
+            contenido.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 12);
+            contenido.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 12);
+            agregarTextoEnParrafos(contenido, "EL QUE SUSCRIBE, RESPONSABLE DE LA GESTIÓN DE PROYECTOS DE PRÁCTICAS PROFESIONALES DE LA LICENCIATURA EN INGENIERÍA DE SOFTWARE, HACE CONSTAR QUE EL ESTUDIANTE " 
+                + est.getNombreEstudiante().toUpperCase() + ", CON MATRÍCULA " + est.getMatricula() + ",", 
+                new PDType1Font(Standard14Fonts.FontName.HELVETICA), 12, 500);
+            agregarTextoEnParrafos(contenido, "HA SIDO ASIGNADO(A) AL PROYECTO TITULADO \"" + est.getNombreProyecto() + "\", QUE SE DESARROLLARÁ EN LA ORGANIZACIÓN \"" + est.getRazonSocialOrganizacion().toUpperCase() + "\".", 
+                new PDType1Font(Standard14Fonts.FontName.HELVETICA), 12, 500);
+            contenido.newLine();
+            contenido.newLine();
+            contenido.showText("SE EXPIDE EL PRESENTE OFICIO PARA LOS FINES QUE CONVENGAN AL INTERESADO.");
+            contenido.newLine();
+            contenido.newLine();
+            contenido.showText("FECHA DE EMISIÓN: " + LocalDate.now());
+            contenido.newLine();
+            contenido.newLine();
+            contenido.newLine();
+            contenido.newLine();
+
+            contenido.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 12);
+            contenido.setLeading(14f);
+            contenido.newLine();
+            contenido.showText("A T E N T A M E N T E");
+            contenido.newLine();
+            contenido.newLine();
+            contenido.showText("EL COORDINADOR DE PRÁCTICAS PROFESIONALES");
+            contenido.newLine();
+            contenido.newLine();
+            contenido.newLine();
+            contenido.showText("____________________________________");
+            contenido.newLine();
+            contenido.showText("NOMBRE Y FIRMA DEL RESPONSABLE");
 
             contenido.endText();
+
         } catch (IOException e) {
-            System.err.println("Error al escribir contenido en PDF: " + e.
-                getMessage());
+            System.err.println("Error al escribir contenido en PDF: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
 
         try {
-            String nombreArchivo = rutaDirectorio + File.separator + est.
-                getMatricula() + "_Oficio.pdf";
+            String nombreArchivo = rutaDirectorio + File.separator + est.getMatricula() + "_Oficio.pdf";
             documento.save(nombreArchivo);
             documento.close();
             return true;
@@ -98,6 +135,41 @@ public class PDFGenerador {
             System.err.println("Error al guardar el PDF: " + e.getMessage());
             e.printStackTrace();
             return false;
+        }
+    }
+    /**
+     * Ayuda a separar el texto en parrafos para que no se corte en la hoja
+     * @param contenido
+     * @param texto
+     * @param fuente
+     * @param tamFuente
+     * @param anchoMax
+     * @throws IOException 
+     */
+    private static void agregarTextoEnParrafos(PDPageContentStream contenido, String texto, PDType1Font fuente, float tamFuente, float anchoMax) throws IOException {
+        List<String> lineas = new ArrayList<>();
+        String[] palabras = texto.split(" ");
+        StringBuilder lineaActual = new StringBuilder();
+
+        for (String palabra : palabras) {
+            String lineaTentativa = lineaActual.length() == 0 ? palabra : lineaActual + " " + palabra;
+            float ancho = fuente.getStringWidth(lineaTentativa) / 1000 * tamFuente;
+
+            if (ancho < anchoMax) {
+                lineaActual.append(lineaActual.length() == 0 ? palabra : " " + palabra);
+            } else {
+                lineas.add(lineaActual.toString());
+                lineaActual = new StringBuilder(palabra);
+            }
+        }
+
+        if (lineaActual.length() > 0) {
+            lineas.add(lineaActual.toString());
+        }
+
+        for (String linea : lineas) {
+            contenido.showText(linea);
+            contenido.newLine();
         }
     }
     

@@ -129,17 +129,24 @@ public class FXMLSeleccionarOVYResponsableController implements Initializable {
      * @param filtro Texto ingresado para buscar
      */
     private void filtrarOrganizaciones(String filtro) {
-        if (filtro == null || filtro.trim().isEmpty()) {
-            cbOrganizaciones.setItems(listaOrganizaciones);
-            return;
+        ObservableList<OrganizacionVinculada> fuente = listaOrganizaciones;
+
+        if (filtro != null && !filtro.isEmpty()) {
+            fuente = listaOrganizaciones.stream()
+                .filter(org -> org.getRazonSocial()
+                                  .toLowerCase()
+                                  .contains(filtro.toLowerCase()))
+                .collect(Collectors.toCollection(FXCollections::observableArrayList));
         }
 
-        ObservableList<OrganizacionVinculada> filtradas = listaOrganizaciones.stream()
-            .filter(org -> org.getRazonSocial().toLowerCase().contains(filtro.toLowerCase()))
-            .collect(Collectors.toCollection(FXCollections::observableArrayList));
+        cbOrganizaciones.getSelectionModel().clearSelection();
 
-        cbOrganizaciones.setItems(filtradas);
+        cbOrganizaciones.setItems(fuente);
+
+        listaResponsables.clear();   
+        btnGuardar.setDisable(true); 
     }
+
 
     /**
      * Carga los responsables vinculados a una organización.

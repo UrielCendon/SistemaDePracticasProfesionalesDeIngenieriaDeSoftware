@@ -27,28 +27,57 @@ import sistemapracticasis.util.Utilidad;
  */
 public class FXMLRegistrarResponsableDeProyectoController implements Initializable {
 
-    /* Sección: Declaración de componentes de interfaz */
+    /* Sección: Componentes de la interfaz
+     * Contiene los elementos FXML de la vista.
+     */
 
+    /** Botón para cancelar la operación y cerrar la ventana. */
     @FXML private Button btnCancelar;
+
+    /** Campo para ingresar el nombre del responsable. */
     @FXML private TextField txtNombre;
+
+    /** Campo para ingresar el apellido paterno. */
     @FXML private TextField txtAPaterno;
+
+    /** Campo para ingresar el departamento del responsable. */
     @FXML private TextField txtDepartamento;
+
+    /** Campo para ingresar el correo electrónico. */
     @FXML private TextField txtCorreo;
+
+    /** Botón para guardar la información del responsable. */
     @FXML private Button btnGuardar;
+
+    /** Etiqueta que muestra el nombre del usuario en sesión. */
     @FXML private Label lblNombreUsuario;
+
+    /** Campo para ingresar el puesto del responsable. */
     @FXML private TextField txtPuesto;
+
+    /** Campo para ingresar el apellido materno. */
     @FXML private TextField txtAMaterno;
+
+    /** Campo para ingresar el teléfono de contacto. */
     @FXML private TextField txtTelefono;
 
-    /* Sección: Atributos */
+    /* Sección: Variables de instancia
+     * Almacena los datos de la sesión y la organización vinculada.
+     */
 
+    /** Coordinador autenticado en sesión. */
     private Coordinador coordinadorSesion;
+
+    /** Identificador de la organización vinculada. */
     private int idOrganizacionVinculada;
 
+
+    /* Sección: Inicialización del controlador */
+
     /**
-     * Inicializa el controlador.
-     * @param url No utilizado.
-     * @param rb No utilizado.
+     * Inicializa el controlador después de que su elemento raíz haya sido procesado.
+     * @param url URL de localización.
+     * @param rb Recursos para internacionalización.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {

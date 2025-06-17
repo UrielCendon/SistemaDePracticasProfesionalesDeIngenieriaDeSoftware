@@ -29,30 +29,42 @@ import sistemapracticasis.util.Utilidad;
  */
 public class FXMLSeleccionarOrganizacionVinculadaController implements Initializable {
 
-    /* Sección: Declaración de componentes de interfaz */
+    /* Sección: Componentes de la interfaz
+     * Contiene los elementos FXML de la vista.
+     */
 
-    /** Campo de búsqueda de organizaciones */
+    /** Campo de texto para buscar organizaciones por nombre o palabra clave. */
     @FXML private TextField txtBuscar;
-    /** Etiqueta con el nombre del coordinador */
+
+    /** Etiqueta que muestra el nombre del coordinador en sesión. */
     @FXML private Label lblNombreUsuario;
-    /** Botón para regresar al menú principal */
+
+    /** Botón para regresar al menú principal. */
     @FXML private Button btnRegresar;
-    /** Botón para continuar con la organización seleccionada */
+
+    /** Botón para continuar con la organización seleccionada. */
     @FXML private Button btnGuardar;
-    /** ComboBox con la lista de organizaciones vinculadas */
+
+    /** Lista desplegable con las organizaciones vinculadas. */
     @FXML private ComboBox<OrganizacionVinculada> cbOrganizacionVinculada;
 
-    /* Sección: Atributos */
+    /* Sección: Variables de instancia
+     * Almacena los datos del coordinador y la lista de organizaciones.
+     */
 
-    /** Coordinador autenticado en sesión */
+    /** Coordinador autenticado en sesión. */
     private Coordinador coordinadorSesion;
-    /** Lista completa de organizaciones */
+
+    /** Lista observable de organizaciones disponibles. */
     private ObservableList<OrganizacionVinculada> listaOrganizaciones;
 
-    /* Sección: Inicialización */
+
+    /* Sección: Inicialización del controlador */
 
     /**
-     * Inicializa la vista cargando las organizaciones disponibles y configurando eventos.
+     * Inicializa el controlador después de que su elemento raíz haya sido procesado.
+     * @param url URL de localización.
+     * @param rb Recursos para internacionalización.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -63,7 +75,8 @@ public class FXMLSeleccionarOrganizacionVinculadaController implements Initializ
             btnGuardar.setDisable(true);
         }
 
-        txtBuscar.textProperty().addListener((obs, oldVal, newVal) -> filtrarOrganizaciones(newVal));
+        txtBuscar.textProperty().addListener((obs, oldVal, newVal) -> 
+                filtrarOrganizaciones(newVal));
     }
 
     /**

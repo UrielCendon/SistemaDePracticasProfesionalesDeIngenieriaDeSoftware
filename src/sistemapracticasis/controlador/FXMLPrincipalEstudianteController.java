@@ -1,10 +1,8 @@
 package sistemapracticasis.controlador;
 
-// Java estándar
 import java.net.URL;
 import java.util.ResourceBundle;
 
-// JavaFX
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -12,7 +10,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
-// Proyecto propio
 import sistemapracticasis.modelo.dao.EntregaDocumentoDAO;
 import sistemapracticasis.modelo.dao.EstudianteDAO;
 import sistemapracticasis.modelo.dao.ExpedienteDAO;
@@ -34,16 +31,23 @@ public class FXMLPrincipalEstudianteController implements Initializable {
     /* Sección: Componentes de la interfaz
      * Contiene los elementos FXML de la vista principal del estudiante.
      */
+
+    /** Botón para cerrar la sesión del estudiante. */
     @FXML private Button btnCerrarSesion;
+
+    /** Etiqueta que muestra el nombre del estudiante en sesión. */
     @FXML private Label lblNombreUsuario;
 
     /* Sección: Variables de instancia
      * Almacena los datos del estudiante en sesión.
      */
+
+    /** Estudiante actualmente autenticado en la aplicación. */
     private Estudiante estudianteSesion;
 
+
     /**
-     * Initializes the controller class.
+     * Inicializa el controlador después de que su elemento raíz haya sido procesado.
      * @param url Ubicación utilizada para resolver rutas relativas.
      * @param rb Recursos utilizados para localizar el objeto raíz.
      */

@@ -34,21 +34,44 @@ public class FXMLGenerarEntregaInicialesController implements Initializable {
     /* Sección: Componentes de la interfaz
      * Contiene los elementos FXML que componen la interfaz gráfica.
      */
+
+    /** Tabla que muestra las entregas iniciales del expediente. */
     @FXML private TableView<EntregaDocumento> tvEntregasIniciales;
+
+    /** Columna que muestra el nombre del documento a entregar. */
     @FXML private TableColumn<EntregaDocumento, String> colNombreEntrega;
+
+    /** Columna que muestra la descripción de la entrega. */
     @FXML private TableColumn<EntregaDocumento, String> colDescripcion;
+
+    /** Columna que muestra la fecha de inicio de la entrega. */
     @FXML private TableColumn<EntregaDocumento, String> colFechaInicio;
+
+    /** Columna que muestra la fecha límite de la entrega. */
     @FXML private TableColumn<EntregaDocumento, String> colFechaFin;
+
+    /** Columna que muestra la calificación obtenida en la entrega. */
     @FXML private TableColumn<EntregaDocumento, Double> colCalificacion;
+
+    /** Botón para generar el archivo consolidado de entregas. */
     @FXML private Button btnGenerar;
+
+    /** Botón para cancelar la operación y cerrar la ventana. */
     @FXML private Button btnCancelar;
 
     /* Sección: Variables de instancia
      * Almacena los datos de las entregas y las fechas del periodo.
      */
+
+    /** Lista observable de entregas iniciales. */
     private ObservableList<EntregaDocumento> entregas;
+
+    /** Fecha de inicio del periodo académico (formato AAAA-MM-DD). */
     private String fechaInicio;
+
+    /** Fecha de fin del periodo académico (formato AAAA-MM-DD). */
     private String fechaFin;
+
 
     /**
      * Inicializa el controlador después de que su elemento raíz haya sido procesado.
@@ -80,7 +103,8 @@ public class FXMLGenerarEntregaInicialesController implements Initializable {
         colNombreEntrega.setOnEditCommit(event -> {
             String nuevo = event.getNewValue();
             if (nuevo == null || nuevo.trim().isEmpty()) {
-                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Campo vacío", "El nombre no puede estar vacío");
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Campo vacío", 
+                        "El nombre no puede estar vacío");
                 tvEntregasIniciales.refresh();
             } else {
                 event.getRowValue().setNombre(nuevo);
@@ -97,7 +121,8 @@ public class FXMLGenerarEntregaInicialesController implements Initializable {
         colDescripcion.setOnEditCommit(event -> {
             String nueva = event.getNewValue();
             if (nueva == null || nueva.trim().isEmpty()) {
-                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Campo vacío", "La descripción no puede estar vacía");
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Campo vacío", 
+                        "La descripción no puede estar vacía");
                 tvEntregasIniciales.refresh();
             } else {
                 event.getRowValue().setDescripcion(nueva);
@@ -118,7 +143,8 @@ public class FXMLGenerarEntregaInicialesController implements Initializable {
      */
     private void configurarColumnaCalificacion() {
         colCalificacion.setCellValueFactory(new PropertyValueFactory<>("calificacion"));
-        colCalificacion.setCellFactory(TextFieldTableCell.<EntregaDocumento, Double>forTableColumn(new DoubleStringConverter()));
+        colCalificacion.setCellFactory(TextFieldTableCell.<EntregaDocumento, 
+                Double>forTableColumn(new DoubleStringConverter()));
         colCalificacion.setOnEditCommit(event -> {
             try {
                 Double cal = event.getNewValue();
@@ -127,7 +153,8 @@ public class FXMLGenerarEntregaInicialesController implements Initializable {
                 }
                 event.getRowValue().setCalificacion(cal);
             } catch (Exception e) {
-                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Valor inválido", e.getMessage());
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, 
+                        "Valor inválido", e.getMessage());
                 tvEntregasIniciales.refresh();
             }
         });
@@ -140,11 +167,13 @@ public class FXMLGenerarEntregaInicialesController implements Initializable {
      * @param fechaFin Fecha de fin del periodo.
      * @param idExpedienteIgnorado Identificador de expediente a ignorar (no utilizado actualmente).
      */
-    public void inicializarInformacion(String fechaInicio, String fechaFin, Integer idExpedienteIgnorado) {
+    public void inicializarInformacion(String fechaInicio, String fechaFin, 
+            Integer idExpedienteIgnorado) {
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
 
-        ArrayList<EntregaDocumento> lista = EntregaDocumentoDAO.generarEntregasInicialesPorDefecto(fechaInicio, fechaFin);
+        ArrayList<EntregaDocumento> lista = EntregaDocumentoDAO.generarEntregasInicialesPorDefecto(
+                fechaInicio, fechaFin);
         entregas = FXCollections.observableArrayList(lista);
         tvEntregasIniciales.setItems(entregas);
     }
@@ -174,8 +203,10 @@ public class FXMLGenerarEntregaInicialesController implements Initializable {
                 return;
             }
 
-            EntregaDocumentoDAO.guardarEntregasIniciales(new ArrayList<>(entregas), fechaInicio, fechaFin);
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION, "Éxito", "Entregas generadas correctamente.");
+            EntregaDocumentoDAO.guardarEntregasIniciales(new ArrayList<>(entregas), 
+                    fechaInicio, fechaFin);
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION, "Éxito", 
+                    "Entregas generadas correctamente.");
             Navegador.cerrarVentana(btnGenerar);
 
         } catch (RuntimeException e) {
@@ -190,15 +221,18 @@ public class FXMLGenerarEntregaInicialesController implements Initializable {
     private boolean validarDatos() {
         for (EntregaDocumento entrega : entregas) {
             if (entrega.getNombre() == null || entrega.getNombre().trim().isEmpty()) {
-                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Campo requerido", "El nombre no puede estar vacío.");
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Campo requerido", 
+                        "El nombre no puede estar vacío.");
                 return false;
             }
             if (entrega.getDescripcion() == null || entrega.getDescripcion().trim().isEmpty()) {
-                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Campo requerido", "La descripción no puede estar vacía.");
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Campo requerido", 
+                        "La descripción no puede estar vacía.");
                 return false;
             }
             if (entrega.getCalificacion() < 0.0 || entrega.getCalificacion() > 10.0) {
-                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Calificación inválida", "Debe estar entre 0.0 y 10.0.");
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Calificación inválida", 
+                        "Debe estar entre 0.0 y 10.0.");
                 return false;
             }
         }

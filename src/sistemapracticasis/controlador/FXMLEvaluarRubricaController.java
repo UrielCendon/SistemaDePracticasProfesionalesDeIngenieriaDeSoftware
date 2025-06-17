@@ -45,34 +45,74 @@ public class FXMLEvaluarRubricaController implements Initializable {
     /* Sección: Componentes de la interfaz
      * Contiene los elementos FXML que componen la interfaz gráfica.
      */
+
+    /** Etiqueta que muestra el nombre del estudiante. */
     @FXML private Label lblNombreEstudiante;
+
+    /** Etiqueta que muestra la experiencia educativa. */
     @FXML private Label lblExperienciaEducativa;
+
+    /** Etiqueta que muestra el nombre del proyecto. */
     @FXML private Label lblProyecto;
+
+    /** Tabla que contiene los criterios de la rúbrica. */
     @FXML private TableView<Map.Entry<String, String>> tvRubrica;
+
+    /** Columna del criterio de evaluación. */
     @FXML private TableColumn<Map.Entry<String, String>, String> colCriterioEvaluacion;
+
+    /** Columna para la opción "Excelente". */
     @FXML private TableColumn<Map.Entry<String, String>, String> colExcelente;
+
+    /** Columna para la opción "Muy bien". */
     @FXML private TableColumn<Map.Entry<String, String>, String> colMuyBien;
+
+    /** Columna para la opción "Bien". */
     @FXML private TableColumn<Map.Entry<String, String>, String> colBien;
+
+    /** Columna para la opción "Regular". */
     @FXML private TableColumn<Map.Entry<String, String>, String> colRegular;
+
+    /** Columna para la opción "Insuficiente". */
     @FXML private TableColumn<Map.Entry<String, String>, String> colInsuficiente;
+
+    /** Tabla con las calificaciones asignadas. */
     @FXML private TableView<Map.Entry<String, Integer>> tvCalificacion;
+
+    /** Columna que muestra el criterio evaluado. */
     @FXML private TableColumn<Map.Entry<String, Integer>, String> colCriterio;
+
+    /** Columna que muestra la calificación numérica. */
     @FXML private TableColumn<Map.Entry<String, Integer>, Integer> colCalificacion;
+
+    /** Área de texto para la observación. */
     @FXML private TextArea txtObservacion;
+
+    /** Botón para confirmar la evaluación. */
     @FXML private Button btnAceptar;
+
+    /** Botón para cancelar la evaluación. */
     @FXML private Button btnCancelar;
+
+    /** Botón que enfoca el cuadro de observaciones. */
     @FXML private Button btnAgregarObservacion;
 
     /* Sección: Variables de instancia
-     * Almacena los datos del estudiante y las calificaciones asignadas.
+     * Almacena los datos del estudiante y las calificaciones.
      */
+
+    /** Estudiante que será evaluado. */
     private Estudiante estudiante;
+
+    /** Calificaciones por criterio. */
     private final Map<String, Integer> calificaciones = new LinkedHashMap<>();
 
     /* Sección: Constantes
-     * Define los criterios de evaluación utilizados en la rúbrica.
+     * Define los criterios de la rúbrica.
      */
-    private final String[] criterios = {
+
+    /** Criterios establecidos en la rúbrica de evaluación. */
+    private final String[] CRITERIOS = {
         "Uso de métodos y técnicas de la IS",
         "Requisitos",
         "Seguridad y dominio",
@@ -114,8 +154,10 @@ public class FXMLEvaluarRubricaController implements Initializable {
         colRegular.setCellFactory(col -> crearCeldaEvaluacion("Regular"));
         colInsuficiente.setCellFactory(col -> crearCeldaEvaluacion("Insuficiente"));
 
-        colCriterio.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getKey()));
-        colCalificacion.setCellValueFactory(data -> new javafx.beans.property.SimpleIntegerProperty(data.getValue().getValue()).asObject());
+        colCriterio.setCellValueFactory(data -> new SimpleStringProperty(
+                data.getValue().getKey()));
+        colCalificacion.setCellValueFactory(data -> new javafx.beans.property.
+                SimpleIntegerProperty(data.getValue().getValue()).asObject());
     }
 
     /**
@@ -171,7 +213,7 @@ public class FXMLEvaluarRubricaController implements Initializable {
      */
     private void cargarRubrica() {
         ObservableList<Map.Entry<String, String>> filas = FXCollections.observableArrayList();
-        for (String criterio : criterios) {
+        for (String criterio : CRITERIOS) {
             filas.add(new AbstractMap.SimpleEntry<>(criterio, ""));
         }
         tvRubrica.setItems(filas);
@@ -194,38 +236,43 @@ public class FXMLEvaluarRubricaController implements Initializable {
     @FXML
     private void clicAceptar(ActionEvent event) {
         if (txtObservacion.getText().trim().isEmpty()) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Campo requerido", "La observación no puede quedar vacía");
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Campo requerido", 
+                    "La observación no puede quedar vacía");
             return;
         }
 
-        if (calificaciones.size() < criterios.length) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Faltan criterios", "Debes calificar todos los criterios.");
+        if (calificaciones.size() < CRITERIOS.length) {
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Faltan criterios", 
+                    "Debes calificar todos los criterios.");
             return;
         }
 
         int idObs = ObservacionDAO.insertarObservacion(txtObservacion.getText().trim());
         if (idObs == -1) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "Error", "No se pudo guardar la observación.");
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "Error", 
+                    "No se pudo guardar la observación.");
             return;
         }
 
         EvaluacionEstudiante eval = new EvaluacionEstudiante();
         eval.setIdExpediente(estudiante.getIdPeriodo());
         eval.setIdObservacion(idObs);
-        eval.setUsoTecnicas(calificaciones.get(criterios[0]));
-        eval.setRequisitos(calificaciones.get(criterios[1]));
-        eval.setSeguridad(calificaciones.get(criterios[2]));
-        eval.setContenido(calificaciones.get(criterios[3]));
-        eval.setOrtografia(calificaciones.get(criterios[4]));
+        eval.setUsoTecnicas(calificaciones.get(CRITERIOS[0]));
+        eval.setRequisitos(calificaciones.get(CRITERIOS[1]));
+        eval.setSeguridad(calificaciones.get(CRITERIOS[2]));
+        eval.setContenido(calificaciones.get(CRITERIOS[3]));
+        eval.setOrtografia(calificaciones.get(CRITERIOS[4]));
 
         double total = calificaciones.values().stream().mapToDouble(i -> i).sum();
         eval.setPuntajeTotal(total);
 
         if (EvaluacionEstudianteDAO.guardarEvaluacion(eval)) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION, "Éxito", "Operación exitosa.");
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION, "Éxito", 
+                    "Operación exitosa.");
             Navegador.cerrarVentana(btnAceptar);
         } else {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "Error", "No se pudo guardar la evaluación.");
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "Error", 
+                    "No se pudo guardar la evaluación.");
         }
     }
 
@@ -235,7 +282,8 @@ public class FXMLEvaluarRubricaController implements Initializable {
      */
     @FXML
     private void clicCancelar(ActionEvent event) {
-        if (Utilidad.mostrarConfirmacion("Cancelar", "¿Está seguro de que deseas cancelar?", "Los cambios no se guardarán.")) {
+        if (Utilidad.mostrarConfirmacion("Cancelar", "¿Está seguro de que deseas cancelar?", 
+                "Los cambios no se guardarán.")) {
             Navegador.cerrarVentana(btnCancelar);
         }
     }

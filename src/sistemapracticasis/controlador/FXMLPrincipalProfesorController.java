@@ -25,16 +25,23 @@ public class FXMLPrincipalProfesorController implements Initializable {
     /* Sección: Componentes de la interfaz
      * Contiene los elementos FXML de la vista principal del profesor.
      */
+
+    /** Botón para cerrar la sesión del profesor. */
     @FXML private Button btnCerrarSesion;
+
+    /** Etiqueta que muestra el nombre del profesor en sesión. */
     @FXML private Label lblNombreUsuario;
 
     /* Sección: Variables de instancia
      * Almacena los datos del profesor en sesión.
      */
+
+    /** Profesor actualmente autenticado en la aplicación. */
     private Profesor profesorSesion;
 
+
     /**
-     * Initializes the controller class.
+     * Inicializa el controlador después de que su elemento raíz haya sido procesado.
      * @param url Ubicación utilizada para resolver rutas relativas.
      * @param rb Recursos utilizados para localizar el objeto raíz.
      */

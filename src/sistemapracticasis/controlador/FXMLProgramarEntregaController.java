@@ -25,23 +25,51 @@ import sistemapracticasis.util.Utilidad;
  */
 public class FXMLProgramarEntregaController implements Initializable {
 
-    /* Sección: Componentes de la interfaz */
+    /* Sección: Componentes de la interfaz
+     * Contiene los elementos FXML de la vista de generación de entregas.
+     */
+
+    /** Botón para cancelar la operación y cerrar la ventana. */
     @FXML private Button btnCancelar;
+
+    /** Etiqueta que muestra el nombre del usuario en sesión. */
     @FXML private Label lblNombreUsuario;
+
+    /** Botón para generar las entregas iniciales del expediente. */
     @FXML private Button btnGenerarEntregaIniciales;
+
+    /** Botón para generar las entregas intermedias del expediente. */
     @FXML private Button btnGenerarEntregaIntermedios;
+
+    /** Botón para generar las entregas finales del expediente. */
     @FXML private Button btnGenerarEntregaFinales;
+
+    /** Botón para generar los reportes de entrega del expediente. */
     @FXML private Button btnGenerarEntregaReportes;
+
+    /** Etiqueta que muestra la experiencia educativa asociada. */
     @FXML private Label lblExperienciaEducativa;
+
+    /** Etiqueta que muestra el NRC de la experiencia educativa. */
     @FXML private Label lblNRC;
+
+    /** Etiqueta que muestra el periodo escolar vigente. */
     @FXML private Label lblPeriodoEscolar;
 
-    /* Sección: Variables de instancia */
+    /* Sección: Variables de instancia
+     * Almacena los datos del coordinador en sesión y el periodo actual.
+     */
+
+    /** Coordinador actualmente autenticado en la aplicación. */
     private Coordinador coordinadorSesion;
+
+    /** Periodo escolar activo seleccionado. */
     private Periodo periodoActual;
 
+
+
     /**
-     * Initializes the controller class.
+     * Inicializa el controlador después de que su elemento raíz haya sido procesado.
      * @param url Ubicación utilizada para resolver rutas relativas.
      * @param rb Recursos utilizados para localizar el objeto raíz.
      */

@@ -26,16 +26,23 @@ public class FXMLPrincipalCoordinadorController implements Initializable {
     /* Sección: Componentes de la interfaz
      * Contiene los elementos FXML de la vista principal.
      */
+
+    /** Botón para cerrar la sesión y regresar a la ventana de inicio. */
     @FXML private Button btnCerrarSesion;
+
+    /** Etiqueta que muestra el nombre del coordinador en sesión. */
     @FXML private Label lblNombreUsuario;
 
     /* Sección: Variables de instancia
      * Almacena los datos del coordinador en sesión.
      */
+
+    /** Coordinador actualmente autenticado en la aplicación. */
     private Coordinador coordinadorSesion;
 
+
     /**
-     * Initializes the controller class.
+     * Inicializa el controlador después de que su elemento raíz haya sido procesado.
      * @param url Ubicación utilizada para resolver rutas relativas.
      * @param rb Recursos utilizados para localizar el objeto raíz.
      */

@@ -5,15 +5,27 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
 import sistemapracticasis.modelo.conexion.ConexionBD;
 import sistemapracticasis.modelo.pojo.EstadoExpediente;
 import sistemapracticasis.modelo.pojo.Expediente;
 
 /**
- *
- * @author uriel
+ * Clase DAO para gestionar las operaciones relacionadas con expedientes en la 
+ * base de datos.
+ * Autor: Uriel Cendón
+ * Fecha de creación: 15/06/2025
+ * Descripción: Proporciona métodos para verificar, actualizar, obtener e 
+ * insertar expedientes de estudiantes.
  */
 public class ExpedienteDAO {
+
+    /**
+     * Verifica si un estudiante tiene un expediente en curso.
+     * @param matriculaEstudiante Matrícula del estudiante a verificar.
+     * @return true si el estudiante tiene un expediente en curso, false en caso 
+     *         contrario.
+     */
     public boolean tieneExpedienteEnCurso(String matriculaEstudiante) {
         String consulta = "SELECT exp.id_expediente "
             + "FROM expediente exp "
@@ -24,7 +36,7 @@ public class ExpedienteDAO {
             + "AND CURDATE() BETWEEN per.fecha_inicio AND per.fecha_fin";
 
         try (Connection conexion = ConexionBD.abrirConexion();
-             PreparedStatement sentencia = conexion.prepareStatement(consulta)){
+             PreparedStatement sentencia = conexion.prepareStatement(consulta)) {
 
             sentencia.setString(1, matriculaEstudiante);
 
@@ -37,34 +49,46 @@ public class ExpedienteDAO {
         return false;
     }
     
-    public static boolean actualizarCalifPorEvaluacionOrgVin
-        (double calificacion, int idExpediente) {
-            boolean actualizado = false;
-            String consulta = "UPDATE expediente SET calif_eval_org_vinc = ? "
-                + "WHERE id_expediente = ?";
+    /**
+     * Actualiza la calificación por evaluación de organización vinculada en un 
+     * expediente.
+     * @param calificacion Calificación a actualizar.
+     * @param idExpediente ID del expediente a actualizar.
+     * @return true si la actualización fue exitosa, false en caso contrario.
+     */
+    public static boolean actualizarCalifPorEvaluacionOrgVin(
+            double calificacion, int idExpediente) {
+        boolean actualizado = false;
+        String consulta = "UPDATE expediente SET calif_eval_org_vinc = ? "
+            + "WHERE id_expediente = ?";
 
-            try (Connection conexion = ConexionBD.abrirConexion();
-                 PreparedStatement sentencia = conexion.prepareStatement
-                    (consulta)) {
+        try (Connection conexion = ConexionBD.abrirConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(consulta)) {
 
-                sentencia.setDouble(1, calificacion);
-                sentencia.setInt(2, idExpediente);
+            sentencia.setDouble(1, calificacion);
+            sentencia.setInt(2, idExpediente);
 
-                actualizado = sentencia.executeUpdate() > 0;
+            actualizado = sentencia.executeUpdate() > 0;
 
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
-            return actualizado;
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+
+        return actualizado;
+    }
         
+    /**
+     * Obtiene el expediente más reciente de un estudiante.
+     * @param idEstudiante ID del estudiante del cual obtener el expediente.
+     * @return Objeto Expediente con los datos encontrados, o null si no se 
+     *         encuentra.
+     */
     public static Expediente obtenerExpedientePorIdEstudiante(int idEstudiante) {
         String consulta = "SELECT e.id_expediente, e.horas_acumuladas, e.estado "
-                + "FROM expediente e "
-                + "JOIN periodo p ON e.id_expediente = p.id_expediente "
-                + "WHERE p.id_estudiante = ? "
-                + "ORDER BY p.fecha_inicio DESC LIMIT 1";
+            + "FROM expediente e "
+            + "JOIN periodo p ON e.id_expediente = p.id_expediente "
+            + "WHERE p.id_estudiante = ? "
+            + "ORDER BY p.fecha_inicio DESC LIMIT 1";
 
         try (Connection conn = ConexionBD.abrirConexion();
              PreparedStatement sentencia = conn.prepareStatement(consulta)) {
@@ -87,12 +111,16 @@ public class ExpedienteDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (IllegalArgumentException e) {
-            System.out.println("Error en estado del expediente: " + 
-                e.getMessage());
+            System.out.println("Error en estado del expediente: " 
+                + e.getMessage());
         }
         return null;
     }
     
+    /**
+     * Inserta un nuevo expediente vacío en la base de datos.
+     * @return ID del expediente creado, o -1 si ocurrió un error.
+     */
     public static int insertarExpedienteVacio() {
         String consulta = "INSERT INTO expediente (horas_acumuladas, estado) "
             + "VALUES (0, 'en curso')";
@@ -116,4 +144,3 @@ public class ExpedienteDAO {
         return -1;
     }
 }
-

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package sistemapracticasis.controlador;
 
 import java.io.File;
@@ -9,6 +5,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -20,6 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
+
 import sistemapracticasis.modelo.dao.GenerarOficiosDAO;
 import sistemapracticasis.modelo.pojo.Coordinador;
 import sistemapracticasis.modelo.pojo.EstudianteAsignado;
@@ -27,63 +25,53 @@ import sistemapracticasis.util.Navegador;
 import sistemapracticasis.util.PDFGenerador;
 import sistemapracticasis.util.Utilidad;
 
-/**
- * FXML Controller class
- *
- * @author Kaiser
+/** 
+ * Autor: Kaiser
+ * Fecha de creación: [Fecha de creación]
+ * Descripción: Controlador para la generación de oficios de asignación,
+ * permite seleccionar estudiantes y generar los documentos oficiales
+ * de asignación a organizaciones vinculadas.
  */
 public class FXMLGenerarOficiosController implements Initializable {
-    
-    private Coordinador coordinadorSesion;
 
-    @FXML
-    private Button btnCancelar;
-    @FXML
-    private Label lblNombreUsuario;
-    @FXML
-    private Button btnGenerarDocumentos;
-    @FXML
-    private TableView<EstudianteAsignado> tvOficiosAsignacion;
-    @FXML
-    private TableColumn<EstudianteAsignado, String> colMatricula;
-    @FXML
-    private TableColumn<EstudianteAsignado, String> colEstudiante;
-    @FXML
-    private TableColumn<EstudianteAsignado, String> colProyectoAsignado;
-    @FXML
-    private TableColumn<EstudianteAsignado, String> colOrganizacionVinculada;
-    @FXML
-    private TableColumn<EstudianteAsignado, Boolean> colSeleccionEstudiante;
-    @FXML
-    private Button btnSeleccionarTodos;
-    
+    /* Sección: Componentes de la interfaz
+     * Contiene los elementos FXML de la vista.
+     */
+    @FXML private Button btnCancelar;
+    @FXML private Label lblNombreUsuario;
+    @FXML private Button btnGenerarDocumentos;
+    @FXML private TableView<EstudianteAsignado> tvOficiosAsignacion;
+    @FXML private TableColumn<EstudianteAsignado, String> colMatricula;
+    @FXML private TableColumn<EstudianteAsignado, String> colEstudiante;
+    @FXML private TableColumn<EstudianteAsignado, String> colProyectoAsignado;
+    @FXML private TableColumn<EstudianteAsignado, String> colOrganizacionVinculada;
+    @FXML private TableColumn<EstudianteAsignado, Boolean> colSeleccionEstudiante;
+    @FXML private Button btnSeleccionarTodos;
+
+    /* Sección: Variables de instancia
+     * Almacena datos de la sesión y lista de estudiantes.
+     */
+    private Coordinador coordinadorSesion;
     private ObservableList<EstudianteAsignado> listaEstudiantes = FXCollections.observableArrayList();
 
     /**
      * Initializes the controller class.
+     * @param url Ubicación utilizada para resolver rutas relativas.
+     * @param rb Recursos utilizados para localizar el objeto raíz.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        tvOficiosAsignacion.setEditable(true);
-        colSeleccionEstudiante.setEditable(true);
-        configurarColumnas();
+        configurarTabla();
         cargarEstudiantes();
     }
-    
-        public void inicializarInformacion(Coordinador coordinadorSesion) {
-        this.coordinadorSesion = coordinadorSesion;
-        cargarInformacionUsuario();
-    }
 
-    private void cargarInformacionUsuario() {
-        if (coordinadorSesion != null) {
-            lblNombreUsuario.setText(
-                coordinadorSesion.toString()
-            );
-        }
-    }
-    
-    private void configurarColumnas() {
+    /* Sección: Configuración de interfaz
+     * Métodos para configurar componentes visuales.
+     */
+    private void configurarTabla() {
+        tvOficiosAsignacion.setEditable(true);
+        colSeleccionEstudiante.setEditable(true);
+        
         colMatricula.setCellValueFactory(cellData -> cellData.getValue().matriculaProperty());
         colEstudiante.setCellValueFactory(cellData -> cellData.getValue().nombreEstudianteProperty());
         colProyectoAsignado.setCellValueFactory(cellData -> cellData.getValue().nombreProyectoProperty());
@@ -91,7 +79,10 @@ public class FXMLGenerarOficiosController implements Initializable {
         colSeleccionEstudiante.setCellValueFactory(cellData -> cellData.getValue().seleccionadoProperty());
         colSeleccionEstudiante.setCellFactory(CheckBoxTableCell.forTableColumn(colSeleccionEstudiante));
     }
-    
+
+    /* Sección: Carga de datos
+     * Métodos para obtener y mostrar información.
+     */
     private void cargarEstudiantes() {
         try {
             List<EstudianteAsignado> estudiantes = GenerarOficiosDAO.obtenerEstudiantesAsignadosPeriodoActual();
@@ -106,6 +97,24 @@ public class FXMLGenerarOficiosController implements Initializable {
         }
     }
 
+    /**
+     * Inicializa la información del coordinador en sesión.
+     * @param coordinadorSesion Objeto Coordinador con los datos de la sesión.
+     */
+    public void inicializarInformacion(Coordinador coordinadorSesion) {
+        this.coordinadorSesion = coordinadorSesion;
+        cargarInformacionUsuario();
+    }
+
+    private void cargarInformacionUsuario() {
+        if (coordinadorSesion != null) {
+            lblNombreUsuario.setText(coordinadorSesion.toString());
+        }
+    }
+
+    /* Sección: Manejo de eventos
+     * Métodos para acciones del usuario.
+     */
     @FXML
     private void clicCancelar(ActionEvent event) {
         if (Utilidad.mostrarConfirmacion(
@@ -161,5 +170,4 @@ public class FXMLGenerarOficiosController implements Initializable {
                 "Error", "No fue posible generar los OFICIOS DE ASIGNACIÓN.");
         }
     }
-    
 }

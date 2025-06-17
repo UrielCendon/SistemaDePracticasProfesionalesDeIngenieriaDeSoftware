@@ -1,67 +1,107 @@
 package sistemapracticasis.controlador;
 
+// Java estándar
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+
+// JavaFX
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+
+// Proyecto propio
 import sistemapracticasis.modelo.dao.EvaluacionEstudianteDAO;
 import sistemapracticasis.modelo.pojo.Estudiante;
 import sistemapracticasis.modelo.pojo.Evaluador;
 import sistemapracticasis.util.Navegador;
 import sistemapracticasis.util.Utilidad;
 
+/** 
+ * Autor: [Nombre del autor]
+ * Fecha de creación: [Fecha de creación]
+ * Descripción: Controlador para la vista principal del evaluador,
+ * permite evaluar estudiantes mediante una rúbrica y gestionar
+ * las evaluaciones pendientes.
+ */
 public class FXMLPrincipalEvaluadorController implements Initializable {
 
+    /* Sección: Componentes de la interfaz
+     * Contiene los elementos FXML de la vista principal del evaluador.
+     */
+    @FXML private Label lblNombreUsuario;
+    @FXML private Button btnCerrarSesion;
+    @FXML private Button btnAceptar;
+    @FXML private TableView<Estudiante> tvEvaluarEstudiante;
+    @FXML private TableColumn<Estudiante, String> colMatricula;
+    @FXML private TableColumn<Estudiante, String> colEstudiante;
+    @FXML private TableColumn<Estudiante, String> colProyectoAsignado;
+    @FXML private TableColumn<Estudiante, Void> colSeleccionEstudiante;
+
+    /* Sección: Variables de instancia
+     * Almacena los datos del evaluador en sesión y estudiantes a evaluar.
+     */
     private Evaluador evaluadorSesion;
     private ObservableList<Estudiante> estudiantes;
     private Estudiante seleccionado;
 
-    @FXML
-    private Label lblNombreUsuario;
-    @FXML
-    private Button btnCerrarSesion;
-    @FXML
-    private Button btnAceptar;
-    @FXML
-    private TableView<Estudiante> tvEvaluarEstudiante;
-    @FXML
-    private TableColumn<Estudiante, String> colMatricula;
-    @FXML
-    private TableColumn<Estudiante, String> colEstudiante;
-    @FXML
-    private TableColumn<Estudiante, String> colProyectoAsignado;
-    @FXML
-    private TableColumn<Estudiante, Void> colSeleccionEstudiante;
-
+    /**
+     * Initializes the controller class.
+     * @param url Ubicación utilizada para resolver rutas relativas.
+     * @param rb Recursos utilizados para localizar el objeto raíz.
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         configurarTabla();
     }
 
+    /* Sección: Métodos públicos */
+    /**
+     * Inicializa la información del evaluador en sesión.
+     * @param evaluadorSesion Objeto Evaluador con los datos de sesión.
+     */
     public void inicializarInformacion(Evaluador evaluadorSesion) {
         this.evaluadorSesion = evaluadorSesion;
         lblNombreUsuario.setText(evaluadorSesion.toString());
         cargarEstudiantes();
     }
 
+    /* Sección: Configuración de tabla */
+    /**
+     * Configura las columnas y comportamiento de la tabla de estudiantes.
+     */
     private void configurarTabla() {
+        configurarColumnasTexto();
+        configurarColumnaSeleccion();
+    }
+
+    private void configurarColumnasTexto() {
         colMatricula.setCellValueFactory(new PropertyValueFactory<>("matricula"));
         colEstudiante.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().toString()));
         colProyectoAsignado.setCellValueFactory(new PropertyValueFactory<>("nombreProyecto"));
+    }
 
+    private void configurarColumnaSeleccion() {
         colSeleccionEstudiante.setCellFactory(new Callback<TableColumn<Estudiante, Void>, TableCell<Estudiante, Void>>() {
             @Override
             public TableCell<Estudiante, Void> call(TableColumn<Estudiante, Void> param) {
@@ -94,24 +134,43 @@ public class FXMLPrincipalEvaluadorController implements Initializable {
         });
     }
 
+    /* Sección: Carga de datos */
+    /**
+     * Carga la lista de estudiantes pendientes de evaluación.
+     */
     private void cargarEstudiantes() {
         ArrayList<Estudiante> lista = EvaluacionEstudianteDAO.obtenerEstudiantesNoEvaluados();
         estudiantes = FXCollections.observableArrayList(lista);
         tvEvaluarEstudiante.setItems(estudiantes);
     }
 
+    /* Sección: Manejo de eventos */
+    /**
+     * Maneja el evento para evaluar al estudiante seleccionado.
+     * @param event Evento de acción generado.
+     */
     @FXML
     private void clicAceptar(ActionEvent event) {
         if (seleccionado == null) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Sin selección", "Seleccione un estudiante para evaluar.");
+            Utilidad.mostrarAlertaSimple(
+                Alert.AlertType.WARNING, 
+                "Sin selección", 
+                "Seleccione un estudiante para evaluar."
+            );
             return;
         }
 
-        Stage parentStage = Utilidad.getEscenarioComponente(btnAceptar);
+        abrirVentanaEvaluacion();
+    }
 
-        // Cargar FXML manualmente
+    /**
+     * Abre la ventana modal para evaluar al estudiante seleccionado.
+     */
+    private void abrirVentanaEvaluacion() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/sistemapracticasis/vista/FXMLEvaluarRubrica.fxml"));
+            FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/sistemapracticasis/vista/FXMLEvaluarRubrica.fxml")
+            );
             Parent root = loader.load();
 
             FXMLEvaluarRubricaController controller = loader.getController();
@@ -119,26 +178,38 @@ public class FXMLPrincipalEvaluadorController implements Initializable {
 
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initOwner(parentStage);
+            stage.initOwner(Utilidad.getEscenarioComponente(btnAceptar));
             stage.setScene(new Scene(root));
 
-            // 🔁 Refrescar la tabla cuando se cierre la ventana
+            // Refrescar la tabla cuando se cierre la ventana
             stage.setOnHidden(e -> {
-                cargarEstudiantes(); // Refresca la lista
+                cargarEstudiantes();
                 seleccionado = null;
             });
 
             stage.showAndWait();
 
         } catch (IOException ex) {
+            Utilidad.mostrarAlertaSimple(
+                Alert.AlertType.ERROR, 
+                "Error", 
+                "No se pudo abrir la ventana de evaluación."
+            );
             ex.printStackTrace();
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "Error", "No se pudo abrir la ventana de evaluación.");
         }
     }
 
+    /**
+     * Maneja el evento para cerrar la sesión actual.
+     * @param event Evento de acción generado.
+     */
     @FXML
     private void clicCerrarSesion(ActionEvent event) {
-        if (Utilidad.mostrarConfirmacion("Cerrar sesión", "¿Seguro que desea cerrar sesión?", null)) {
+        if (Utilidad.mostrarConfirmacion(
+            "Cerrar sesión", 
+            "¿Seguro que desea cerrar sesión?", 
+            null
+        )) {
             Navegador.cerrarSesion(Utilidad.getEscenarioComponente(lblNombreUsuario));
         }
     }

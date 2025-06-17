@@ -1,14 +1,30 @@
 package sistemapracticasis.controlador;
 
 import java.net.URL;
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.ResourceBundle;
+
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TableRow;
+
 import sistemapracticasis.modelo.dao.EvaluacionEstudianteDAO;
 import sistemapracticasis.modelo.dao.ObservacionDAO;
 import sistemapracticasis.modelo.pojo.Estudiante;
@@ -17,8 +33,18 @@ import sistemapracticasis.util.EvaluacionUtils;
 import sistemapracticasis.util.Navegador;
 import sistemapracticasis.util.Utilidad;
 
+/** 
+ * Autor: Uriel Cendón
+ * Fecha de creación: 15/06/2025
+ * Descripción: Controlador de la vista FXMLEvaluarRubricaController,
+ * que permite agregar las calificaciones y observaciones a las presentaciones
+ * se los estudiantes.
+ */
 public class FXMLEvaluarRubricaController implements Initializable {
 
+    /* Sección: Componentes de la interfaz
+     * Contiene los elementos FXML que componen la interfaz gráfica.
+     */
     @FXML private Label lblNombreEstudiante;
     @FXML private Label lblExperienciaEducativa;
     @FXML private Label lblProyecto;
@@ -37,9 +63,15 @@ public class FXMLEvaluarRubricaController implements Initializable {
     @FXML private Button btnCancelar;
     @FXML private Button btnAgregarObservacion;
 
+    /* Sección: Variables de instancia
+     * Almacena los datos del estudiante y las calificaciones asignadas.
+     */
     private Estudiante estudiante;
     private final Map<String, Integer> calificaciones = new LinkedHashMap<>();
 
+    /* Sección: Constantes
+     * Define los criterios de evaluación utilizados en la rúbrica.
+     */
     private final String[] criterios = {
         "Uso de métodos y técnicas de la IS",
         "Requisitos",
@@ -48,11 +80,20 @@ public class FXMLEvaluarRubricaController implements Initializable {
         "Ortografía y redacción"
     };
 
+    /**
+     * Inicializa el controlador después de que su elemento raíz haya sido procesado.
+     * @param url Ubicación utilizada para resolver rutas relativas para el objeto raíz.
+     * @param rb Recursos utilizados para localizar el objeto raíz.
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         configurarTablas();
     }
 
+    /**
+     * Inicializa los datos del estudiante que será evaluado.
+     * @param estudiante El estudiante que será evaluado.
+     */
     public void inicializarEvaluacion(Estudiante estudiante) {
         this.estudiante = estudiante;
         lblNombreEstudiante.setText(estudiante.toString());
@@ -60,8 +101,12 @@ public class FXMLEvaluarRubricaController implements Initializable {
         cargarRubrica();
     }
 
+    /* Sección: Configuración de tablas
+     * Configura las propiedades y celdas de las tablas de la interfaz.
+     */
     private void configurarTablas() {
-        colCriterioEvaluacion.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getKey()));
+        colCriterioEvaluacion.setCellValueFactory(data -> 
+                new SimpleStringProperty(data.getValue().getKey()));
 
         colExcelente.setCellFactory(col -> crearCeldaEvaluacion("Excelente"));
         colMuyBien.setCellFactory(col -> crearCeldaEvaluacion("Muy bien"));
@@ -73,6 +118,11 @@ public class FXMLEvaluarRubricaController implements Initializable {
         colCalificacion.setCellValueFactory(data -> new javafx.beans.property.SimpleIntegerProperty(data.getValue().getValue()).asObject());
     }
 
+    /**
+     * Crea una celda de tabla con un botón para asignar calificaciones.
+     * @param nivel El nivel de calificación que representa el botón.
+     * @return TableCell configurada con el botón correspondiente.
+     */
     private TableCell<Map.Entry<String, String>, String> crearCeldaEvaluacion(String nivel) {
         return new TableCell<Map.Entry<String, String>, String>() {
             private final Button btn = new Button(nivel);
@@ -95,7 +145,7 @@ public class FXMLEvaluarRubricaController implements Initializable {
                             if (resultado.isPresent()) {
                                 calif = resultado.get();
                             } else {
-                                return; // Cancelado, no actualices nada
+                                return; 
                             }
                         } else {
                             calif = EvaluacionUtils.convertirTextoACalificacion(nivel);
@@ -116,6 +166,9 @@ public class FXMLEvaluarRubricaController implements Initializable {
         };
     }
 
+    /* Sección: Carga de datos
+     * Métodos para cargar y actualizar datos en la interfaz.
+     */
     private void cargarRubrica() {
         ObservableList<Map.Entry<String, String>> filas = FXCollections.observableArrayList();
         for (String criterio : criterios) {
@@ -124,10 +177,20 @@ public class FXMLEvaluarRubricaController implements Initializable {
         tvRubrica.setItems(filas);
     }
 
+    /**
+     * Actualiza la tabla de calificaciones con los valores actuales.
+     */
     private void actualizarTablaCalificacion() {
         tvCalificacion.setItems(FXCollections.observableArrayList(calificaciones.entrySet()));
     }
 
+    /* Sección: Manejo de eventos
+     * Métodos para manejar las acciones del usuario.
+     */
+    /**
+     * Maneja el evento de clic en el botón Aceptar.
+     * @param event El evento de acción generado.
+     */
     @FXML
     private void clicAceptar(ActionEvent event) {
         if (txtObservacion.getText().trim().isEmpty()) {
@@ -166,6 +229,10 @@ public class FXMLEvaluarRubricaController implements Initializable {
         }
     }
 
+    /**
+     * Maneja el evento de clic en el botón Cancelar.
+     * @param event El evento de acción generado.
+     */
     @FXML
     private void clicCancelar(ActionEvent event) {
         if (Utilidad.mostrarConfirmacion("Cancelar", "¿Está seguro de que deseas cancelar?", "Los cambios no se guardarán.")) {
@@ -173,6 +240,10 @@ public class FXMLEvaluarRubricaController implements Initializable {
         }
     }
 
+    /**
+     * Maneja el evento de clic en el botón Agregar Observación.
+     * @param event El evento de acción generado.
+     */
     @FXML
     private void clicAgregarObservacion(ActionEvent event) {
         txtObservacion.requestFocus();

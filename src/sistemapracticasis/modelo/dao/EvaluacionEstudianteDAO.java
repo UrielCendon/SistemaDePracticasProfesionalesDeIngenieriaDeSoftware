@@ -12,8 +12,21 @@ import sistemapracticasis.modelo.pojo.Estudiante;
 import sistemapracticasis.modelo.pojo.EvaluacionEstudiante;
 import sistemapracticasis.util.Utilidad;
 
+/**
+ * Clase DAO para gestionar las operaciones relacionadas con evaluaciones de
+ * estudiantes en la base de datos.
+ * Autor: Raziel Filobello
+ * Fecha de creación: 15/06/2025
+ * Descripción: Proporciona métodos para guardar evaluaciones de estudiantes y 
+ * obtener listados de estudiantes no evaluados.
+ */
 public class EvaluacionEstudianteDAO {
 
+    /**
+     * Guarda una evaluación de estudiante en la base de datos.
+     * @param evaluacion Objeto EvaluacionEstudiante con los datos a guardar.
+     * @return true si la operación fue exitosa, false en caso contrario.
+     */
     public static boolean guardarEvaluacion(EvaluacionEstudiante evaluacion) {
         String consulta = "INSERT INTO evaluacion_estudiante("
             + "fecha_entregado, puntaje_total, uso_tecnicas, seguridad, "
@@ -35,22 +48,28 @@ public class EvaluacionEstudianteDAO {
             return sentencia.executeUpdate() > 0;
 
         } catch (SQLException ex) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", "Error con la base de datos");
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", 
+                "Error con la base de datos");
         }
 
         return false;
     }
 
+    /**
+     * Obtiene una lista de estudiantes que no han sido evaluados en el periodo actual.
+     * @return ArrayList de objetos Estudiante que no han sido evaluados.
+     */
     public static ArrayList<Estudiante> obtenerEstudiantesNoEvaluados() {
         ArrayList<Estudiante> estudiantes = new ArrayList<>();
 
-        String consulta = "SELECT e.*, p.nombre AS nombre_proyecto, per.id_expediente "
-            + "FROM estudiante e "
-            + "JOIN proyecto p ON e.id_proyecto = p.id_proyecto "
-            + "JOIN periodo per ON e.id_estudiante = per.id_estudiante "
-            + "LEFT JOIN evaluacion_estudiante ev ON per.id_expediente = ev.id_expediente "
+        String consulta = "SELECT est.*, proy.nombre AS nombre_proyecto, exp.id_expediente "
+            + "FROM estudiante est "
+            + "JOIN expediente exp ON est.id_estudiante = exp.id_estudiante "
+            + "JOIN periodo p ON exp.id_periodo = p.id_periodo "
+            + "LEFT JOIN evaluacion_estudiante ev ON exp.id_expediente = ev.id_expediente "
+            + "LEFT JOIN proyecto proy ON est.id_proyecto = proy.id_proyecto "
             + "WHERE ev.id_evaluacion_estudiante IS NULL "
-            + "AND CURDATE() BETWEEN per.fecha_inicio AND per.fecha_fin";
+            + "AND CURDATE() BETWEEN p.fecha_inicio AND p.fecha_fin";
 
         try (Connection conexion = ConexionBD.abrirConexion();
              PreparedStatement sentencia = conexion.prepareStatement(consulta);
@@ -69,7 +88,8 @@ public class EvaluacionEstudianteDAO {
             }
 
         } catch (SQLException ex) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", "Error con la base de datos");
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", 
+                "Error con la base de datos");
         }
 
         return estudiantes;

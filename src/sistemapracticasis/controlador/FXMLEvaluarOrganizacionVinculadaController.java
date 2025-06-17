@@ -136,7 +136,7 @@ public class FXMLEvaluarOrganizacionVinculadaController implements
                 "Guardar Evaluación", 
                 "¿Está seguro de querer guardar la evaluación?"
             )){
-                    Integer idExpediente = PeriodoDAO
+                    Integer idExpediente = ExpedienteDAO
                         .obtenerIdExpedientePorEstudiante(estudianteSesion.
                             getIdEstudiante());
 

@@ -9,8 +9,21 @@ import sistemapracticasis.modelo.conexion.ConexionBD;
 import sistemapracticasis.modelo.pojo.EvaluacionOrgVin;
 import sistemapracticasis.util.Utilidad;
 
+/**
+ * Clase DAO para gestionar las operaciones relacionadas con evaluaciones a 
+ * organizaciones vinculadas en la base de datos.
+ * Autor: Uriel Cendón
+ * Fecha de creación: 15/06/2025
+ * Descripción: Proporciona métodos para guardar evaluaciones realizadas a 
+ * organizaciones vinculadas donde los estudiantes realizan sus prácticas.
+ */
 public class EvaluacionOrgVinDAO {
 
+    /**
+     * Guarda una evaluación de organización vinculada en la base de datos.
+     * @param evaluacion Objeto EvaluacionOrgVin con los datos a guardar.
+     * @return true si la operación fue exitosa, false en caso contrario.
+     */
     public static boolean guardarEvaluacionOrganizacionVinculada(EvaluacionOrgVin evaluacion) {
         boolean exito = false;
         String consulta = "INSERT INTO evaluacion_a_organizacion_vinculada "
@@ -33,7 +46,8 @@ public class EvaluacionOrgVinDAO {
             exito = sentencia.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", "Error con la base de datos");
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", 
+                "Error con la base de datos");
         }
 
         return exito;

@@ -260,13 +260,15 @@ public class FXMLActualizarExpedienteDocumentoInicialController implements
     
     private void cargarInformacionExpediente() {
         if (estudianteSesion != null) {
-            Expediente expediente = ExpedienteDAO.obtenerExpedientePorIdEstudiante(
+            Expediente expediente = ExpedienteDAO.
+                obtenerExpedientePorIdEstudiante(
                 estudianteSesion.getIdEstudiante());
 
             if (expediente != null) {
                 txtHorasAcumuladas.setText("Horas acumuladas: " + 
                     String.valueOf(expediente.getHorasAcumuladas()));
-                txtEstado.setText("Estado: " + expediente.getEstado().getValorEnDB());
+                txtEstado.setText("Estado: " + expediente.getEstado().
+                    getValorEnDB());
                 idExpedienteActual = expediente.getIdExpediente();
             } else {
                 txtHorasAcumuladas.setText("Horas acumuladas: 0");
@@ -321,101 +323,6 @@ public class FXMLActualizarExpedienteDocumentoInicialController implements
                 .obtenerEntregasInicialesPorExpediente(idExpedienteActual);
             tblEntregas.getItems().setAll(entregas);
         }
-    }
-
-    /* Sección: Métodos de manejo de eventos
-     * Contiene la lógica para manejar las interacciones del usuario
-     * con la interfaz.
-     */
-    private void manejarCambioSeleccion(EntregaDocumento nuevaSeleccion) {
-        if (nuevaSeleccion != null && estudianteSesion != null) {
-            boolean yaEntregado = DocumentoDAO.documentoYaEntregado(
-                nuevaSeleccion.getIdEntregaDocumento(), 
-                estudianteSesion.getIdEstudiante());
-            btnSubirDocumento.setDisable(yaEntregado);
-        } else {
-            btnSubirDocumento.setDisable(true);
-        }
-    }
-
-    private void manejarSalida() {
-        if (Utilidad.mostrarConfirmacion("Salir", "Salir", "¿Está seguro de que quiere salir?")) {
-            Navegador.cambiarEscenaParametrizada(
-                Utilidad.getEscenarioComponente(lblNombreUsuario),
-                "/sistemapracticasis/vista/FXMLPrincipalEstudiante.fxml",
-                FXMLPrincipalEstudianteController.class,
-                "inicializarInformacion",
-                estudianteSesion
-            );
-        }
-    }
-
-    private void manejarSubidaDocumento() {
-        EntregaDocumento entregaSeleccionada = tblEntregas.getSelectionModel().getSelectedItem();
-    
-        if (entregaSeleccionada != null) {
-            File archivoSeleccionado = seleccionarArchivoPDF();
-            
-            if (archivoSeleccionado != null && confirmarSubidaDocumento()) {
-                subirDocumento(entregaSeleccionada, archivoSeleccionado);
-            }
-        }
-    }
-    
-    /* Sección: Métodos auxiliares
-     * Contiene métodos de apoyo para realizar operaciones específicas
-     * y mantener el código organizado.
-     */
-    private File seleccionarArchivoPDF() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Abrir");
-        fileChooser.getExtensionFilters().add(
-            new FileChooser.ExtensionFilter("Archivos PDF (*.pdf)", "*.pdf"));
-        return fileChooser.showOpenDialog(btnSubirDocumento.getScene().getWindow());
-    }
-    
-    private boolean confirmarSubidaDocumento() {
-        return Utilidad.mostrarConfirmacion(
-            "Confirmación",
-            "Confirmación",
-            "¿Está seguro de que quiere subir el documento seleccionado?");
-    }
-    
-    private void subirDocumento(EntregaDocumento entrega, File archivo) {
-        try {
-            byte[] contenidoDocumento = Files.readAllBytes(archivo.toPath());
-            boolean exito = DocumentoDAO.guardarDocumentoInicial(
-                entrega.getIdEntregaDocumento(),
-                archivo.getName(),
-                contenidoDocumento);
-
-            manejarResultadoSubida(exito);
-        } catch (IOException ex) {
-            manejarErrorSubida(ex);
-        }
-    }
-    
-    private void manejarResultadoSubida(boolean exito) {
-        if (exito) {
-            Utilidad.mostrarAlertaSimple(
-                Alert.AlertType.INFORMATION,
-                "Operación exitosa",
-                "Operación realizada exitosamente.");
-            cargarInformacionEntregaDocumento();
-        } else {
-            Utilidad.mostrarAlertaSimple(
-                Alert.AlertType.ERROR,
-                "Error",
-                "No se pudo subir el documento");
-        }
-    }
-    
-    private void manejarErrorSubida(IOException ex) {
-        ex.printStackTrace();
-        Utilidad.mostrarAlertaSimple(
-            Alert.AlertType.ERROR,
-            "Error",
-            "Ocurrió un error al leer el archivo");
     }
     
     /* Sección: Listener

@@ -13,8 +13,20 @@ import sistemapracticasis.modelo.pojo.ResponsableProyecto;
 import sistemapracticasis.modelo.pojo.ResultadoOperacion;
 import sistemapracticasis.util.Utilidad;
 
+/**
+ * Clase DAO para gestionar operaciones relacionadas con responsables de proyectos.
+ * Autor: Miguel Escobar
+ * Fecha de creación: 16/06/2025
+ * Descripción: Proporciona métodos para registrar, verificar y obtener
+ * información sobre responsables de proyectos.
+ */
 public class ResponsableProyectoDAO {
 
+    /**
+     * Registra un nuevo responsable de proyecto en la base de datos.
+     * @param responsable Objeto con los datos del responsable a registrar
+     * @return Resultado de la operación con estado y mensaje
+     */
     public static ResultadoOperacion registrarResponsable(ResponsableProyecto responsable) {
         ResultadoOperacion resultado = new ResultadoOperacion();
         String consulta = "INSERT INTO responsable_proyecto (nombre, telefono, "
@@ -49,7 +61,13 @@ public class ResponsableProyectoDAO {
         return resultado;
     }
 
-    public static List<ResponsableProyecto> obtenerResponsablesPorIdOrganizacion(int idOrganizacion) {
+    /**
+     * Obtiene los responsables asociados a una organización.
+     * @param idOrganizacion ID de la organización vinculada
+     * @return Lista de responsables de proyectos
+     */
+    public static List<ResponsableProyecto> obtenerResponsablesPorIdOrganizacion
+            (int idOrganizacion) {
         List<ResponsableProyecto> responsables = new ArrayList<>();
         String consulta = "SELECT id_encargado, nombre, apellido_paterno, apellido_materno, "
                         + "telefono, correo, puesto, departamento, id_organizacion_vinculada "
@@ -70,16 +88,23 @@ public class ResponsableProyectoDAO {
                     responsable.setCorreo(resultado.getString("correo"));
                     responsable.setPuesto(resultado.getString("puesto"));
                     responsable.setDepartamento(resultado.getString("departamento"));
-                    responsable.setIdOrganizacionVinculada(resultado.getInt("id_organizacion_vinculada"));
+                    responsable.setIdOrganizacionVinculada(resultado.getInt
+                        ("id_organizacion_vinculada"));
                     responsables.add(responsable);
                 }
             }
         } catch (SQLException e) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", "Error con la base de datos");
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", 
+                "Error con la base de datos");
         }
         return responsables;
     }
 
+    /**
+    * Obtiene un responsable por su ID.
+    * @param idResponsable ID del responsable a buscar
+    * @return Objeto ResponsableProyecto o null si no se encuentra
+    */
     public static ResponsableProyecto obtenerResponsablePorId(int idResponsable) {
         ResponsableProyecto responsable = null;
         String consulta = "SELECT id_encargado, nombre, apellido_paterno, apellido_materno, "
@@ -101,11 +126,13 @@ public class ResponsableProyectoDAO {
                     responsable.setCorreo(resultado.getString("correo"));
                     responsable.setPuesto(resultado.getString("puesto"));
                     responsable.setDepartamento(resultado.getString("departamento"));
-                    responsable.setIdOrganizacionVinculada(resultado.getInt("id_organizacion_vinculada"));
+                    responsable.setIdOrganizacionVinculada(resultado.getInt
+                        ("id_organizacion_vinculada"));
                 }
             }
         } catch (SQLException e) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", "Error con la base de datos");
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", 
+                "Error con la base de datos");
         }
         return responsable;
     }

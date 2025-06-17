@@ -1,6 +1,7 @@
 package sistemapracticasis.controlador;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
@@ -17,7 +18,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import sistemapracticasis.modelo.dao.EstudianteDAO;
 import sistemapracticasis.modelo.dao.ExpedienteDAO;
-import sistemapracticasis.modelo.dao.PeriodoDAO;
 import sistemapracticasis.modelo.dao.ProyectoDAO;
 import sistemapracticasis.modelo.dto.ParametrosProyectosDisponibles;
 import sistemapracticasis.modelo.pojo.Estudiante;
@@ -131,8 +131,8 @@ public class FXMLProyectosDisponiblesController implements Initializable {
                             insertarExpedienteVacio();
 
                         if (idExpediente > 0) {
-                            boolean actualizadoPeriodo = PeriodoDAO
-                                .actualizarExpedienteEstudiante(estudiante.
+                            boolean actualizadoPeriodo = ExpedienteDAO
+                                .insertarEstudianteEnExpediente(estudiante.
                                     getIdEstudiante(), idExpediente);
 
                             if (!actualizadoPeriodo) {
@@ -176,7 +176,7 @@ public class FXMLProyectosDisponiblesController implements Initializable {
                             "Proyecto asignado con éxito."
                         );
 
-                    } catch (Exception ex) {
+                    } catch (SQLException ex) {
                         ex.printStackTrace();
                         Utilidad.mostrarAlertaSimple(
                             Alert.AlertType.ERROR,

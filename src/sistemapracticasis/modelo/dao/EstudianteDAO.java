@@ -152,11 +152,10 @@ public class EstudianteDAO {
     public boolean tieneEvaluacionAOV(String matriculaEstudiante) {
         String consulta = "SELECT eval.id_evaluacion_a_organizacion_vinculada "
                 + "FROM estudiante est "
-                + "JOIN periodo per ON est.id_estudiante = per.id_estudiante "
-                + "JOIN expediente exp ON per.id_expediente = exp.id_expediente "
-                + "JOIN evaluacion_a_organizacion_vinculada eval ON exp.id_expediente = "
-                + "eval.id_expediente "
-                + "WHERE est.matricula = ? "
+                + "JOIN expediente exp ON est.id_estudiante = exp.id_estudiante "
+                + "JOIN periodo per ON exp.id_periodo = per.id_periodo "
+                + "JOIN evaluacion_a_organizacion_vinculada eval ON exp.id_expediente = eval.id_expediente "
+                + "WHERE est.matricula = ? " 
                 + "AND exp.estado = 'en curso' "
                 + "AND CURDATE() BETWEEN per.fecha_inicio AND per.fecha_fin";
 
@@ -183,10 +182,11 @@ public class EstudianteDAO {
      */
     public static boolean estaEnPeriodoActual(String matricula) {
         String consulta = "SELECT COUNT(*) > 0 "
-                + "FROM periodo p "
-                + "INNER JOIN estudiante e ON e.id_estudiante = p.id_estudiante "
-                + "WHERE e.matricula = ? "
-                + "AND CURDATE() BETWEEN p.fecha_inicio AND p.fecha_fin";
+            + "FROM periodo p "
+            + "INNER JOIN periodo_cursante pc ON p.id_periodo = pc.id_periodo "
+            + "INNER JOIN estudiante e ON pc.id_estudiante = e.id_estudiante "
+            + "WHERE e.matricula = ? "
+            + "AND CURDATE() BETWEEN p.fecha_inicio AND p.fecha_fin";
 
         try (Connection conn = ConexionBD.abrirConexion();
              PreparedStatement sentencia = conn.prepareStatement(consulta)) {
@@ -212,8 +212,15 @@ public class EstudianteDAO {
         int idExpediente = -1;
 
         try (Connection conexion = ConexionBD.abrirConexion();
-             PreparedStatement sentencia = conexion.prepareStatement(
-                     "SELECT id_expediente FROM periodo WHERE id_estudiante = ?")) {
+            PreparedStatement sentencia = conexion.prepareStatement(
+                "SELECT exp.id_expediente "
+                + "FROM expediente exp "
+                + "INNER JOIN estudiante est ON exp.id_estudiante = est.id_estudiante "
+                + "INNER JOIN periodo p ON exp.id_periodo = p.id_periodo "
+                + "INNER JOIN periodo_cursante pc ON pc.id_periodo = p.id_periodo "
+                + "WHERE est.matricula = ? "
+                + "AND CURDATE() BETWEEN p.fecha_inicio AND p.fecha_fin"
+        )) {
 
             sentencia.setInt(1, idEstudiante);
 

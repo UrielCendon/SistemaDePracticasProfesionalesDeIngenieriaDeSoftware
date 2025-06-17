@@ -35,7 +35,8 @@ public class DocumentoDAO {
             + "JOIN entrega_documento ed ON d.id_entrega_documento = ed."
             + "id_entrega_documento "
             + "JOIN expediente e ON ed.id_expediente = e.id_expediente "
-            + "JOIN periodo p ON e.id_expediente = p.id_expediente "
+            + "JOIN periodo_cursante pc ON e.id_estudiante = pc.id_estudiante "
+            + "AND e.id_periodo = pc.id_periodo "
             + "WHERE d.id_entrega_documento = ? AND p.id_estudiante = ?";
         
         try (Connection conn = ConexionBD.abrirConexion();
@@ -97,10 +98,8 @@ public class DocumentoDAO {
         List<EntregaVisual> lista = new ArrayList<>();
 
         String consulta = "SELECT d.id_documento, d.nombre_documento, "
-            + "d.fecha_entregado "
-            + "FROM documento d "
-            + "JOIN entrega_documento ed ON d.id_entrega_documento = ed."
-            + "id_entrega_documento "
+            + "d.fecha_entregado FROM documento d "
+            + "JOIN entrega_documento ed ON d.id_entrega_documento = ed. id_entrega_documento "
             + "WHERE ed.id_expediente = ? AND d.fecha_entregado IS NOT NULL";
 
         try (Connection conexion = ConexionBD.abrirConexion();

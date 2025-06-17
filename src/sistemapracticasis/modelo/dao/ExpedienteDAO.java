@@ -31,8 +31,10 @@ public class ExpedienteDAO {
     public boolean tieneExpedienteEnCurso(String matriculaEstudiante) {
         String consulta = "SELECT exp.id_expediente "
             + "FROM expediente exp "
-            + "JOIN periodo per ON exp.id_expediente = per.id_expediente "
-            + "JOIN estudiante est ON per.id_estudiante = est.id_estudiante "
+            + "INNER JOIN estudiante est ON exp.id_estudiante = est.id_estudiante "
+            + "INNER JOIN periodo per ON exp.id_periodo = per.id_periodo "
+            + "INNER JOIN periodo_cursante pc ON per.id_periodo = pc.id_periodo "
+            + "AND est.id_estudiante = pc.id_estudiante "
             + "WHERE est.matricula = ? "
             + "AND exp.estado = 'en curso' "
             + "AND CURDATE() BETWEEN per.fecha_inicio AND per.fecha_fin";
@@ -91,9 +93,11 @@ public class ExpedienteDAO {
     public static Expediente obtenerExpedientePorIdEstudiante(int idEstudiante) {
         String consulta = "SELECT e.id_expediente, e.horas_acumuladas, e.estado "
             + "FROM expediente e "
-            + "JOIN periodo p ON e.id_expediente = p.id_expediente "
-            + "WHERE p.id_estudiante = ? "
-            + "ORDER BY p.fecha_inicio DESC LIMIT 1";
+            + "INNER JOIN periodo p ON e.id_periodo = p.id_periodo "
+            + "INNER JOIN periodo_cursante pc ON p.id_periodo = pc.id_periodo "
+            + "WHERE pc.id_estudiante = ? "
+            + "ORDER BY p.fecha_inicio DESC "
+            + "LIMIT 1";
 
         try (Connection conexion = ConexionBD.abrirConexion();
              PreparedStatement sentencia = conexion.prepareStatement(consulta)) {
@@ -151,5 +155,72 @@ public class ExpedienteDAO {
         }
 
         return -1;
+    }
+    
+    /**
+     * Actualiza el expediente asociado a un estudiante en el periodo actual.
+     * @param idEstudiante ID del estudiante
+     * @param idExpediente ID del expediente a asociar
+     * @return true si la actualización fue exitosa, false en caso contrario
+     * @throws SQLException Si ocurre un error al acceder a la base de datos
+     */
+    public static boolean insertarEstudianteEnExpediente(int idEstudiante, int idExpediente) 
+            throws SQLException {
+        String consultaPeriodoCursante = "SELECT p.id_periodo FROM periodo_cursante pc "
+            + "JOIN periodo p ON p.id_periodo = pc.id_periodo "
+            + "WHERE pc.id_estudiante = ? AND CURDATE() BETWEEN p.fecha_inicio AND p.fecha_fin";
+
+        String consultaUpdateExpediente = "UPDATE expediente SET id_estudiante = ?, "
+                + "id_periodo = ?, horas_acumuladas = 0, estado = 'en curso' "
+                + "WHERE id_expediente = ?";
+
+        try (Connection conexion = ConexionBD.abrirConexion();
+             PreparedStatement sentenciaPeriodo = conexion.prepareStatement
+                (consultaPeriodoCursante)) {
+
+            sentenciaPeriodo.setInt(1, idEstudiante);
+            try (ResultSet resultado = sentenciaPeriodo.executeQuery()) {
+                if (resultado.next()) {
+                    int idPeriodo = resultado.getInt("id_periodo");
+
+                    try (PreparedStatement sentenciaActualizar = conexion.prepareStatement
+                            (consultaUpdateExpediente)) {
+                        sentenciaActualizar.setInt(1, idEstudiante);
+                        sentenciaActualizar.setInt(2, idPeriodo);
+                        sentenciaActualizar.setInt(3, idExpediente);
+
+                        return sentenciaActualizar.executeUpdate() > 0;
+                    }
+                } else {
+                    return false;
+                }
+            }
+        }
+    }
+
+    /**
+     * Obtiene el ID de expediente asociado a un estudiante.
+     * @param idEstudiante ID del estudiante
+     * @return ID del expediente asociado o null si no existe
+     */
+    public static Integer obtenerIdExpedientePorEstudiante(int idEstudiante) {
+        Integer idExpediente = null;
+        String consulta = "SELECT id_expediente FROM expediente WHERE id_estudiante = ?";
+
+        try (Connection conexion = ConexionBD.abrirConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(consulta)) {
+
+            sentencia.setInt(1, idEstudiante);
+
+            try (ResultSet resultado = sentencia.executeQuery()) {
+                if (resultado.next()) {
+                    idExpediente = resultado.getInt("id_expediente");
+                }
+            }
+        } catch (SQLException e) {
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", 
+                "Error con la base de datos");
+        }
+        return idExpediente;
     }
 }

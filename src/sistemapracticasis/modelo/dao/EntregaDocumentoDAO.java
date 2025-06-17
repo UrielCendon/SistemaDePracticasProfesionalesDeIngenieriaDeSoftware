@@ -327,7 +327,6 @@ public class EntregaDocumentoDAO {
         stmt.setDouble(4, entrega.getCalificacion());
         stmt.setInt(5, idExpediente);
         stmt.setString(6, mapearNombreATipoDescripcion(entrega.getNombre()));
-        stmt.clearParameters();
     }
 
     /**

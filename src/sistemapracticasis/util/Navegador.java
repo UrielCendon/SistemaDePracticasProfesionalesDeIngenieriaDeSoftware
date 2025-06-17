@@ -3,6 +3,7 @@ package sistemapracticasis.util;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
+
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -12,10 +13,37 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 /**
- *
- * @author uriel
+ * Autor: Uriel Cendón
+ * Fecha de creación: 13/06/2025
+ * Descripción: Esta clase contiene métodos estáticos utilizados para manejar la 
+ * navegación entre diferentes vistas en una aplicación JavaFX. Incluye 
+ * funcionalidades
+ * como cambiar de escena, abrir ventanas modales y cerrar sesiones.
  */
-public class Navegador {
+
+public class Navegador { 
+
+    /*
+     * Sección: Cambio de escena parametrizada
+     * Esta sección contiene el método para cambiar la escena de la 
+     * aplicación, permitiendo pasar parámetros al controlador asociado.
+     */
+    
+    /**
+     * Cambia la escena actual del escenario principal a una nueva escena basada
+     * en un archivo FXML. Además, invoca un método de inicialización en el 
+     * controlador de la nueva escena si se proporciona.
+     *
+     * @param escenarioBase El escenario principal de la aplicación donde se 
+     *                      cambiará la escena.
+     * @param rutaFXML La ruta del archivo FXML que representa la nueva vista.
+     * @param claseControlador La clase del controlador de la nueva vista.
+     * @param metodoInicializacion El nombre del método de inicialización en el 
+     *                             controlador que se debe invocar, si se 
+     *                             proporciona.
+     * @param parametros Parámetros opcionales que se pasan al método de 
+     *                  inicialización.
+     */
     public static <T, C> void cambiarEscenaParametrizada(
             Stage escenarioBase,
             String rutaFXML,
@@ -58,7 +86,19 @@ public class Navegador {
             ex.printStackTrace();
         }
     }
-      
+
+    /*
+     * Sección: Cierre de sesión
+     * Esta sección permite cambiar la escena a la pantalla de inicio de sesión.
+     */
+    
+    /**
+     * Cambia la escena actual del escenario principal a la pantalla de inicio 
+     * de sesión.
+     *
+     * @param escenarioBase El escenario principal de la aplicación donde se 
+     *                      cambiará la escena.
+     */
     public static void cerrarSesion(Stage escenarioBase) {
         final String rutaFXML = "/sistemapracticasis/vista/FXMLInicioSesion."
             + "fxml";
@@ -89,7 +129,22 @@ public class Navegador {
             ex.printStackTrace();
         }
     }
+
+    /*
+     * Sección: Apertura de ventana modal
+     * Esta sección contiene métodos que permiten abrir ventanas modales 
+     * utilizando un archivo FXML y su respectivo controlador.
+     */
     
+    /**
+     * Abre una ventana modal en la aplicación, utilizando un archivo FXML 
+     * específico para definir la vista y un controlador asociado.
+     *
+     * @param ventanaPadre La ventana principal desde la cual se abrirá la 
+     *                     ventana modal.
+     * @param rutaFXML La ruta del archivo FXML que representa la nueva vista.
+     * @param claseControlador La clase del controlador de la nueva vista.
+     */
     public static <C> void abrirVentanaModal(
         Window ventanaPadre,
         String rutaFXML,
@@ -124,7 +179,28 @@ public class Navegador {
             ex.printStackTrace();
         }
     }
+
+    /*
+     * Sección: Apertura de ventana modal parametrizada
+     * Esta sección contiene métodos que permiten abrir ventanas modales 
+     * parametrizadas, lo que permite pasar parámetros a la vista a través 
+     * del controlador.
+     */
     
+    /**
+     * Abre una ventana modal parametrizada en la aplicación, permitiendo pasar
+     * parámetros al controlador de la vista.
+     *
+     * @param ventanaPadre La ventana principal desde la cual se abrirá la 
+     *                     ventana modal.
+     * @param rutaFXML La ruta del archivo FXML que representa la nueva vista.
+     * @param claseControlador La clase del controlador de la nueva vista.
+     * @param metodoInicializacion El nombre del método de inicialización en el 
+     *                             controlador que se debe invocar, si se 
+     *                             proporciona.
+     * @param parametros Parámetros opcionales que se pasan al método de 
+     *                  inicialización.
+     */
     public static <C> void abrirVentanaModalParametrizada(
         Window ventanaPadre,
         String rutaFXML,
@@ -168,12 +244,37 @@ public class Navegador {
             ex.printStackTrace();
         }
     }
+
+    /*
+     * Sección: Cierre de ventana
+     * Esta sección contiene el método que cierra una ventana de la aplicación.
+     */
     
+    /**
+     * Cierra la ventana que contiene el componente de la interfaz de usuario.
+     *
+     * @param componente El componente de la interfaz que pertenece a la ventana
+     *                  que se cerrará.
+     */
     public static void cerrarVentana(Control componente){
         Stage ventana = (Stage) componente.getScene().getWindow();
         ventana.close();
     }
+
+    /*
+     * Sección: Obtener tipos de parámetros
+     * Esta sección contiene el método privado para obtener los tipos de los 
+     * parámetros pasados a un método.
+     */
     
+    /**
+     * Obtiene los tipos de parámetros de un método basado en los objetos 
+     * pasados
+     * como parámetros.
+     *
+     * @param parametros Los parámetros cuyos tipos se deben determinar.
+     * @return Un arreglo con las clases de los parámetros.
+     */
     private static Class<?>[] getParameterTypes(Object... parametros) {
         Class<?>[] parameterTypes = new Class<?>[parametros.length];
         for (int i = 0; i < parametros.length; i++) {

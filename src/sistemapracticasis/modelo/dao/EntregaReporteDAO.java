@@ -67,10 +67,8 @@ public class EntregaReporteDAO {
                 fechaFin, 
                 0, 
                 0.0, 
-                0, 
                 0
             );
-            entrega.setObservacion("Observación para entrega " + i);
             entregas.add(entrega);
         }
 
@@ -96,8 +94,12 @@ public class EntregaReporteDAO {
             return totalInsertadas > 0;
 
         } catch (SQLException e) {
-            manejarErrorGuardado(e);
-            throw new RuntimeException("Error al guardar entregas de reportes", e);
+                Utilidad.mostrarAlertaSimple(
+                    Alert.AlertType.ERROR,
+                    "Error al guardar",
+                    "No se pudieron guardar las entregas de reportes: " + e.getMessage()
+                );
+            throw new RuntimeException(e);
         }
     }
 
@@ -253,18 +255,6 @@ public class EntregaReporteDAO {
         stmt.setString(3, entrega.getFechaFin());
         stmt.setDouble(4, entrega.getCalificacion());
         stmt.setInt(5, idExpediente);
-    }
-
-    /**
-     * Maneja y muestra un error ocurrido durante el guardado de entregas.
-     * @param e Excepción SQL ocurrida.
-     */
-    private static void manejarErrorGuardado(SQLException e) {
-        Utilidad.mostrarAlertaSimple(
-            Alert.AlertType.ERROR,
-            "Error al guardar",
-            "No se pudieron guardar las entregas de reportes: " + e.getMessage()
-        );
     }
 
     /**

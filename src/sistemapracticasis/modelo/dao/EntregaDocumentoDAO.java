@@ -154,7 +154,8 @@ public class EntregaDocumentoDAO {
                 return false;
             }
 
-            List<Integer> expedientes = obtenerExpedientesParaPeriodo(conexion, fechaInicioPeriodo, fechaFinPeriodo);
+            List<Integer> expedientes = obtenerExpedientesParaPeriodo(conexion, 
+                    fechaInicioPeriodo, fechaFinPeriodo);
             validarExpedientes(expedientes);
 
             int totalEntregasInsertadas = procesarEntregas(conexion, entregas, expedientes);
@@ -167,8 +168,6 @@ public class EntregaDocumentoDAO {
             cerrarConexion(conexion);
         }
     }
-
-    // Métodos auxiliares mejorados
 
     /**
      * Obtiene los expedientes asociados a un periodo específico.
@@ -246,7 +245,8 @@ public class EntregaDocumentoDAO {
         int totalInsertadas = 0;
 
         for (EntregaDocumento entrega : entregas) {
-            totalInsertadas += procesarEntregaParaExpedientes(entrega, expedientes, stmtInsert, stmtExiste);
+            totalInsertadas += procesarEntregaParaExpedientes(entrega, expedientes, 
+                    stmtInsert, stmtExiste);
         }
 
         if (totalInsertadas > 0) {
@@ -262,7 +262,8 @@ public class EntregaDocumentoDAO {
     private static int procesarEntregaParaExpedientes(EntregaDocumento entrega, 
                                                     List<Integer> expedientes,
                                                     PreparedStatement stmtInsert,
-                                                    PreparedStatement stmtExiste) throws SQLException {
+                                                    PreparedStatement stmtExiste)
+            throws SQLException {
         int insertadasPorEntrega = 0;
 
         for (int idExpediente : expedientes) {

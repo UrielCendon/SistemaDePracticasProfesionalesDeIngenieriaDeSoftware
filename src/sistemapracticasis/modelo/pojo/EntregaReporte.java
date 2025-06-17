@@ -66,11 +66,10 @@ public class EntregaReporte {
      *                 0 para no validado).
      * @param calificacion La calificación asignada al reporte.
      * @param idExpediente El ID del expediente asociado al reporte.
-     * @param idObservacion El ID de la observación asociada al reporte.
      */
     public EntregaReporte(int idEntregaReporte, String nombre, String 
             fechaInicio, String fechaFin, int validado, double calificacion, 
-            int idExpediente, int idObservacion) {
+            int idExpediente) {
         this.idEntregaReporte = idEntregaReporte;
         this.nombre = nombre;
         this.fechaInicio = fechaInicio;
@@ -78,7 +77,6 @@ public class EntregaReporte {
         this.validado = validado;
         this.calificacion = calificacion;
         this.idExpediente = idExpediente;
-        this.idObservacion = idObservacion;
     }
 
     /**
@@ -205,41 +203,5 @@ public class EntregaReporte {
      */
     public void setIdExpediente(int idExpediente) {
         this.idExpediente = idExpediente;
-    }
-
-    /**
-     * Obtiene el ID de la observación asociada al reporte.
-     * 
-     * @return El ID de la observación asociada al reporte.
-     */
-    public int getIdObservacion() {
-        return idObservacion;
-    }
-
-    /**
-     * Establece el ID de la observación asociada al reporte.
-     * 
-     * @param idObservacion El ID de la observación asociada al reporte.
-     */
-    public void setIdObservacion(int idObservacion) {
-        this.idObservacion = idObservacion;
-    }
-
-    /**
-     * Obtiene la observación realizada sobre el reporte.
-     * 
-     * @return La observación realizada sobre el reporte.
-     */
-    public String getObservacion() {
-        return observacion;
-    }
-
-    /**
-     * Establece la observación realizada sobre el reporte.
-     * 
-     * @param observacion La observación realizada sobre el reporte.
-     */
-    public void setObservacion(String observacion) {
-        this.observacion = observacion;
     }
 }

@@ -177,7 +177,6 @@ public class FXMLGenerarEntregaReportesController implements Initializable {
             return;
         }
 
-        // Verificar si ya existen entregas para este período
         if (EntregaReporteDAO.existenEntregasDeReportesParaPeriodo(fechaInicio, fechaFin)) {
             boolean continuar = Utilidad.mostrarConfirmacion(
                 "Entregas existentes",
@@ -207,7 +206,11 @@ public class FXMLGenerarEntregaReportesController implements Initializable {
             }
             Navegador.cerrarVentana(btnGenerar);
         } catch (RuntimeException e) {
-            // El mensaje de error ya se muestra en el DAO
+                Utilidad.mostrarAlertaSimple(
+                Alert.AlertType.ERROR,
+                "Error al guardar",
+                "No se pudieron guardar las entregas de reportes: " + e.getMessage()
+            );
         }
     }
 

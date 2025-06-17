@@ -85,16 +85,24 @@ public class FXMLPrincipalEstudianteController implements Initializable {
         int idEstudiante = estudianteSesion.getIdEstudiante();
         PeriodoDAO periodoDAO = new PeriodoDAO();
         Periodo periodoActual = periodoDAO.obtenerPeriodoActualPorEstudiante(idEstudiante);
+        if (!new ExpedienteDAO().tieneExpedienteEnCurso(estudianteSesion.
+                getMatricula())) {
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING,
+                "Sin expediente activo",
+                "Aún no tienes un expediente activo en este periodo, por lo "
+                + "tanto no se puede actualizar un documento inicial.");
+            return;
+        }
         if (periodoActual != null) {
             int idPeriodo = periodoActual.getIdPeriodo();
             if (!EntregaDocumentoDAO.existenEntregasInicialesParaPeriodo(idPeriodo)) {
-            Utilidad.mostrarAlertaSimple(
-                Alert.AlertType.WARNING,
-                "No hay Documentos Iniciales Programados",
-                "No se han programado Documentos Iniciales para este estudiante"
-                + " en el periodo actual."
-            );
-            return;
+                Utilidad.mostrarAlertaSimple(
+                    Alert.AlertType.WARNING,
+                    "No hay Documentos Iniciales Programados",
+                    "No se han programado Documentos Iniciales para este estudiante"
+                    + " en el periodo actual."
+                );
+                return;
             }
         }
                 

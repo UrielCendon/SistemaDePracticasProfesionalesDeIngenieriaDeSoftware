@@ -38,7 +38,7 @@ public class FXMLProyectosDisponiblesController implements Initializable {
     * Contiene todas las variables de instancia y componentes FXML
     * utilizados en el controlador.
     /** Instancia global de un DAO para usarse en varios puntos de la clase */
-    private EstudianteDAO estudianteDAO = new EstudianteDAO();
+    private final EstudianteDAO ESTUDIANTE_DAO = new EstudianteDAO();
     
     /** Tabla que muestra el listado de proyectos disponibles */
     @FXML private TableView<Proyecto> tblProyectos;
@@ -122,7 +122,7 @@ public class FXMLProyectosDisponiblesController implements Initializable {
 
             if (proyectoSeleccionado != null) {
                 int idProyecto = proyectoSeleccionado.getIdProyecto();
-                boolean actualizado = estudianteDAO.asignarProyecto
+                boolean actualizado = ESTUDIANTE_DAO.asignarProyecto
                     (estudiante.getMatricula(), idProyecto);
 
                 if (actualizado) {

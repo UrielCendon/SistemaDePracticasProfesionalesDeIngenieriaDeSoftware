@@ -78,6 +78,16 @@ public class FXMLPrincipalEstudianteController implements Initializable {
     private void clicDocIniciales(ActionEvent event) {
         int idEstudiante = estudianteSesion.getIdEstudiante();
 
+        if (!EntregaDocumentoDAO.existeEntregaInicialVigente(idEstudiante)) {
+            Utilidad.mostrarAlertaSimple(
+                Alert.AlertType.WARNING,
+                "No hay Documentos Iniciales Programados",
+                "No se han programado Documentos Iniciales para este estudiante"
+                + " en el periodo actual."
+            );
+            return;
+        }
+        
         if(!EntregaDocumentoDAO.existeEntregaInicialVigente(idEstudiante)){
             Utilidad.mostrarAlertaSimple(
                 Alert.AlertType.WARNING,
@@ -89,7 +99,8 @@ public class FXMLPrincipalEstudianteController implements Initializable {
         
         Navegador.cambiarEscenaParametrizada(
             Utilidad.getEscenarioComponente(lblNombreUsuario),
-            "/sistemapracticasis/vista/FXMLActualizarExpedienteDocumentoInicial.fxml",
+            "/sistemapracticasis/vista/FXMLActualizarExpedienteDocumentoInicial"
+            + ".fxml",
             FXMLActualizarExpedienteDocumentoInicialController.class,
             "inicializarInformacion",
             estudianteSesion
@@ -97,14 +108,16 @@ public class FXMLPrincipalEstudianteController implements Initializable {
     }
 
     /**
-     * Maneja el evento para la entrega de documentos intermedios (no implementado).
+     * Maneja el evento para la entrega de documentos intermedios 
+     * (no implementado).
      * @param event Evento de acción generado.
      */
     @FXML
     private void clicDocIntermedios(ActionEvent event) {
         Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION, 
             "Funcionalidad no disponible", 
-            "Esta sección del sistema aún no ha sido desarrollada en esta versión.");
+            "Esta sección del sistema aún no ha sido desarrollada en esta "
+            + "versión.");
     }
 
     /**
@@ -115,7 +128,8 @@ public class FXMLPrincipalEstudianteController implements Initializable {
     private void clicDocFinales(ActionEvent event) {
         Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION, 
             "Funcionalidad no disponible", 
-            "Esta sección del sistema aún no ha sido desarrollada en esta versión.");
+            "Esta sección del sistema aún no ha sido desarrollada en esta "
+            + "versión.");
     }
 
     /**
@@ -126,7 +140,8 @@ public class FXMLPrincipalEstudianteController implements Initializable {
     private void clicDocReportes(ActionEvent event) {
         Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION, 
             "Funcionalidad no disponible", 
-            "Esta sección del sistema aún no ha sido desarrollada en esta versión.");
+            "Esta sección del sistema aún no ha sido desarrollada en esta "
+            + "versión.");
     }
 
     /* Sección: Evaluación y consultas */
@@ -138,7 +153,8 @@ public class FXMLPrincipalEstudianteController implements Initializable {
     private void clicGenerarFormatoEvaluacion(ActionEvent event) {
         Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION, 
             "Funcionalidad no disponible", 
-            "Esta sección del sistema aún no ha sido desarrollada en esta versión.");
+            "Esta sección del sistema aún no ha sido desarrollada en esta "
+            + "versión.");
     }
 
     /**
@@ -149,7 +165,8 @@ public class FXMLPrincipalEstudianteController implements Initializable {
     private void clicConsultarAvance(ActionEvent event) {
         Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION, 
             "Funcionalidad no disponible", 
-            "Esta sección del sistema aún no ha sido desarrollada en esta versión.");
+            "Esta sección del sistema aún no ha sido desarrollada en esta "
+            + "versión.");
     }
 
     /**
@@ -158,17 +175,20 @@ public class FXMLPrincipalEstudianteController implements Initializable {
      */
     @FXML
     private void clicEvaluarOV(ActionEvent event) {
-        if (!EstudianteDAO.estaEnPeriodoActual(estudianteSesion.getMatricula())) {
+        if (!EstudianteDAO.estaEnPeriodoActual(estudianteSesion.
+                getMatricula())) {
             Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, 
                 "Periodo incorrecto", 
                 "No estás asignado al periodo actual");
             return;
         }
 
-        if (!new ExpedienteDAO().tieneExpedienteEnCurso(estudianteSesion.getMatricula())) {
+        if (!new ExpedienteDAO().tieneExpedienteEnCurso(estudianteSesion.
+                getMatricula())) {
             Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING,
                 "Sin expediente activo",
-                "Aún no tienes un expediente activo en este periodo, por lo tanto no se puede evaluar a una organización vinculada.");
+                "Aún no tienes un expediente activo en este periodo, por lo "
+                + "tanto no se puede evaluar a una organización vinculada.");
             return;
         }
         

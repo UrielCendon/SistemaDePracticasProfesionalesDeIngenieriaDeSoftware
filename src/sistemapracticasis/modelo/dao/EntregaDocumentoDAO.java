@@ -150,10 +150,6 @@ public class EntregaDocumentoDAO {
             conexion = ConexionBD.abrirConexion();
             conexion.setAutoCommit(false);
 
-            if (existenEntregasInicialesParaPeriodo(conexion, fechaInicioPeriodo, fechaFinPeriodo)) {
-                return false;
-            }
-
             List<Integer> expedientes = obtenerExpedientesParaPeriodo(conexion, 
                     fechaInicioPeriodo, fechaFinPeriodo);
             validarExpedientes(expedientes);
@@ -208,13 +204,42 @@ public class EntregaDocumentoDAO {
     private static int procesarEntregas(Connection conexion, 
                                       List<EntregaDocumento> entregas, 
                                       List<Integer> expedientes) throws SQLException {
-        try (PreparedStatement stmtInsert = crearStatementInsert(conexion);
-             PreparedStatement stmtExiste = crearStatementExiste(conexion)) {
+        int totalInsertadas = 0;
 
-            return procesarTodasEntregas(entregas, expedientes, stmtInsert, stmtExiste);
+        try (PreparedStatement stmtInsert = crearStatementInsert(conexion)) {
+            for (int idExpediente : expedientes) {
+                if (!existenEntregasInicialesParaExpediente(conexion, idExpediente)) {
+                    totalInsertadas += insertarEntregasParaExpediente(entregas, idExpediente, stmtInsert);
+                }
+            }
+
+            if (totalInsertadas > 0) {
+                stmtInsert.executeBatch();
+            }
         }
+
+        return totalInsertadas;
     }
 
+    /**
+     * Inserta las entregas para los expedientes
+     * @param entregas
+     * @param idExpediente
+     * @param stmtInsert
+     * @return
+     * @throws SQLException 
+     */
+    private static int insertarEntregasParaExpediente(List<EntregaDocumento> entregas, 
+                                                    int idExpediente,
+                                                    PreparedStatement stmtInsert) throws SQLException {
+        int insertadas = 0;
+        for (EntregaDocumento entrega : entregas) {
+            configurarInsertEntrega(stmtInsert, entrega, idExpediente);
+            stmtInsert.addBatch();
+            insertadas++;
+        }
+        return insertadas;
+    }
     /**
      * Crea el PreparedStatement para insertar entregas.
      */
@@ -348,24 +373,17 @@ public class EntregaDocumentoDAO {
     }
 
     /**
-     * 
+     * Verifica si existen entregas por periodo
      * @param conexion
      * @param fechaInicio
      * @param fechaFin
      * @return
      * @throws SQLException 
      */
-    private static boolean existenEntregasInicialesParaPeriodo(Connection conexion, 
-            String fechaInicio, String fechaFin) throws SQLException {
-        String sql = "SELECT 1 FROM entrega_documento ed "
-            + "JOIN expediente e ON ed.id_expediente = e.id_expediente "
-            + "JOIN periodo p ON e.id_periodo = p.id_periodo "
-            + "WHERE p.fecha_inicio = ? AND p.fecha_fin = ? AND ed.tipo_entrega = 'inicial' "
-            + "LIMIT 1";
-
+    private static boolean existenEntregasInicialesParaExpediente(Connection conexion, int idExpediente) throws SQLException {
+        String sql = "SELECT 1 FROM entrega_documento WHERE id_expediente = ? AND tipo_entrega = 'inicial' LIMIT 1";
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {
-            ps.setString(1, fechaInicio);
-            ps.setString(2, fechaFin);
+            ps.setInt(1, idExpediente);
             try (ResultSet rs = ps.executeQuery()) {
                 return rs.next();
             }
@@ -373,7 +391,7 @@ public class EntregaDocumentoDAO {
     }
     
     /**
-     * 
+     * Verifica si ya hay entrega
      * @param conexion
      * @param nombre
      * @param idExpediente

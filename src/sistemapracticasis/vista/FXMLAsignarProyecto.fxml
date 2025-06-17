@@ -22,7 +22,7 @@
          </font>
       </Label>
       <Button fx:id="btnCancelar" layoutX="481.0" layoutY="463.0" mnemonicParsing="false" onAction="#clicCancelar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Cancelar" textFill="RED" />
-      <Label fx:id="lblNombreUsuario" layoutX="700.0" layoutY="68.0" />
+      <Label fx:id="lblNombreUsuario" layoutX="683.0" layoutY="68.0" />
       <Line endX="807.0" layoutX="100.0" layoutY="93.0" startX="-100.0" stroke="#6f6f6f" />
       <TextField fx:id="txtBuscar" layoutX="127.0" layoutY="117.0" prefHeight="39.0" prefWidth="393.0" promptText="Buscar matrícula (S12345678)" style="-fx-cursor: text;" />
       <ImageView fitHeight="39.0" fitWidth="51.0" layoutX="481.0" layoutY="117.0" pickOnBounds="true" preserveRatio="true">

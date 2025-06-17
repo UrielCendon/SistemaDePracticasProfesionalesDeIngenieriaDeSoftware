@@ -22,12 +22,12 @@
             <Image url="@../recursos/imagenIcono.png" />
          </image>
       </ImageView>
-      <Label layoutX="80.0" layoutY="41.0" prefHeight="51.0" prefWidth="673.0" style="-fx-background-color: #9faec2; -fx-alignment: CENTER;" text="Seleccionar organización vinculada" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+      <Label layoutX="28.0" layoutY="38.0" prefHeight="51.0" prefWidth="673.0" style="-fx-background-color: #9faec2; -fx-alignment: CENTER;" text="Seleccionar organización vinculada" textAlignment="CENTER" textFill="WHITE" wrapText="true">
          <font>
             <Font name="Arial Black" size="34.0" />
          </font>
       </Label>
-      <Label fx:id="lblNombreUsuario" layoutX="810.0" layoutY="87.0" />
+      <Label fx:id="lblNombreUsuario" layoutX="763.0" layoutY="87.0" />
       <Line endX="807.0" layoutX="120.0" layoutY="113.0" startX="-120.0" stroke="#6f6f6f" />
       <Label alignment="CENTER" contentDisplay="RIGHT" layoutX="122.0" layoutY="120.0" prefHeight="42.0" prefWidth="590.0" text="Busque y seleccione la organización vinculada a la que pertenece este encargado de proyecto">
          <font>

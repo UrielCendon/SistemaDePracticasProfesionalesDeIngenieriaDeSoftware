@@ -22,7 +22,7 @@
          </font>
       </Label>
       <Button layoutX="626.0" layoutY="753.0" mnemonicParsing="false" onAction="#clicSalir" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Salir" textFill="RED" />
-      <Label fx:id="lblNombreUsuario" layoutX="1025.0" layoutY="68.0" />
+      <Label fx:id="lblNombreUsuario" layoutX="983.0" layoutY="62.0" />
       <Line endX="1106.0" layoutX="100.0" layoutY="93.0" startX="-100.0" stroke="#6f6f6f" />
       <TextField fx:id="txtNombreEstudiante" editable="false" layoutX="43.0" layoutY="103.0" prefHeight="33.0" prefWidth="257.0" promptText="Nombre Estudiante" style="-fx-border-color: BLACK;" />
       <Button fx:id="btnSubirDocumento" layoutX="441.0" layoutY="753.0" mnemonicParsing="false" onAction="#clicSubirDocumento" prefHeight="42.0" prefWidth="155.0" style="-fx-cursor: hand;" text="Subir documento" textFill="#1aa01a" />

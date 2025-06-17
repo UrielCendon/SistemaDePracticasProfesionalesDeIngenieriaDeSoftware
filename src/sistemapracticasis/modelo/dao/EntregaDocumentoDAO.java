@@ -49,7 +49,8 @@ public class EntregaDocumentoDAO {
             }
 
         } catch (SQLException e) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", "Error con la base de datos");
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", 
+                "Error con la base de datos");
         }
 
         return false;
@@ -74,7 +75,8 @@ public class EntregaDocumentoDAO {
             }
 
         } catch (SQLException e) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", "Error con la base de datos");
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", 
+                "Error con la base de datos");
         }
 
         return false;
@@ -169,7 +171,8 @@ public class EntregaDocumentoDAO {
      * @param fechaInicioPeriodo Fecha de inicio del periodo.
      * @param fechaFinPeriodo Fecha de fin del periodo.
      * @return true si se insertaron entregas, false si ya existían entregas para este periodo.
-     * @throws SQLException Si ocurre un error de base de datos o no hay expedientes para el periodo.
+     * @throws SQLException Si ocurre un error de base de datos o no hay expedientes para el 
+     *         periodo.
      */
     public static boolean guardarEntregasIniciales(ArrayList<EntregaDocumento> entregas, 
                                                 String fechaInicioPeriodo, 
@@ -178,9 +181,11 @@ public class EntregaDocumentoDAO {
         try {
             conexion = ConexionBD.abrirConexion();
             conexion.setAutoCommit(false);
+
             if (existenEntregasInicialesParaPeriodo(conexion, fechaInicioPeriodo, fechaFinPeriodo)) {
                 return false;
             }
+
             String obtenerExpedientesSQL = "SELECT e.id_expediente FROM expediente e "
                 + "JOIN periodo p ON e.id_periodo = p.id_periodo "
                 + "WHERE p.fecha_inicio = ? AND p.fecha_fin = ?";
@@ -199,24 +204,20 @@ public class EntregaDocumentoDAO {
                 throw new SQLException("No se encontraron expedientes para el periodo actual");
             }
 
-            String obtenerObservacionSQL = "SELECT id_observacion FROM observacion WHERE descripcion = ? LIMIT 1";
-            String insertarObservacionSQL = "INSERT INTO observacion (descripcion, fecha_observacion) VALUES (?, CURDATE())";
             String insertarEntregaSQL = "INSERT INTO entrega_documento("
                 + "nombre, fecha_inicio, fecha_fin, tipo_entrega, validado, calificacion, "
-                + "id_expediente, id_observacion, tipo_descripcion) "
-                + "VALUES (?, ?, ?, 'inicial', 0, ?, ?, ?, ?)";
-            String existeEntregaSQL = "SELECT 1 FROM entrega_documento WHERE nombre = ? AND id_expediente = ? AND tipo_entrega = 'inicial'";
+                + "id_expediente, tipo_descripcion) "
+                + "VALUES (?, ?, ?, 'inicial', 0, ?, ?, ?)";
 
-            PreparedStatement stmtGetObs = conexion.prepareStatement(obtenerObservacionSQL);
-            PreparedStatement stmtInsertObs = conexion.prepareStatement(insertarObservacionSQL, PreparedStatement.RETURN_GENERATED_KEYS);
+            String existeEntregaSQL = "SELECT 1 FROM entrega_documento WHERE nombre = ? AND "
+                + "id_expediente = ? AND tipo_entrega = 'inicial'";
+
             PreparedStatement stmtInsert = conexion.prepareStatement(insertarEntregaSQL);
             PreparedStatement stmtExiste = conexion.prepareStatement(existeEntregaSQL);
 
             int totalEntregasInsertadas = 0;
 
             for (EntregaDocumento entrega : entregas) {
-                int idObservacion = obtenerIdObservacion(conexion, entrega.getDescripcion(), stmtGetObs, stmtInsertObs);
-
                 for (int idExpediente : expedientes) {
                     if (!existeEntrega(conexion, entrega.getNombre(), idExpediente, stmtExiste)) {
                         stmtInsert.setString(1, entrega.getNombre());
@@ -224,8 +225,7 @@ public class EntregaDocumentoDAO {
                         stmtInsert.setString(3, entrega.getFechaFin());
                         stmtInsert.setDouble(4, entrega.getCalificacion());
                         stmtInsert.setInt(5, idExpediente);
-                        stmtInsert.setInt(6, idObservacion);
-                        stmtInsert.setString(7, mapearNombreATipoDescripcion(entrega.getNombre()));
+                        stmtInsert.setString(6, mapearNombreATipoDescripcion(entrega.getNombre()));
                         stmtInsert.addBatch();
                         totalEntregasInsertadas++;
                     }
@@ -260,6 +260,7 @@ public class EntregaDocumentoDAO {
             }
         }
     }
+
     /**
      * 
      * @param conexion
@@ -268,11 +269,13 @@ public class EntregaDocumentoDAO {
      * @return
      * @throws SQLException 
      */
-    private static boolean existenEntregasInicialesParaPeriodo(Connection conexion, String fechaInicio, String fechaFin) throws SQLException {
+    private static boolean existenEntregasInicialesParaPeriodo(Connection conexion, 
+            String fechaInicio, String fechaFin) throws SQLException {
         String sql = "SELECT 1 FROM entrega_documento ed "
             + "JOIN expediente e ON ed.id_expediente = e.id_expediente "
             + "JOIN periodo p ON e.id_periodo = p.id_periodo "
-            + "WHERE p.fecha_inicio = ? AND p.fecha_fin = ? AND ed.tipo_entrega = 'inicial' LIMIT 1";
+            + "WHERE p.fecha_inicio = ? AND p.fecha_fin = ? AND ed.tipo_entrega = 'inicial' "
+            + "LIMIT 1";
 
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setString(1, fechaInicio);
@@ -293,7 +296,8 @@ public class EntregaDocumentoDAO {
      * @throws SQLException 
      */
     private static int obtenerIdObservacion(Connection conexion, String descripcion, 
-                                          PreparedStatement stmtGetObs, PreparedStatement stmtInsertObs) throws SQLException {
+                                            PreparedStatement stmtGetObs, PreparedStatement 
+                                            stmtInsertObs) throws SQLException {
         stmtGetObs.setString(1, descripcion);
         ResultSet rsObs = stmtGetObs.executeQuery();
 
@@ -331,12 +335,6 @@ public class EntregaDocumentoDAO {
      * Mapea el nombre del documento a un valor válido para el campo tipo_descripcion ENUM
      */
     private static String mapearNombreATipoDescripcion(String nombreDocumento) {
-        // Aquí debes implementar la lógica para mapear el nombre del documento
-        // a uno de los valores del ENUM en la base de datos:
-        // 'carta de aceptacion', 'constancia seguro', 'cronograma actividades', 
-        // 'horario uv', 'oficio asignacion'
-
-        // Ejemplo básico (debes adaptarlo a tus necesidades reales):
         if (nombreDocumento.toLowerCase().contains("carta")) {
             return "carta de aceptacion";
         } else if (nombreDocumento.toLowerCase().contains("seguro")) {
@@ -353,7 +351,7 @@ public class EntregaDocumentoDAO {
     }
 
     /**
-     * Valida una entrega de documento y asigna una calificación.Add commentMore actions
+     * Valida una entrega de documento y asigna una calificación.
      * @param idDocumento ID del documento a validar.
      * @param calificacion Calificación a asignar.
      * @return true si la validación fue exitosa, false en caso contrario.

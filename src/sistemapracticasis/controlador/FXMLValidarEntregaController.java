@@ -243,11 +243,11 @@ public class FXMLValidarEntregaController implements Initializable {
                     if (newVal.getTipo().equals("documento")) {
                         Double calificacion = DocumentoDAO.
                             obtenerCalificacionPorId(newVal.getId());
-                        tieneCalificacion = (calificacion != null);
+                        tieneCalificacion = (calificacion != 0.0);
                     } else if (newVal.getTipo().equals("reporte")) {
                         Double calificacion = ReporteDAO.
                             obtenerCalificacionPorId(newVal.getId());
-                        tieneCalificacion = (calificacion != null);
+                        tieneCalificacion = (calificacion != 0.0);
                     }
 
                     btnOpciones.setDisable(tieneCalificacion);

@@ -69,7 +69,6 @@ public class FXMLRegistrarOrganizacionVinculadaController implements Initializab
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // No se necesita configurar validaciones aquí con el nuevo enfoque
     }
 
     /**

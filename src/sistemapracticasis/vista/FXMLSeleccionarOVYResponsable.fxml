@@ -15,20 +15,20 @@
       <Button fx:id="btnRegresar" layoutX="23.0" layoutY="544.0" mnemonicParsing="false" onAction="#clicBtnRegresar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Regresar" />
       <ComboBox fx:id="cbOrganizaciones" layoutX="365.0" layoutY="260.0" prefHeight="39.0" prefWidth="258.0" promptText="Organizaciones " />
       <Line layoutX="282.0" layoutY="304.0" startX="-110.0" stroke="#3768b2" />
-      <Label layoutX="157.0" layoutY="271.0" text="Organización vinculada" />
-      <Label alignment="CENTER" contentDisplay="RIGHT" layoutX="213.0" layoutY="134.0" prefHeight="42.0" prefWidth="429.0" text="Busque y seleccione la organización vinculada dueña del proyecto">
+      <Label layoutX="153.0" layoutY="271.0" text="Organización vinculada" />
+      <Label alignment="CENTER" contentDisplay="RIGHT" layoutX="213.0" layoutY="134.0" prefHeight="42.0" prefWidth="429.0" style="-fx-border-color: BLACK;" text="Busque y seleccione la organización vinculada dueña del proyecto">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
       <Line endX="807.0" layoutX="130.0" layoutY="123.0" startX="-120.0" stroke="#6f6f6f" />
-      <Label fx:id="lblNombreUsuario" layoutX="820.0" layoutY="97.0" />
-      <Label layoutX="19.0" layoutY="51.0" prefHeight="51.0" prefWidth="755.0" style="-fx-background-color: #9faec2; -fx-alignment: CENTER;" text="Seleccionar OV y responsable" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+      <Label fx:id="lblNombreUsuario" layoutX="772.0" layoutY="97.0" />
+      <Label layoutX="23.0" layoutY="42.0" prefHeight="51.0" prefWidth="656.0" style="-fx-background-color: #9faec2; -fx-alignment: CENTER;" text="Seleccionar OV y responsable" textAlignment="CENTER" textFill="WHITE" wrapText="true">
          <font>
             <Font name="Arial Black" size="34.0" />
          </font>
       </Label>
-      <ImageView fitHeight="42.0" fitWidth="47.0" layoutX="836.0" layoutY="43.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="42.0" fitWidth="47.0" layoutX="836.0" layoutY="37.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../recursos/imagenIcono.png" />
          </image>
@@ -39,10 +39,10 @@
             <Image url="@../recursos/icons8-buscar-50.png" />
          </image>
       </ImageView>
-      <Label layoutX="213.0" layoutY="405.0" text="Responsable" />
+      <Label layoutX="185.0" layoutY="405.0" text="Responsable" />
       <Line layoutX="282.0" layoutY="438.0" startX="-110.0" stroke="#3768b2" />
       <ComboBox fx:id="cbResponsables" layoutX="365.0" layoutY="394.0" prefHeight="39.0" prefWidth="258.0" promptText="Responsables" />
-      <Label alignment="CENTER" contentDisplay="RIGHT" layoutX="294.0" layoutY="327.0" prefHeight="42.0" prefWidth="265.0" text="Seleccione al encargado del proyecto">
+      <Label alignment="CENTER" contentDisplay="RIGHT" layoutX="294.0" layoutY="327.0" prefHeight="42.0" prefWidth="265.0" style="-fx-border-color: BLACK;" text="Seleccione al encargado del proyecto">
          <font>
             <Font size="14.0" />
          </font>

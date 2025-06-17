@@ -81,7 +81,6 @@ public class FXMLRegistrarResponsableDeProyectoController implements Initializab
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // No utilizado actualmente
     }
 
     /**

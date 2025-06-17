@@ -213,7 +213,7 @@ public class FXMLProyectoController implements Initializable {
                 Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION,
                     "Proyecto eliminado",
                     resultado.getMensaje());
-                cargarProyectos(); // refrescar tabla
+                cargarProyectos(); 
             } else {
                 Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR,
                     "Error al eliminar",

@@ -12,7 +12,7 @@
 <AnchorPane id="AnchorPane" prefHeight="518.0" prefWidth="918.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sistemapracticasis.controlador.FXMLRegistrarOrganizacionVinculadaController">
    <children>
       <Line endX="807.0" layoutX="110.0" layoutY="103.0" startX="-110.0" stroke="#6f6f6f" />
-      <Label fx:id="lblNombreUsuario" layoutX="800.0" layoutY="77.0" />
+      <Label fx:id="lblNombreUsuario" layoutX="772.0" layoutY="77.0" />
       <Label layoutX="70.0" layoutY="31.0" prefHeight="51.0" prefWidth="673.0" style="-fx-background-color: #9faec2; -fx-alignment: CENTER;" text="Registrar organizacion vinculada" textAlignment="CENTER" textFill="WHITE" wrapText="true">
          <font>
             <Font name="Arial Black" size="34.0" />
@@ -37,10 +37,10 @@
       <TextField fx:id="txtDireccion" layoutX="178.0" layoutY="280.0" prefHeight="33.0" prefWidth="341.0" promptText="Direccion" style="-fx-border-color: BLACK;" />
       <TextField fx:id="txtTelefono" layoutX="178.0" layoutY="231.0" prefHeight="33.0" prefWidth="341.0" promptText="Telefono" style="-fx-border-color: BLACK;" />
       <TextField fx:id="txtNombre" layoutX="178.0" layoutY="186.0" prefHeight="33.0" prefWidth="341.0" promptText="Razon social" style="-fx-border-color: BLACK;" />
-      <Label layoutX="91.0" layoutY="337.0" text="Correo:" />
-      <Label layoutX="79.0" layoutY="297.0" text="Dirección:" />
-      <Label layoutX="81.0" layoutY="239.0" text="Teléfono:" />
-      <Label layoutX="60.0" layoutY="193.0" text="Razón social:" />
+      <Label layoutX="51.0" layoutY="337.0" text="Correo:" />
+      <Label layoutX="48.0" layoutY="287.0" text="Dirección:" />
+      <Label layoutX="48.0" layoutY="239.0" text="Teléfono:" />
+      <Label layoutX="39.0" layoutY="193.0" text="Razón social:" />
       <Button fx:id="btnCancelar" layoutX="770.0" layoutY="450.0" mnemonicParsing="false" onAction="#clicBtnCancelar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Cancelar" textFill="RED" />
    </children>
 </AnchorPane>

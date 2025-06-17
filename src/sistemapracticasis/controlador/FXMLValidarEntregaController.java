@@ -151,7 +151,8 @@ public class FXMLValidarEntregaController implements Initializable {
 
         if (!validarCampos(textoBusqueda)) return;
 
-        Estudiante estudianteEncontrado = obtenerEstudiante(textoBusqueda);
+        Estudiante estudianteEncontrado = obtenerEstudiante(profesorSesion.getIdProfesor(), 
+            textoBusqueda);
 
         if (estudianteEncontrado != null) {
             boolean estaEnPeriodo = EstudianteDAO.estaEnPeriodoActual
@@ -169,7 +170,8 @@ public class FXMLValidarEntregaController implements Initializable {
         } else {
             Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION,
                 "No encontrado", "No se encontró ningún estudiante con la "
-                + "matrícula ingresada.");
+                + "matrícula ingresada. Verifique que sea correcta o que pertenezca"
+                + " a su experiencia educativa.");
         }
     }
     
@@ -222,11 +224,11 @@ public class FXMLValidarEntregaController implements Initializable {
         }
     }
     
-    private Estudiante obtenerEstudiante(String matricula) {
+    private Estudiante obtenerEstudiante(int idProfesor, String matricula) {
         Estudiante estudiante = new Estudiante();
         EstudianteDAO estudianteDAO = new EstudianteDAO();
-        boolean encontrado = estudianteDAO.buscarPorMatricula
-            (matricula, estudiante);
+        boolean encontrado = estudianteDAO.buscarMatriculaPorIdProfesor
+            (idProfesor, matricula, estudiante);
         return (encontrado) ? estudiante : null;
     }
     

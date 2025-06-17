@@ -34,7 +34,7 @@
             <TableColumn fx:id="colSeleccionEstudiante" prefWidth="60.0" />
         </columns>
       </TableView>
-      <Button fx:id="btnSeleccionarTodos" layoutX="552.0" layoutY="510.0" mnemonicParsing="false" onAction="#clicSeleccionarTodos" prefHeight="42.0" prefWidth="161.0" text="Seleccionar a todos" />
+      <Button fx:id="btnSeleccionarTodos" layoutX="552.0" layoutY="510.0" mnemonicParsing="false" onAction="#clicSeleccionarTodos" prefHeight="42.0" prefWidth="161.0" style="-fx-cursor: hand;" text="Seleccionar a todos" />
       <Label layoutX="668.0" layoutY="112.0" text="Seleccione a los estudiantes&#10;para los cuales desea generar&#10;los documentos de asignación,&#10;o a todos si es el caso." />
    </children>
 </AnchorPane>

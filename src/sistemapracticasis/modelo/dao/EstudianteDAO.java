@@ -107,7 +107,68 @@ public class EstudianteDAO {
                 conexion.close();
 
             } catch (SQLException e) {
-                System.err.println("Error al buscar estudiante por matrícula: " + e.getMessage());
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", 
+                    "Error con la base de datos");
+            }
+        }
+
+        return encontrado;
+    }
+    
+    /**
+     * Busca un estudiante por su matrícula, que pertenezcan a la misma experiencia 
+     * educativa a la que está relacionado el profesor y carga sus datos en el objeto 
+     * proporcionado.
+     * @param idProfesor Identificador del profesor a filtrar el estudiante recuperado.
+     * @param matricula Matrícula del estudiante a buscar.
+     * @param estudiante Objeto Estudiante donde se cargarán los datos.
+     * @return true si se encontró el estudiante, false en caso contrario.
+     */
+    public boolean buscarMatriculaPorIdProfesor(int idProfesor, String matricula, 
+            Estudiante estudiante) {
+        boolean encontrado = false;
+        Connection conexion = ConexionBD.abrirConexion();
+
+        if (conexion != null) {
+            try {
+                String consulta = "SELECT estudiante.id_estudiante, estudiante.matricula, "
+                    + "estudiante.nombre, estudiante.correo, estudiante.telefono, "
+                    + "estudiante.apellido_paterno, estudiante.apellido_materno, "
+                    + "estudiante.id_proyecto, estudiante.id_experiencia_educativa, "
+                    + "proyecto.nombre AS nombre_proyecto "
+                    + "FROM estudiante "
+                    + "LEFT JOIN proyecto ON estudiante.id_proyecto = proyecto.id_proyecto "
+                    + "WHERE estudiante.matricula = ? AND estudiante.id_experiencia_educativa = "
+                    + "(SELECT id_experiencia_educativa FROM profesor WHERE id_profesor = ?)";
+
+                PreparedStatement sentencia = conexion.prepareStatement(consulta);
+                sentencia.setString(1, matricula);  // El primer '?' es la matrícula
+                sentencia.setInt(2, idProfesor);
+                ResultSet resultado = sentencia.executeQuery();
+
+                if (resultado.next()) {
+                    estudiante.setIdEstudiante(resultado.getInt("estudiante.id_estudiante"));
+                    estudiante.setMatricula(resultado.getString("estudiante.matricula"));
+                    estudiante.setNombre(resultado.getString("estudiante.nombre"));
+                    estudiante.setCorreo(resultado.getString("estudiante.correo"));
+                    estudiante.setTelefono(resultado.getString("estudiante.telefono"));
+                    estudiante.setApellidoPaterno(resultado.getString("estudiante."
+                        + "apellido_paterno"));
+                    estudiante.setApellidoMaterno(resultado.getString("estudiante."
+                        + "apellido_materno"));
+                    estudiante.setIdProyecto(resultado.getInt("estudiante.id_proyecto"));
+                    estudiante.setIdExperienciaEducativa(resultado.getInt("estudiante."
+                        + "id_experiencia_educativa"));
+                    estudiante.setNombreProyecto(resultado.getString("nombre_proyecto"));
+
+                    encontrado = true;
+                }
+
+                resultado.close();
+                sentencia.close();
+                conexion.close();
+
+            } catch (SQLException e) {
                 Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", 
                     "Error con la base de datos");
             }

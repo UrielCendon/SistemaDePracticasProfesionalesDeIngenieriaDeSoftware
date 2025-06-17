@@ -34,9 +34,7 @@ public class EntregaDocumentoDAO {
     public static boolean existeEntregaInicialVigente(int idEstudiante) {
         String consulta = "SELECT 1 FROM entrega_documento ed "
             + "JOIN expediente e ON ed.id_expediente = e.id_expediente "
-            + "JOIN periodo p ON p.id_expediente = e.id_expediente "
-            + "JOIN estudiante est ON est.id_estudiante = p.id_estudiante "
-            + "WHERE est.id_estudiante = ? AND ed.tipo_entrega = 'inicial' "
+            + "WHERE e.id_estudiante = ? AND ed.tipo_entrega = 'inicial' "
             + "AND CURDATE() BETWEEN ed.fecha_inicio AND ed.fecha_fin "
             + "LIMIT 1";
 
@@ -62,8 +60,9 @@ public class EntregaDocumentoDAO {
      * @return true si existen entregas iniciales, false en caso contrario.
      */
     public static boolean existenEntregasInicialesParaPeriodo(int idPeriodo) {
-        String consulta = "SELECT 1 FROM entrega_documento WHERE "
-            + "tipo_entrega = 'inicial' AND id_expediente = ?";
+        String consulta = "SELECT 1 FROM entrega_documento ed "
+            + "JOIN expediente e ON ed.id_expediente = e.id_expediente "
+            + "WHERE ed.tipo_entrega = 'inicial' AND e.id_periodo = ?";
 
         try (Connection conn = ConexionBD.abrirConexion();
              PreparedStatement sentencia = conn.prepareStatement(consulta)) {
@@ -74,8 +73,7 @@ public class EntregaDocumentoDAO {
             }
 
         } catch (SQLException e) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", "Error "
-                + "con la base de datos");
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", "Error con la base de datos");
         }
 
         return false;
@@ -174,8 +172,9 @@ public class EntregaDocumentoDAO {
     public static void guardarEntregasIniciales(ArrayList<EntregaDocumento> entregas, 
                                                 String fechaInicioPeriodo, 
                                                 String fechaFinPeriodo) {
-        String obtenerExpedientesSQL = "SELECT DISTINCT p.id_expediente "
-            + "FROM periodo p WHERE p.fecha_inicio = ? AND p.fecha_fin = ?";
+        String obtenerExpedientesSQL = "SELECT e.id_expediente FROM expediente e "
+            + "JOIN periodo p ON e.id_periodo = p.id_periodo "
+            + "WHERE p.fecha_inicio = ? AND p.fecha_fin = ?";
         String insertarEntregaSQL = "INSERT INTO entrega_documento("
             + "nombre, descripcion, fecha_inicio, fecha_fin, calificacion, id_expediente) "
             + "VALUES (?, ?, ?, ?, ?, ?)";

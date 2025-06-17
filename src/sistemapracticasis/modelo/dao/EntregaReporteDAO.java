@@ -89,19 +89,23 @@ public class EntregaReporteDAO {
             String fechaInicioPeriodo, 
             String fechaFinPeriodo) {
 
-        String obtenerExpedientesSQL = "SELECT DISTINCT p.id_expediente "
-            + "FROM periodo p WHERE p.fecha_inicio = ? AND p.fecha_fin = ?";
+        String obtenerExpedientesSQL = "SELECT e.id_expediente "
+            + "FROM expediente e "
+            + "JOIN periodo p ON e.id_periodo = p.id_periodo "
+            + "WHERE p.fecha_inicio = ? AND p.fecha_fin = ?";
+
         String insertarObservacionSQL = "INSERT INTO observacion "
             + "(descripcion, fecha_observacion) VALUES (?, CURDATE())";
+
         String insertarEntregaSQL = "INSERT INTO entrega_reporte("
             + "nombre, fecha_inicio, fecha_fin, validado, calificacion, "
             + "id_expediente, id_observacion) VALUES (?, ?, ?, 0, ?, ?, ?)";
 
         try (Connection conexion = ConexionBD.abrirConexion();
-            PreparedStatement stmtExpedientes = conexion.prepareStatement(obtenerExpedientesSQL);
-            PreparedStatement stmtInsertObs = conexion.prepareStatement(insertarObservacionSQL, 
-                PreparedStatement.RETURN_GENERATED_KEYS);
-            PreparedStatement stmtInsertEntrega = conexion.prepareStatement(insertarEntregaSQL)) {
+             PreparedStatement stmtExpedientes = conexion.prepareStatement(obtenerExpedientesSQL);
+             PreparedStatement stmtInsertObs = conexion.prepareStatement(insertarObservacionSQL, 
+                 PreparedStatement.RETURN_GENERATED_KEYS);
+             PreparedStatement stmtInsertEntrega = conexion.prepareStatement(insertarEntregaSQL)) {
 
             stmtExpedientes.setString(1, fechaInicioPeriodo);
             stmtExpedientes.setString(2, fechaFinPeriodo);
@@ -128,8 +132,7 @@ public class EntregaReporteDAO {
                 if (generatedKeys.next()) {
                     idObservacion = generatedKeys.getInt(1);
                 } else {
-                    throw new SQLException("No se pudo obtener el ID de la observación "
-                        + "insertada.");
+                    throw new SQLException("No se pudo obtener el ID de la observación.");
                 }
 
                 for (int idExpediente : expedientes) {
@@ -164,7 +167,8 @@ public class EntregaReporteDAO {
     public static boolean existenEntregasDeReportesParaPeriodo(String fechaInicio, 
             String fechaFin) {
         String sql = "SELECT COUNT(*) FROM entrega_reporte er "
-            + "JOIN periodo p ON er.id_expediente = p.id_expediente "
+            + "JOIN expediente e ON er.id_expediente = e.id_expediente "
+            + "JOIN periodo p ON e.id_periodo = p.id_periodo "
             + "WHERE p.fecha_inicio = ? AND p.fecha_fin = ?";
 
         try (Connection conn = ConexionBD.abrirConexion();

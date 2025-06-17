@@ -30,15 +30,14 @@ public class GenerarOficiosDAO {
         List<EstudianteAsignado> lista = new ArrayList<>();
 
         String consulta = "SELECT e.matricula, "
-            + "CONCAT(e.nombre, ' ', e.apellido_paterno, ' ', e.apellido_materno) "
-            + "AS nombre_estudiante, p.nombre AS nombre_proyecto, "
+            + "CONCAT(e.nombre, ' ', e.apellido_paterno, ' ', e.apellido_materno) AS nombre_estudiante, "
+            + "p.nombre AS nombre_proyecto, "
             + "ov.razon_social AS razon_social_organizacion "
             + "FROM estudiante e "
+            + "JOIN expediente exp ON e.id_estudiante = exp.id_estudiante "
+            + "JOIN periodo pe ON exp.id_periodo = pe.id_periodo "
             + "JOIN proyecto p ON e.id_proyecto = p.id_proyecto "
-            + "JOIN organizacion_vinculada ov ON p.id_organizacion_vinculada = "
-            + "ov.id_organizacion_vinculada "
-            + "JOIN periodo pe ON e.id_estudiante = pe.id_estudiante "
-            + "JOIN expediente exp ON pe.id_expediente = exp.id_expediente "
+            + "JOIN organizacion_vinculada ov ON p.id_organizacion_vinculada = ov.id_organizacion_vinculada "
             + "WHERE CURDATE() BETWEEN pe.fecha_inicio AND pe.fecha_fin "
             + "AND exp.estado = 'en curso'";
 

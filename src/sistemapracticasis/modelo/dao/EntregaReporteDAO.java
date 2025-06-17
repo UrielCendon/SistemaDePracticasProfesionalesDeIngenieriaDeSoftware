@@ -5,18 +5,34 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
 import javafx.scene.control.Alert;
+
 import sistemapracticasis.modelo.conexion.ConexionBD;
 import sistemapracticasis.modelo.pojo.EntregaReporte;
 import sistemapracticasis.util.Utilidad;
 
+/**
+ * Clase DAO para gestionar las operaciones relacionadas con entregas de reportes 
+ * en la base de datos.
+ * Autor: Alan Raziel
+ * Fecha de creación: 15/06/2025
+ * Descripción: Proporciona métodos para validar, generar y guardar entregas de 
+ * reportes, así como verificar su existencia.
+ */
 public class EntregaReporteDAO {
 
+    /**
+     * Valida una entrega de reporte y asigna una calificación.
+     * @param idReporte ID del reporte a validar.
+     * @param calificacion Calificación a asignar.
+     * @return true si la validación fue exitosa, false en caso contrario.
+     */
     public static boolean validarEntregaReporte(int idReporte, float calificacion) {
-        String consulta = "UPDATE entrega_reporte er " +
-                          "JOIN reporte r ON er.id_entrega_reporte = r.id_entrega_reporte " +
-                          "SET er.validado = 1, er.calificacion = ? " +
-                          "WHERE r.idreporte = ?";
+        String consulta = "UPDATE entrega_reporte er "
+            + "JOIN reporte r ON er.id_entrega_reporte = r.id_entrega_reporte "
+            + "SET er.validado = 1, er.calificacion = ? "
+            + "WHERE r.idreporte = ?";
 
         try (Connection conexion = ConexionBD.abrirConexion();
              PreparedStatement sentencia = conexion.prepareStatement(consulta)) {
@@ -32,37 +48,60 @@ public class EntregaReporteDAO {
         }
     }
 
-    public static ArrayList<EntregaReporte> generarEntregasReportesPorDefecto(String fechaInicio, String fechaFin) {
+    /**
+     * Genera entregas de reportes por defecto para un periodo.
+     * @param fechaInicio Fecha de inicio del periodo.
+     * @param fechaFin Fecha de fin del periodo.
+     * @return Lista de entregas de reportes generadas.
+     */
+    public static ArrayList<EntregaReporte> generarEntregasReportesPorDefecto(
+            String fechaInicio, String fechaFin) {
         ArrayList<EntregaReporte> entregas = new ArrayList<>();
 
-        // Ejemplo simple: generamos 4 entregas mensuales con nombres y fechas sugeridas
         for (int i = 1; i <= 4; i++) {
             EntregaReporte entrega = new EntregaReporte(
-                0, // idEntregaReporte
-                "Entrega " + i, // nombre
-                fechaInicio, // fechaInicio (puedes cambiar por lógica real de fechas escalonadas si quieres)
-                fechaFin, // fechaFin
-                0, // validado
-                0.0, // calificación
-                0, // idExpediente (se asignará después en DAO)
-                0  // idObservacion (se generará después)
+                0, 
+                "Entrega " + i, 
+                fechaInicio, 
+                fechaFin, 
+                0, 
+                0.0, 
+                0, 
+                0
             );
-            entrega.setObservacion("Observación para entrega " + i); // valor por defecto
+            entrega.setObservacion("Observación para entrega " + i);
             entregas.add(entrega);
         }
 
         return entregas;
     }
 
-    public static void guardarEntregasReportes(ArrayList<EntregaReporte> entregas, String fechaInicioPeriodo, String fechaFinPeriodo) {
-        String obtenerExpedientesSQL = "SELECT DISTINCT p.id_expediente FROM periodo p WHERE p.fecha_inicio = ? AND p.fecha_fin = ?";
-        String insertarObservacionSQL = "INSERT INTO observacion (descripcion, fecha_observacion) VALUES (?, CURDATE())";
-        String insertarEntregaSQL = "INSERT INTO entrega_reporte(nombre, fecha_inicio, fecha_fin, validado, calificacion, id_expediente, id_observacion) VALUES (?, ?, ?, 0, ?, ?, ?)";
+    /**
+     * Guarda las entregas de reportes en la base de datos para todos los 
+     * expedientes de un periodo.
+     * @param entregas Lista de entregas a guardar.
+     * @param fechaInicioPeriodo Fecha de inicio del periodo.
+     * @param fechaFinPeriodo Fecha de fin del periodo.
+     */
+    public static void guardarEntregasReportes(
+            ArrayList<EntregaReporte> entregas, 
+            String fechaInicioPeriodo, 
+            String fechaFinPeriodo) {
+        String obtenerExpedientesSQL = "SELECT DISTINCT p.id_expediente "
+            + "FROM periodo p WHERE p.fecha_inicio = ? AND p.fecha_fin = ?";
+        String insertarObservacionSQL = "INSERT INTO observacion "
+            + "(descripcion, fecha_observacion) VALUES (?, CURDATE())";
+        String insertarEntregaSQL = "INSERT INTO entrega_reporte("
+            + "nombre, fecha_inicio, fecha_fin, validado, calificacion, "
+            + "id_expediente, id_observacion) VALUES (?, ?, ?, 0, ?, ?, ?)";
 
         try (Connection conexion = ConexionBD.abrirConexion();
-             PreparedStatement stmtExpedientes = conexion.prepareStatement(obtenerExpedientesSQL);
-             PreparedStatement stmtInsertObs = conexion.prepareStatement(insertarObservacionSQL, PreparedStatement.RETURN_GENERATED_KEYS);
-             PreparedStatement stmtInsertEntrega = conexion.prepareStatement(insertarEntregaSQL)) {
+             PreparedStatement stmtExpedientes = conexion.prepareStatement(
+                obtenerExpedientesSQL);
+             PreparedStatement stmtInsertObs = conexion.prepareStatement(
+                insertarObservacionSQL, PreparedStatement.RETURN_GENERATED_KEYS);
+             PreparedStatement stmtInsertEntrega = conexion.prepareStatement(
+                insertarEntregaSQL)) {
 
             stmtExpedientes.setString(1, fechaInicioPeriodo);
             stmtExpedientes.setString(2, fechaFinPeriodo);
@@ -74,7 +113,10 @@ public class EntregaReporteDAO {
             }
 
             if (expedientes.isEmpty()) {
-                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Sin expedientes", "No se encontraron expedientes para el periodo actual.");
+                Utilidad.mostrarAlertaSimple(
+                    Alert.AlertType.WARNING, 
+                    "Sin expedientes", 
+                    "No se encontraron expedientes para el periodo actual.");
                 return;
             }
 
@@ -86,7 +128,8 @@ public class EntregaReporteDAO {
                 if (generatedKeys.next()) {
                     idObservacion = generatedKeys.getInt(1);
                 } else {
-                    throw new SQLException("No se pudo obtener el ID de la observación insertada.");
+                    throw new SQLException(
+                        "No se pudo obtener el ID de la observación insertada.");
                 }
 
                 for (int idExpediente : expedientes) {
@@ -106,16 +149,24 @@ public class EntregaReporteDAO {
             Utilidad.mostrarAlertaSimple(
                 Alert.AlertType.ERROR,
                 "Error al guardar",
-                "No se pudieron guardar las entregas de reportes: " + e.getMessage()
+                "No se pudieron guardar las entregas de reportes: " 
+                    + e.getMessage()
             );
             throw new RuntimeException("Error al guardar entregas de reportes", e);
         }
     }
     
-    public static boolean existenEntregasDeReportesParaPeriodo(String fechaInicio, String fechaFin) {
-        String sql = "SELECT COUNT(*) FROM entrega_reporte er " +
-                     "JOIN periodo p ON er.id_expediente = p.id_expediente " +
-                     "WHERE p.fecha_inicio = ? AND p.fecha_fin = ?";
+    /**
+     * Verifica si existen entregas de reportes para un periodo específico.
+     * @param fechaInicio Fecha de inicio del periodo.
+     * @param fechaFin Fecha de fin del periodo.
+     * @return true si existen entregas de reportes, false en caso contrario.
+     */
+    public static boolean existenEntregasDeReportesParaPeriodo(
+            String fechaInicio, String fechaFin) {
+        String sql = "SELECT COUNT(*) FROM entrega_reporte er "
+            + "JOIN periodo p ON er.id_expediente = p.id_expediente "
+            + "WHERE p.fecha_inicio = ? AND p.fecha_fin = ?";
         try (Connection conn = ConexionBD.abrirConexion();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 

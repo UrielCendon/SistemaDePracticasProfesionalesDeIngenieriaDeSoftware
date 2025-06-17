@@ -10,8 +10,21 @@ import sistemapracticasis.modelo.conexion.ConexionBD;
 import sistemapracticasis.modelo.pojo.ExperienciaEducativa;
 import sistemapracticasis.util.Utilidad;
 
+/**
+ * Clase DAO para gestionar las operaciones relacionadas con experiencias
+ * educativas en la base de datos.
+ * Autor: Uriel Cendón
+ * Fecha de creación: 15/06/2025
+ * Descripción: Proporciona métodos para obtener información sobre experiencias 
+ * educativas asociadas a estudiantes.
+ */
 public class ExperienciaEducativaDAO {
 
+    /**
+     * Obtiene la experiencia educativa asociada a un estudiante.
+     * @param idEstudiante ID del estudiante del cual obtener la experiencia educativa.
+     * @return Objeto ExperienciaEducativa con los datos encontrados, o null si no se encuentra.
+     */
     public static ExperienciaEducativa obtenerEEPorIdEstudiante(int idEstudiante) {
         ExperienciaEducativa experiencia = null;
         Connection conexion = ConexionBD.abrirConexion();
@@ -39,12 +52,14 @@ public class ExperienciaEducativaDAO {
                 }
 
             } catch (SQLException e) {
-                Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", "Error con la base de datos");
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", 
+                    "Error con la base de datos");
             } finally {
                 try {
                     conexion.close();
                 } catch (SQLException e) {
-                    Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", "Error con la base de datos");
+                    Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", 
+                        "Error con la base de datos");
                 }
             }
         }

@@ -12,8 +12,22 @@ import sistemapracticasis.modelo.pojo.EstadoExpediente;
 import sistemapracticasis.modelo.pojo.Expediente;
 import sistemapracticasis.util.Utilidad;
 
+/**
+ * Clase DAO para gestionar las operaciones relacionadas con expedientes en la 
+ * base de datos.
+ * Autor: Uriel Cendón
+ * Fecha de creación: 15/06/2025
+ * Descripción: Proporciona métodos para verificar, actualizar, obtener e 
+ * insertar expedientes de estudiantes.
+ */
 public class ExpedienteDAO {
 
+    /**
+     * Verifica si un estudiante tiene un expediente en curso.
+     * @param matriculaEstudiante Matrícula del estudiante a verificar.
+     * @return true si el estudiante tiene un expediente en curso, false en caso 
+     *         contrario.
+     */
     public boolean tieneExpedienteEnCurso(String matriculaEstudiante) {
         String consulta = "SELECT exp.id_expediente "
             + "FROM expediente exp "
@@ -33,13 +47,22 @@ public class ExpedienteDAO {
             }
 
         } catch (SQLException ex) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", "Error con la base de datos");
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", 
+                "Error con la base de datos");
         }
 
         return false;
     }
 
-    public static boolean actualizarCalifPorEvaluacionOrgVin(double calificacion, int idExpediente) {
+    /**
+     * Actualiza la calificación por evaluación de organización vinculada en un 
+     * expediente.
+     * @param calificacion Calificación a actualizar.
+     * @param idExpediente ID del expediente a actualizar.
+     * @return true si la actualización fue exitosa, false en caso contrario.
+     */
+    public static boolean actualizarCalifPorEvaluacionOrgVin(double calificacion, 
+            int idExpediente) {
         boolean actualizado = false;
         String consulta = "UPDATE expediente SET calif_eval_org_vinc = ? WHERE id_expediente = ?";
 
@@ -52,12 +75,19 @@ public class ExpedienteDAO {
             actualizado = sentencia.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", "Error con la base de datos");
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", 
+                "Error con la base de datos");
         }
 
         return actualizado;
     }
 
+    /**
+     * Obtiene el expediente más reciente de un estudiante.
+     * @param idEstudiante ID del estudiante del cual obtener el expediente.
+     * @return Objeto Expediente con los datos encontrados, o null si no se 
+     *         encuentra.
+     */
     public static Expediente obtenerExpedientePorIdEstudiante(int idEstudiante) {
         String consulta = "SELECT e.id_expediente, e.horas_acumuladas, e.estado "
             + "FROM expediente e "
@@ -79,11 +109,13 @@ public class ExpedienteDAO {
                     EstadoExpediente.fromValor(estadoTexto)
                 );
             } else {
-                System.out.println("No se encontró expediente para el estudiante con ID " + idEstudiante);
+                System.out.println("No se encontró expediente para el estudiante con "
+                    + "ID " + idEstudiante);
             }
 
         } catch (SQLException e) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", "Error con la base de datos");
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", 
+                "Error con la base de datos");
         } catch (IllegalArgumentException e) {
             System.out.println("Error en estado del expediente");
         }
@@ -91,11 +123,17 @@ public class ExpedienteDAO {
         return null;
     }
 
+    /**
+     * Inserta un nuevo expediente vacío en la base de datos.
+     * @return ID del expediente creado, o -1 si ocurrió un error.
+     */
     public static int insertarExpedienteVacio() {
-        String consulta = "INSERT INTO expediente (horas_acumuladas, estado) VALUES (0, 'en curso')";
+        String consulta = "INSERT INTO expediente (horas_acumuladas, estado) VALUES "
+            + "(0, 'en curso')";
 
         try (Connection conexion = ConexionBD.abrirConexion();
-             PreparedStatement sentencia = conexion.prepareStatement(consulta, Statement.RETURN_GENERATED_KEYS)) {
+            PreparedStatement sentencia = conexion.prepareStatement(consulta, Statement.
+                RETURN_GENERATED_KEYS)) {
 
             int filasAfectadas = sentencia.executeUpdate();
 
@@ -108,7 +146,8 @@ public class ExpedienteDAO {
             }
 
         } catch (SQLException ex) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", "Error con la base de datos");
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", 
+                "Error con la base de datos");
         }
 
         return -1;

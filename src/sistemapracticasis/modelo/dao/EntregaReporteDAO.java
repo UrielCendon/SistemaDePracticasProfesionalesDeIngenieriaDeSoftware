@@ -12,8 +12,22 @@ import sistemapracticasis.modelo.conexion.ConexionBD;
 import sistemapracticasis.modelo.pojo.EntregaReporte;
 import sistemapracticasis.util.Utilidad;
 
+/**
+ * Clase DAO para gestionar las operaciones relacionadas con entregas de reportes
+ * en la base de datos.
+ * Autor: Raziel Filobello
+ * Fecha de creación: 15/06/2025
+ * Descripción: Proporciona métodos para validar, generar y guardar entregas de 
+ * reportes, así como verificar su existencia.
+ */
 public class EntregaReporteDAO {
 
+    /**
+     * Valida una entrega de reporte y asigna una calificación.
+     * @param idReporte ID del reporte a validar.
+     * @param calificacion Calificación a asignar.
+     * @return true si la validación fue exitosa, false en caso contrario.
+     */
     public static boolean validarEntregaReporte(int idReporte, float calificacion) {
         String consulta = "UPDATE entrega_reporte er "
             + "JOIN reporte r ON er.id_entrega_reporte = r.id_entrega_reporte "
@@ -29,12 +43,20 @@ public class EntregaReporteDAO {
             int filasAfectadas = sentencia.executeUpdate();
             return filasAfectadas > 0;
         } catch (SQLException e) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", "Error con la base de datos");
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", 
+                "Error con la base de datos");
             return false;
         }
     }
 
-    public static ArrayList<EntregaReporte> generarEntregasReportesPorDefecto(String fechaInicio, String fechaFin) {
+    /**
+     * Genera entregas de reportes por defecto para un periodo.
+     * @param fechaInicio Fecha de inicio del periodo.
+     * @param fechaFin Fecha de fin del periodo.
+     * @return Lista de entregas de reportes generadas.
+     */
+    public static ArrayList<EntregaReporte> generarEntregasReportesPorDefecto(String fechaInicio, 
+            String fechaFin) {
         ArrayList<EntregaReporte> entregas = new ArrayList<>();
 
         for (int i = 1; i <= 4; i++) {
@@ -55,6 +77,13 @@ public class EntregaReporteDAO {
         return entregas;
     }
 
+    /**
+     * Guarda las entregas de reportes en la base de datos para todos los 
+     * expedientes de un periodo.
+     * @param entregas Lista de entregas a guardar.
+     * @param fechaInicioPeriodo Fecha de inicio del periodo.
+     * @param fechaFinPeriodo Fecha de fin del periodo.
+     */
     public static void guardarEntregasReportes(
             ArrayList<EntregaReporte> entregas, 
             String fechaInicioPeriodo, 
@@ -69,9 +98,10 @@ public class EntregaReporteDAO {
             + "id_expediente, id_observacion) VALUES (?, ?, ?, 0, ?, ?, ?)";
 
         try (Connection conexion = ConexionBD.abrirConexion();
-             PreparedStatement stmtExpedientes = conexion.prepareStatement(obtenerExpedientesSQL);
-             PreparedStatement stmtInsertObs = conexion.prepareStatement(insertarObservacionSQL, PreparedStatement.RETURN_GENERATED_KEYS);
-             PreparedStatement stmtInsertEntrega = conexion.prepareStatement(insertarEntregaSQL)) {
+            PreparedStatement stmtExpedientes = conexion.prepareStatement(obtenerExpedientesSQL);
+            PreparedStatement stmtInsertObs = conexion.prepareStatement(insertarObservacionSQL, 
+                PreparedStatement.RETURN_GENERATED_KEYS);
+            PreparedStatement stmtInsertEntrega = conexion.prepareStatement(insertarEntregaSQL)) {
 
             stmtExpedientes.setString(1, fechaInicioPeriodo);
             stmtExpedientes.setString(2, fechaFinPeriodo);
@@ -98,7 +128,8 @@ public class EntregaReporteDAO {
                 if (generatedKeys.next()) {
                     idObservacion = generatedKeys.getInt(1);
                 } else {
-                    throw new SQLException("No se pudo obtener el ID de la observación insertada.");
+                    throw new SQLException("No se pudo obtener el ID de la observación "
+                        + "insertada.");
                 }
 
                 for (int idExpediente : expedientes) {
@@ -124,7 +155,14 @@ public class EntregaReporteDAO {
         }
     }
 
-    public static boolean existenEntregasDeReportesParaPeriodo(String fechaInicio, String fechaFin) {
+    /**
+     * Verifica si existen entregas de reportes para un periodo específico.
+     * @param fechaInicio Fecha de inicio del periodo.
+     * @param fechaFin Fecha de fin del periodo.
+     * @return true si existen entregas de reportes, false en caso contrario.
+     */
+    public static boolean existenEntregasDeReportesParaPeriodo(String fechaInicio, 
+            String fechaFin) {
         String sql = "SELECT COUNT(*) FROM entrega_reporte er "
             + "JOIN periodo p ON er.id_expediente = p.id_expediente "
             + "WHERE p.fecha_inicio = ? AND p.fecha_fin = ?";
@@ -140,7 +178,8 @@ public class EntregaReporteDAO {
             }
 
         } catch (SQLException e) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", "Error con la base de datos");
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", 
+                "Error con la base de datos");
         }
 
         return false;

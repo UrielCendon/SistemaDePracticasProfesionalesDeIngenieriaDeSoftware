@@ -8,8 +8,21 @@ import java.sql.SQLException;
 import sistemapracticasis.modelo.conexion.ConexionBD;
 import sistemapracticasis.modelo.pojo.Evaluador;
 
+/**
+ * Clase DAO para gestionar las operaciones relacionadas con evaluadores en la 
+ * base de datos.
+ * Autor: Raziel Filobello
+ * Fecha de creación: 15/06/2025
+ * Descripción: Proporciona métodos para obtener información de evaluadores.
+ */
 public class EvaluadorDAO {
 
+    /**
+     * Obtiene un evaluador por su ID de usuario asociado.
+     * @param idUsuario ID del usuario asociado al evaluador.
+     * @return Objeto Evaluador con los datos encontrados.
+     * @throws SQLException Si ocurre un error al acceder a la base de datos.
+     */
     public static Evaluador obtenerEvaluadorPorIdUsuario(int idUsuario) throws SQLException {
         Evaluador evaluador = null;
         Connection conexion = ConexionBD.abrirConexion();

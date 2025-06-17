@@ -12,8 +12,21 @@ import sistemapracticasis.modelo.pojo.Estudiante;
 import sistemapracticasis.modelo.pojo.EvaluacionEstudiante;
 import sistemapracticasis.util.Utilidad;
 
+/**
+ * Clase DAO para gestionar las operaciones relacionadas con evaluaciones de
+ * estudiantes en la base de datos.
+ * Autor: Raziel Filobello
+ * Fecha de creación: 15/06/2025
+ * Descripción: Proporciona métodos para guardar evaluaciones de estudiantes y 
+ * obtener listados de estudiantes no evaluados.
+ */
 public class EvaluacionEstudianteDAO {
 
+    /**
+     * Guarda una evaluación de estudiante en la base de datos.
+     * @param evaluacion Objeto EvaluacionEstudiante con los datos a guardar.
+     * @return true si la operación fue exitosa, false en caso contrario.
+     */
     public static boolean guardarEvaluacion(EvaluacionEstudiante evaluacion) {
         String consulta = "INSERT INTO evaluacion_estudiante("
             + "fecha_entregado, puntaje_total, uso_tecnicas, seguridad, "
@@ -35,12 +48,17 @@ public class EvaluacionEstudianteDAO {
             return sentencia.executeUpdate() > 0;
 
         } catch (SQLException ex) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", "Error con la base de datos");
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", 
+                "Error con la base de datos");
         }
 
         return false;
     }
 
+    /**
+     * Obtiene una lista de estudiantes que no han sido evaluados en el periodo actual.
+     * @return ArrayList de objetos Estudiante que no han sido evaluados.
+     */
     public static ArrayList<Estudiante> obtenerEstudiantesNoEvaluados() {
         ArrayList<Estudiante> estudiantes = new ArrayList<>();
 
@@ -69,7 +87,8 @@ public class EvaluacionEstudianteDAO {
             }
 
         } catch (SQLException ex) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", "Error con la base de datos");
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", 
+                "Error con la base de datos");
         }
 
         return estudiantes;

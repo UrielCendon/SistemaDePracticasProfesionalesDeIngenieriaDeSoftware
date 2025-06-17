@@ -10,8 +10,21 @@ import sistemapracticasis.modelo.conexion.ConexionBD;
 import sistemapracticasis.modelo.pojo.Profesor;
 import sistemapracticasis.util.Utilidad;
 
+/**
+ * Clase DAO para gestionar operaciones relacionadas con profesores.
+ * Autor: Miguel Escobar
+ * Fecha de creación: 16/06/2025
+ * Descripción: Proporciona métodos para obtener información de profesores
+ * asociados a usuarios o estudiantes.
+ */
 public class ProfesorDAO {
 
+    /**
+     * Obtiene un profesor por su ID de usuario asociado.
+     * @param idUsuario ID del usuario asociado al profesor
+     * @return Objeto Profesor con los datos encontrados
+     * @throws SQLException Si ocurre un error al acceder a la base de datos
+     */
     public static Profesor obtenerProfesorPorIdUsuario(int idUsuario) throws SQLException {
         Profesor profesor = null;
 
@@ -41,13 +54,19 @@ public class ProfesorDAO {
         return profesor;
     }
 
+    /**
+     * Obtiene el profesor asociado a un estudiante.
+     * @param idEstudiante ID del estudiante
+     * @return Objeto Profesor con los datos encontrados o null si no existe
+     */
     public static Profesor obtenerProfesorPorIdEstudiante(int idEstudiante) {
         Profesor profesor = null;
         String consulta = "SELECT p.id_profesor, p.num_personal, p.nombre, "
             + "p.correo, p.apellido_paterno, p.apellido_materno, "
             + "p.id_experiencia_educativa, p.id_usuario "
             + "FROM profesor p "
-            + "JOIN experiencia_educativa ee ON p.id_experiencia_educativa = ee.id_experiencia_educativa "
+            + "JOIN experiencia_educativa ee ON p.id_experiencia_educativa = "
+            + "ee.id_experiencia_educativa "
             + "JOIN estudiante e ON ee.id_experiencia_educativa = e.id_experiencia_educativa "
             + "WHERE e.id_estudiante = ?";
 
@@ -68,7 +87,8 @@ public class ProfesorDAO {
                 }
             }
         } catch (SQLException e) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", "Error con la base de datos");
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", 
+                "Error con la base de datos");
         }
 
         return profesor;

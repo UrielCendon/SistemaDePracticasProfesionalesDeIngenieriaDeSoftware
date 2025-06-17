@@ -12,8 +12,20 @@ import sistemapracticasis.modelo.pojo.EntregaVisual;
 import sistemapracticasis.util.Utilidad;
 import javafx.scene.control.Alert;
 
+/**
+ * Clase DAO para gestionar operaciones relacionadas con reportes.
+ * Autor: Uriel Cendón
+ * Fecha de creación: 15/06/2025
+ * Descripción: Proporciona métodos para obtener reportes, archivos asociados,
+ * calificaciones y verificar observaciones.
+ */
 public class ReporteDAO {
 
+    /**
+     * Obtiene los reportes asociados a un expediente.
+     * @param idExpediente ID del expediente
+     * @return Lista de objetos EntregaVisual con la información de los reportes
+     */
     public static List<EntregaVisual> obtenerReportesPorIdExpediente(int idExpediente) {
         List<EntregaVisual> lista = new ArrayList<>();
         String consulta = "SELECT r.idreporte, r.nombre_reporte, r.fecha_entregado "
@@ -36,11 +48,17 @@ public class ReporteDAO {
                 }
             }
         } catch (SQLException ex) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", "Error con la base de datos");
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", 
+                "Error con la base de datos");
         }
         return lista;
     }
 
+    /**
+     * Obtiene el archivo de un reporte por su ID.
+     * @param idReporte ID del reporte
+     * @return Contenido del reporte en bytes o null si no se encuentra
+     */
     public static byte[] obtenerArchivoPorId(int idReporte) {
         byte[] datos = null;
         String consulta = "SELECT documento FROM reporte WHERE idreporte = ?";
@@ -55,11 +73,17 @@ public class ReporteDAO {
                 }
             }
         } catch (SQLException e) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", "Error con la base de datos");
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", 
+                "Error con la base de datos");
         }
         return datos;
     }
 
+    /**
+     * Obtiene la calificación de un reporte por su ID.
+     * @param idReporte ID del reporte
+     * @return Calificación del reporte o null si no tiene calificación
+     */
     public static Double obtenerCalificacionPorId(int idReporte) {
         Double calificacion = null;
         String consulta = "SELECT er.calificacion FROM reporte r "
@@ -79,11 +103,17 @@ public class ReporteDAO {
                 }
             }
         } catch (SQLException e) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", "Error con la base de datos");
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", 
+                "Error con la base de datos");
         }
         return calificacion;
     }
 
+    /**
+     * Verifica si un reporte tiene observaciones asociadas.
+     * @param idReporte ID del reporte a verificar
+     * @return true si tiene observaciones, false en caso contrario
+     */
     public static boolean tieneObservacion(int idReporte) {
         String consulta = "SELECT er.id_observacion FROM reporte r "
                 + "JOIN entrega_reporte er ON r.id_entrega_reporte = "
@@ -99,7 +129,8 @@ public class ReporteDAO {
                 }
             }
         } catch (SQLException e) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", "Error con la base de datos");
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", 
+                "Error con la base de datos");
         }
         return false;
     }

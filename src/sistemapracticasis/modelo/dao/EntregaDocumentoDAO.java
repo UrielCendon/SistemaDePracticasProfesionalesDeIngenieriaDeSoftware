@@ -15,22 +15,8 @@ import sistemapracticasis.modelo.pojo.EntregaDocumentoTipo;
 import sistemapracticasis.modelo.pojo.TipoDocumento;
 import sistemapracticasis.util.Utilidad;
 
-/**
- * Clase DAO para gestionar las operaciones relacionadas con entregas de 
- * documentos en la base de datos.
- * Autor: Raziel Filobello
- * Fecha de creación: 15/06/2025
- * Descripción: Proporciona métodos para verificar, crear y gestionar entregas 
- * de documentos iniciales y sus validaciones.
- */
 public class EntregaDocumentoDAO {
 
-    /**
-     * Verifica si existe una entrega inicial vigente para un estudiante.
-     * @param idEstudiante ID del estudiante a verificar.
-     * @return true si existe una entrega inicial vigente, false en caso 
-     *         contrario.
-     */
     public static boolean existeEntregaInicialVigente(int idEstudiante) {
         String consulta = "SELECT 1 FROM entrega_documento ed "
             + "JOIN expediente e ON ed.id_expediente = e.id_expediente "
@@ -49,17 +35,12 @@ public class EntregaDocumentoDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", "Error con la base de datos");
         }
 
         return false;
     }
 
-    /**
-     * Verifica si existen entregas iniciales para un periodo específico.
-     * @param idPeriodo ID del periodo a verificar.
-     * @return true si existen entregas iniciales, false en caso contrario.
-     */
     public static boolean existenEntregasInicialesParaPeriodo(int idPeriodo) {
         String consulta = "SELECT 1 FROM entrega_documento WHERE "
             + "tipo_entrega = 'inicial' AND id_expediente = ?";
@@ -73,20 +54,13 @@ public class EntregaDocumentoDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", "Error con la base de datos");
         }
 
         return false;
     }
-    
-    /**
-     * Verifica si existen entregas iniciales para un rango de fechas.
-     * @param fechaInicio Fecha de inicio del periodo.
-     * @param fechaFin Fecha de fin del periodo.
-     * @return true si existen entregas iniciales, false en caso contrario.
-     */
-    public static boolean existenEntregasInicialesParaPeriodo(
-            String fechaInicio, String fechaFin) {
+
+    public static boolean existenEntregasInicialesParaPeriodo(String fechaInicio, String fechaFin) {
         String consulta = "SELECT COUNT(*) FROM entrega_documento ed "
             + "JOIN periodo p ON ed.id_expediente = p.id_expediente "
             + "WHERE p.fecha_inicio = ? AND p.fecha_fin = ?";
@@ -103,24 +77,16 @@ public class EntregaDocumentoDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", "Error con la base de datos");
         }
         return false;
     }
 
-    /**
-     * Obtiene las entregas iniciales asociadas a un expediente.
-     * @param idExpediente ID del expediente del cual obtener las entregas.
-     * @return Lista de objetos EntregaDocumento con la información de las 
-     *         entregas.
-     */
-    public static List<EntregaDocumento> obtenerEntregasInicialesPorExpediente(
-            int idExpediente) {
+    public static List<EntregaDocumento> obtenerEntregasInicialesPorExpediente(int idExpediente) {
         List<EntregaDocumento> entregas = new ArrayList<>();
-        String consulta = "SELECT id_entrega_documento, nombre, "
-            + "fecha_inicio, fecha_fin, validado, calificacion, "
-            + "id_expediente, id_observacion FROM entrega_documento WHERE "
-            + "id_expediente = ? AND tipo_entrega = 'inicial'";
+        String consulta = "SELECT id_entrega_documento, nombre, fecha_inicio, fecha_fin, "
+            + "validado, calificacion, id_expediente, id_observacion FROM entrega_documento "
+            + "WHERE id_expediente = ? AND tipo_entrega = 'inicial'";
 
         try (Connection conn = ConexionBD.abrirConexion();
              PreparedStatement sentencia = conn.prepareStatement(consulta)) {
@@ -138,19 +104,12 @@ public class EntregaDocumentoDAO {
             resultado.close();
             sentencia.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", "Error con la base de datos");
         }
         return entregas;
     }
 
-    /**
-     * Genera entregas iniciales por defecto basadas en los tipos de documento.
-     * @param fechaInicio Fecha de inicio para las entregas.
-     * @param fechaFin Fecha de fin para las entregas.
-     * @return Lista de entregas de documentos iniciales generadas.
-     */
-    public static ArrayList<EntregaDocumento> generarEntregasInicialesPorDefecto(
-            String fechaInicio, String fechaFin) {
+    public static ArrayList<EntregaDocumento> generarEntregasInicialesPorDefecto(String fechaInicio, String fechaFin) {
         ArrayList<EntregaDocumento> entregas = new ArrayList<>();
         for (TipoDocumento tipo : TipoDocumento.values()) {
             EntregaDocumento entrega = new EntregaDocumento(
@@ -162,28 +121,18 @@ public class EntregaDocumentoDAO {
         return entregas;
     }
 
-    /**
-     * Guarda las entregas iniciales en la base de datos para todos los 
-     * expedientes de un periodo.
-     * @param entregas Lista de entregas a guardar.
-     * @param fechaInicioPeriodo Fecha de inicio del periodo.
-     * @param fechaFinPeriodo Fecha de fin del periodo.
-     */
-    public static void guardarEntregasIniciales(
-            ArrayList<EntregaDocumento> entregas, 
-            String fechaInicioPeriodo, 
-            String fechaFinPeriodo) {
+    public static void guardarEntregasIniciales(ArrayList<EntregaDocumento> entregas, 
+                                                String fechaInicioPeriodo, 
+                                                String fechaFinPeriodo) {
         String obtenerExpedientesSQL = "SELECT DISTINCT p.id_expediente "
             + "FROM periodo p WHERE p.fecha_inicio = ? AND p.fecha_fin = ?";
         String insertarEntregaSQL = "INSERT INTO entrega_documento("
-            + "nombre, descripcion, fecha_inicio, fecha_fin, calificacion, "
-            + "id_expediente) VALUES (?, ?, ?, ?, ?, ?)";
+            + "nombre, descripcion, fecha_inicio, fecha_fin, calificacion, id_expediente) "
+            + "VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conexion = ConexionBD.abrirConexion();
-             PreparedStatement stmtExpedientes = conexion.prepareStatement(
-                obtenerExpedientesSQL);
-             PreparedStatement stmtInsert = conexion.prepareStatement(
-                insertarEntregaSQL)) {
+             PreparedStatement stmtExpedientes = conexion.prepareStatement(obtenerExpedientesSQL);
+             PreparedStatement stmtInsert = conexion.prepareStatement(insertarEntregaSQL)) {
 
             stmtExpedientes.setString(1, fechaInicioPeriodo);
             stmtExpedientes.setString(2, fechaFinPeriodo);
@@ -220,29 +169,20 @@ public class EntregaDocumentoDAO {
             Utilidad.mostrarAlertaSimple(
                 Alert.AlertType.ERROR,
                 "Error al guardar",
-                "No se pudieron guardar las entregas iniciales: " 
-                    + e.getMessage()
+                "No se pudieron guardar las entregas iniciales: " + e.getMessage()
             );
             throw new RuntimeException("Error al guardar entregas iniciales", e);
         }
     }
 
-    /**
-     * Valida una entrega de documento y asigna una calificación.
-     * @param idDocumento ID del documento a validar.
-     * @param calificacion Calificación a asignar.
-     * @return true si la validación fue exitosa, false en caso contrario.
-     */
-    public static boolean validarEntregaDocumento(int idDocumento, 
-            float calificacion) {
+    public static boolean validarEntregaDocumento(int idDocumento, float calificacion) {
         String consulta = "UPDATE entrega_documento ed "
-            + "JOIN documento d ON ed.id_entrega_documento = "
-            + "d.id_entrega_documento "
+            + "JOIN documento d ON ed.id_entrega_documento = d.id_entrega_documento "
             + "SET ed.validado = 1, ed.calificacion = ? "
             + "WHERE d.id_documento = ?";
 
         try (Connection conexion = ConexionBD.abrirConexion();
-             PreparedStatement sentencia = conexion.prepareStatement(consulta)){
+             PreparedStatement sentencia = conexion.prepareStatement(consulta)) {
 
             sentencia.setFloat(1, calificacion);
             sentencia.setInt(2, idDocumento);
@@ -250,7 +190,7 @@ public class EntregaDocumentoDAO {
             int filasAfectadas = sentencia.executeUpdate();
             return filasAfectadas > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", "Error con la base de datos");
             return false;
         }
     }

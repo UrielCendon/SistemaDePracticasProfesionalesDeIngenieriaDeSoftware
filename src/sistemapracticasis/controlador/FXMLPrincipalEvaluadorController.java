@@ -126,13 +126,14 @@ public class FXMLPrincipalEvaluadorController implements Initializable {
     }
 
     private void configurarColumnaSeleccion() {
+        ToggleGroup toggleGroup = new ToggleGroup();
+
         colSeleccionEstudiante.setCellFactory(new Callback<TableColumn<Estudiante, Void>, 
                 TableCell<Estudiante, Void>>() {
             @Override
             public TableCell<Estudiante, Void> call(TableColumn<Estudiante, Void> param) {
                 return new TableCell<Estudiante, Void>() {
                     private final RadioButton rb = new RadioButton();
-                    private final ToggleGroup toggleGroup = new ToggleGroup();
 
                     {
                         rb.setToggleGroup(toggleGroup);

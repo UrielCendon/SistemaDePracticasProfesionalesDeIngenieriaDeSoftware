@@ -62,7 +62,7 @@ public class EvaluacionEstudianteDAO {
     public static ArrayList<Estudiante> obtenerEstudiantesNoEvaluados() {
         ArrayList<Estudiante> estudiantes = new ArrayList<>();
 
-        String consulta = "SELECT est.*, proy.nombre AS nombre_proyecto, exp.id_expediente "
+        String consulta = "SELECT DISTINCT est.*, proy.nombre AS nombre_proyecto, exp.id_expediente "
             + "FROM estudiante est "
             + "JOIN expediente exp ON est.id_estudiante = exp.id_estudiante "
             + "JOIN periodo p ON exp.id_periodo = p.id_periodo "
@@ -70,7 +70,8 @@ public class EvaluacionEstudianteDAO {
             + "LEFT JOIN evaluacion_estudiante ev ON exp.id_expediente = ev.id_expediente "
             + "LEFT JOIN proyecto proy ON est.id_proyecto = proy.id_proyecto "
             + "WHERE ev.id_evaluacion_estudiante IS NULL "
-            + "AND CURDATE() BETWEEN p.fecha_inicio AND p.fecha_fin";
+            + "AND CURDATE() BETWEEN p.fecha_inicio AND p.fecha_fin "
+            + "AND est.id_proyecto IS NOT NULL";  // Solo estudiantes con proyecto
 
         try (Connection conexion = ConexionBD.abrirConexion();
              PreparedStatement sentencia = conexion.prepareStatement(consulta);

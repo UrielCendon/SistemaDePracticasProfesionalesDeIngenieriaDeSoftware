@@ -66,6 +66,7 @@ public class EvaluacionEstudianteDAO {
             + "FROM estudiante est "
             + "JOIN expediente exp ON est.id_estudiante = exp.id_estudiante "
             + "JOIN periodo p ON exp.id_periodo = p.id_periodo "
+            + "JOIN periodo_cursante pc ON p.id_periodo = pc.id_periodo AND pc.id_estudiante = est.id_estudiante "
             + "LEFT JOIN evaluacion_estudiante ev ON exp.id_expediente = ev.id_expediente "
             + "LEFT JOIN proyecto proy ON est.id_proyecto = proy.id_proyecto "
             + "WHERE ev.id_evaluacion_estudiante IS NULL "

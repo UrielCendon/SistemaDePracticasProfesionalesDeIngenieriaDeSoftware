@@ -35,10 +35,11 @@ public class GenerarOficiosDAO {
             + "ov.razon_social AS razon_social_organizacion "
             + "FROM estudiante e "
             + "JOIN expediente exp ON e.id_estudiante = exp.id_estudiante "
-            + "JOIN periodo pe ON exp.id_periodo = pe.id_periodo "
+            + "JOIN periodo per ON exp.id_periodo = per.id_periodo "
+            + "JOIN periodo_cursante pc ON per.id_periodo = pc.id_periodo AND pc.id_estudiante = e.id_estudiante "
             + "JOIN proyecto p ON e.id_proyecto = p.id_proyecto "
             + "JOIN organizacion_vinculada ov ON p.id_organizacion_vinculada = ov.id_organizacion_vinculada "
-            + "WHERE CURDATE() BETWEEN pe.fecha_inicio AND pe.fecha_fin "
+            + "WHERE CURDATE() BETWEEN per.fecha_inicio AND per.fecha_fin "
             + "AND exp.estado = 'en curso'";
 
         try (Connection conexion = ConexionBD.abrirConexion();

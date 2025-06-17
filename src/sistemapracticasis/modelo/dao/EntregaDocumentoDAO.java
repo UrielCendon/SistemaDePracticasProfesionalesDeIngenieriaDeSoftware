@@ -34,8 +34,10 @@ public class EntregaDocumentoDAO {
     public static boolean existeEntregaInicialVigente(int idEstudiante) {
         String consulta = "SELECT 1 FROM entrega_documento ed "
             + "JOIN expediente e ON ed.id_expediente = e.id_expediente "
-            + "WHERE e.id_estudiante = ? AND ed.tipo_entrega = 'inicial' "
-            + "AND CURDATE() BETWEEN ed.fecha_inicio AND ed.fecha_fin "
+            + "JOIN periodo p ON e.id_periodo = p.id_periodo "
+            + "JOIN periodo_cursante pc ON p.id_periodo = pc.id_periodo "
+            + "WHERE pc.id_estudiante = ? AND ed.tipo_entrega = 'inicial' "
+            + "AND CURDATE() BETWEEN p.fecha_inicio AND p.fecha_fin "
             + "LIMIT 1";
 
         try (Connection conn = ConexionBD.abrirConexion();
@@ -47,8 +49,7 @@ public class EntregaDocumentoDAO {
             }
 
         } catch (SQLException e) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", 
-                "Error con la base de datos");
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", "Error con la base de datos");
         }
 
         return false;
@@ -162,27 +163,29 @@ public class EntregaDocumentoDAO {
         return entregas;
     }
 
-     /**
-     * Guarda las entregas iniciales en la base de datos para todos los 
-     * expedientes de un periodo.
+    /**
+     * Guarda las entregas iniciales en la base de datos para todos los expedientes de un periodo.
      * @param entregas Lista de entregas a guardar.
      * @param fechaInicioPeriodo Fecha de inicio del periodo.
      * @param fechaFinPeriodo Fecha de fin del periodo.
+     * @return true si se insertaron entregas, false si ya existían entregas para este periodo.
+     * @throws SQLException Si ocurre un error de base de datos o no hay expedientes para el periodo.
      */
-    public static void guardarEntregasIniciales(ArrayList<EntregaDocumento> entregas, 
+    public static boolean guardarEntregasIniciales(ArrayList<EntregaDocumento> entregas, 
                                                 String fechaInicioPeriodo, 
-                                                String fechaFinPeriodo) {
-        String obtenerExpedientesSQL = "SELECT e.id_expediente FROM expediente e "
-            + "JOIN periodo p ON e.id_periodo = p.id_periodo "
-            + "WHERE p.fecha_inicio = ? AND p.fecha_fin = ?";
-        String insertarEntregaSQL = "INSERT INTO entrega_documento("
-            + "nombre, descripcion, fecha_inicio, fecha_fin, calificacion, id_expediente) "
-            + "VALUES (?, ?, ?, ?, ?, ?)";
+                                                String fechaFinPeriodo) throws SQLException {
+        Connection conexion = null;
+        try {
+            conexion = ConexionBD.abrirConexion();
+            conexion.setAutoCommit(false);
+            if (existenEntregasInicialesParaPeriodo(conexion, fechaInicioPeriodo, fechaFinPeriodo)) {
+                return false;
+            }
+            String obtenerExpedientesSQL = "SELECT e.id_expediente FROM expediente e "
+                + "JOIN periodo p ON e.id_periodo = p.id_periodo "
+                + "WHERE p.fecha_inicio = ? AND p.fecha_fin = ?";
 
-        try (Connection conexion = ConexionBD.abrirConexion();
-             PreparedStatement stmtExpedientes = conexion.prepareStatement(obtenerExpedientesSQL);
-             PreparedStatement stmtInsert = conexion.prepareStatement(insertarEntregaSQL)) {
-
+            PreparedStatement stmtExpedientes = conexion.prepareStatement(obtenerExpedientesSQL);
             stmtExpedientes.setString(1, fechaInicioPeriodo);
             stmtExpedientes.setString(2, fechaFinPeriodo);
             ResultSet rs = stmtExpedientes.executeQuery();
@@ -193,35 +196,160 @@ public class EntregaDocumentoDAO {
             }
 
             if (expedientes.isEmpty()) {
-                Utilidad.mostrarAlertaSimple(
-                    Alert.AlertType.WARNING, 
-                    "Sin expedientes", 
-                    "No se encontraron expedientes para el periodo actual.");
-                return;
+                throw new SQLException("No se encontraron expedientes para el periodo actual");
             }
 
+            String obtenerObservacionSQL = "SELECT id_observacion FROM observacion WHERE descripcion = ? LIMIT 1";
+            String insertarObservacionSQL = "INSERT INTO observacion (descripcion, fecha_observacion) VALUES (?, CURDATE())";
+            String insertarEntregaSQL = "INSERT INTO entrega_documento("
+                + "nombre, fecha_inicio, fecha_fin, tipo_entrega, validado, calificacion, "
+                + "id_expediente, id_observacion, tipo_descripcion) "
+                + "VALUES (?, ?, ?, 'inicial', 0, ?, ?, ?, ?)";
+            String existeEntregaSQL = "SELECT 1 FROM entrega_documento WHERE nombre = ? AND id_expediente = ? AND tipo_entrega = 'inicial'";
+
+            PreparedStatement stmtGetObs = conexion.prepareStatement(obtenerObservacionSQL);
+            PreparedStatement stmtInsertObs = conexion.prepareStatement(insertarObservacionSQL, PreparedStatement.RETURN_GENERATED_KEYS);
+            PreparedStatement stmtInsert = conexion.prepareStatement(insertarEntregaSQL);
+            PreparedStatement stmtExiste = conexion.prepareStatement(existeEntregaSQL);
+
+            int totalEntregasInsertadas = 0;
+
             for (EntregaDocumento entrega : entregas) {
+                int idObservacion = obtenerIdObservacion(conexion, entrega.getDescripcion(), stmtGetObs, stmtInsertObs);
+
                 for (int idExpediente : expedientes) {
-                    stmtInsert.setString(1, entrega.getNombre());
-                    stmtInsert.setString(2, entrega.getDescripcion());
-                    stmtInsert.setString(3, entrega.getFechaInicio());
-                    stmtInsert.setString(4, entrega.getFechaFin());
-                    stmtInsert.setDouble(5, entrega.getCalificacion());
-                    stmtInsert.setInt(6, idExpediente);
-                    stmtInsert.addBatch();
+                    if (!existeEntrega(conexion, entrega.getNombre(), idExpediente, stmtExiste)) {
+                        stmtInsert.setString(1, entrega.getNombre());
+                        stmtInsert.setString(2, entrega.getFechaInicio());
+                        stmtInsert.setString(3, entrega.getFechaFin());
+                        stmtInsert.setDouble(4, entrega.getCalificacion());
+                        stmtInsert.setInt(5, idExpediente);
+                        stmtInsert.setInt(6, idObservacion);
+                        stmtInsert.setString(7, mapearNombreATipoDescripcion(entrega.getNombre()));
+                        stmtInsert.addBatch();
+                        totalEntregasInsertadas++;
+                    }
                 }
             }
 
-            stmtInsert.executeBatch();
+            if (totalEntregasInsertadas > 0) {
+                stmtInsert.executeBatch();
+                conexion.commit();
+                return true;
+            } else {
+                conexion.rollback();
+                return false;
+            }
 
         } catch (SQLException e) {
-            Utilidad.mostrarAlertaSimple(
-                Alert.AlertType.ERROR,
-                "Error al guardar",
-                "No se pudieron guardar las entregas iniciales: " + e.getMessage()
-            );
-            throw new RuntimeException("Error al guardar entregas iniciales", e);
+            if (conexion != null) {
+                try {
+                    conexion.rollback();
+                } catch (SQLException ex) {
+                    throw new SQLException("Error al hacer rollback: " + ex.getMessage(), ex);
+                }
+            }
+            throw e;
+        } finally {
+            if (conexion != null) {
+                try {
+                    conexion.close();
+                } catch (SQLException e) {
+                    System.err.println("Error al cerrar conexión: " + e.getMessage());
+                }
+            }
         }
+    }
+    /**
+     * 
+     * @param conexion
+     * @param fechaInicio
+     * @param fechaFin
+     * @return
+     * @throws SQLException 
+     */
+    private static boolean existenEntregasInicialesParaPeriodo(Connection conexion, String fechaInicio, String fechaFin) throws SQLException {
+        String sql = "SELECT 1 FROM entrega_documento ed "
+            + "JOIN expediente e ON ed.id_expediente = e.id_expediente "
+            + "JOIN periodo p ON e.id_periodo = p.id_periodo "
+            + "WHERE p.fecha_inicio = ? AND p.fecha_fin = ? AND ed.tipo_entrega = 'inicial' LIMIT 1";
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setString(1, fechaInicio);
+            ps.setString(2, fechaFin);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
+    
+    /**
+     * Para obtener el id de la observacion
+     * @param conexion
+     * @param descripcion
+     * @param stmtGetObs
+     * @param stmtInsertObs
+     * @return
+     * @throws SQLException 
+     */
+    private static int obtenerIdObservacion(Connection conexion, String descripcion, 
+                                          PreparedStatement stmtGetObs, PreparedStatement stmtInsertObs) throws SQLException {
+        stmtGetObs.setString(1, descripcion);
+        ResultSet rsObs = stmtGetObs.executeQuery();
+
+        if (rsObs.next()) {
+            return rsObs.getInt("id_observacion");
+        } else {
+            stmtInsertObs.setString(1, descripcion);
+            stmtInsertObs.executeUpdate();
+            ResultSet generatedKeys = stmtInsertObs.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                return generatedKeys.getInt(1);
+            }
+            throw new SQLException("No se pudo obtener el ID de la observación insertada.");
+        }
+    }
+    /**
+     * 
+     * @param conexion
+     * @param nombre
+     * @param idExpediente
+     * @param stmtExiste
+     * @return
+     * @throws SQLException 
+     */
+    private static boolean existeEntrega(Connection conexion, String nombre, int idExpediente, 
+                                       PreparedStatement stmtExiste) throws SQLException {
+        stmtExiste.setString(1, nombre);
+        stmtExiste.setInt(2, idExpediente);
+        try (ResultSet rs = stmtExiste.executeQuery()) {
+            return rs.next();
+        }
+    }
+
+    /**
+     * Mapea el nombre del documento a un valor válido para el campo tipo_descripcion ENUM
+     */
+    private static String mapearNombreATipoDescripcion(String nombreDocumento) {
+        // Aquí debes implementar la lógica para mapear el nombre del documento
+        // a uno de los valores del ENUM en la base de datos:
+        // 'carta de aceptacion', 'constancia seguro', 'cronograma actividades', 
+        // 'horario uv', 'oficio asignacion'
+
+        // Ejemplo básico (debes adaptarlo a tus necesidades reales):
+        if (nombreDocumento.toLowerCase().contains("carta")) {
+            return "carta de aceptacion";
+        } else if (nombreDocumento.toLowerCase().contains("seguro")) {
+            return "constancia seguro";
+        } else if (nombreDocumento.toLowerCase().contains("cronograma")) {
+            return "cronograma actividades";
+        } else if (nombreDocumento.toLowerCase().contains("horario")) {
+            return "horario uv";
+        } else if (nombreDocumento.toLowerCase().contains("oficio")) {
+            return "oficio asignacion";
+        }
+
+        return "carta de aceptacion"; // Valor por defecto
     }
 
     /**

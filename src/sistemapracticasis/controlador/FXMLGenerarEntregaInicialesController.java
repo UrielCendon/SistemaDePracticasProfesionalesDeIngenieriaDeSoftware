@@ -1,6 +1,7 @@
 package sistemapracticasis.controlador;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -194,23 +195,41 @@ public class FXMLGenerarEntregaInicialesController implements Initializable {
         if (!confirmar || !validarDatos()) return;
 
         try {
-            if (EntregaDocumentoDAO.existenEntregasInicialesParaPeriodo(fechaInicio, fechaFin)) {
+            boolean guardadoExitoso = EntregaDocumentoDAO.guardarEntregasIniciales(
+                new ArrayList<>(entregas), fechaInicio, fechaFin);
+
+            if (guardadoExitoso) {
+                Utilidad.mostrarAlertaSimple(
+                    Alert.AlertType.INFORMATION, 
+                    "Éxito", 
+                    "Entregas generadas correctamente.");
+                Navegador.cerrarVentana(btnGenerar);
+            } else {
                 Utilidad.mostrarAlertaSimple(
                     Alert.AlertType.WARNING,
-                    "Ya existen entregas",
-                    "Ya hay entregas iniciales generadas para este periodo."
+                    "Entregas existentes",
+                    "Ya existen entregas iniciales para este período. No se generaron nuevas entregas."
                 );
-                return;
             }
-
-            EntregaDocumentoDAO.guardarEntregasIniciales(new ArrayList<>(entregas), 
-                    fechaInicio, fechaFin);
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION, "Éxito", 
-                    "Entregas generadas correctamente.");
-            Navegador.cerrarVentana(btnGenerar);
-
-        } catch (RuntimeException e) {
-            // Ya se muestra error desde el DAO
+        } catch (SQLException e) {
+            if (e.getMessage().contains("No se encontraron expedientes")) {
+                Utilidad.mostrarAlertaSimple(
+                    Alert.AlertType.WARNING, 
+                    "No hay expedientes", 
+                    e.getMessage());
+            } else {
+                Utilidad.mostrarAlertaSimple(
+                    Alert.AlertType.ERROR,
+                    "Error en base de datos",
+                    "Ocurrió un error al guardar las entregas: " + e.getMessage()
+                );
+            }
+        } catch (Exception e) {
+            Utilidad.mostrarAlertaSimple(
+                Alert.AlertType.ERROR,
+                "Error inesperado",
+                "Ocurrió un error inesperado: " + e.getMessage()
+            );
         }
     }
 

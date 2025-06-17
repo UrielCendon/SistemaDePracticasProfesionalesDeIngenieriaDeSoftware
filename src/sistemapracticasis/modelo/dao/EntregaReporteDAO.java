@@ -83,29 +83,30 @@ public class EntregaReporteDAO {
      * @param entregas Lista de entregas a guardar.
      * @param fechaInicioPeriodo Fecha de inicio del periodo.
      * @param fechaFinPeriodo Fecha de fin del periodo.
+     * @return true si se insertaron entregas, false si no se insertó nada (ya existían)
      */
-    public static void guardarEntregasReportes(
+    public static boolean guardarEntregasReportes(
             ArrayList<EntregaReporte> entregas, 
             String fechaInicioPeriodo, 
             String fechaFinPeriodo) {
 
-        String obtenerExpedientesSQL = "SELECT e.id_expediente "
-            + "FROM expediente e "
+        String obtenerExpedientesSQL = "SELECT e.id_expediente FROM expediente e "
             + "JOIN periodo p ON e.id_periodo = p.id_periodo "
             + "WHERE p.fecha_inicio = ? AND p.fecha_fin = ?";
 
-        String insertarObservacionSQL = "INSERT INTO observacion "
-            + "(descripcion, fecha_observacion) VALUES (?, CURDATE())";
+        String insertarObservacionSQL = "INSERT INTO observacion (descripcion, fecha_observacion) VALUES (?, CURDATE())";
 
         String insertarEntregaSQL = "INSERT INTO entrega_reporte("
             + "nombre, fecha_inicio, fecha_fin, validado, calificacion, "
             + "id_expediente, id_observacion) VALUES (?, ?, ?, 0, ?, ?, ?)";
 
+        String existeEntregaSQL = "SELECT 1 FROM entrega_reporte WHERE nombre = ? AND id_expediente = ?";
+
         try (Connection conexion = ConexionBD.abrirConexion();
              PreparedStatement stmtExpedientes = conexion.prepareStatement(obtenerExpedientesSQL);
-             PreparedStatement stmtInsertObs = conexion.prepareStatement(insertarObservacionSQL, 
-                 PreparedStatement.RETURN_GENERATED_KEYS);
-             PreparedStatement stmtInsertEntrega = conexion.prepareStatement(insertarEntregaSQL)) {
+             PreparedStatement stmtInsertObs = conexion.prepareStatement(insertarObservacionSQL, PreparedStatement.RETURN_GENERATED_KEYS);
+             PreparedStatement stmtInsertEntrega = conexion.prepareStatement(insertarEntregaSQL);
+             PreparedStatement stmtExiste = conexion.prepareStatement(existeEntregaSQL)) {
 
             stmtExpedientes.setString(1, fechaInicioPeriodo);
             stmtExpedientes.setString(2, fechaFinPeriodo);
@@ -121,10 +122,13 @@ public class EntregaReporteDAO {
                     Alert.AlertType.WARNING, 
                     "Sin expedientes", 
                     "No se encontraron expedientes para el periodo actual.");
-                return;
+                return false;
             }
 
+            int totalEntregasInsertadas = 0;
+
             for (EntregaReporte entrega : entregas) {
+                // Insertar observación una vez por entrega
                 stmtInsertObs.setString(1, entrega.getObservacion());
                 stmtInsertObs.executeUpdate();
                 ResultSet generatedKeys = stmtInsertObs.getGeneratedKeys();
@@ -132,10 +136,19 @@ public class EntregaReporteDAO {
                 if (generatedKeys.next()) {
                     idObservacion = generatedKeys.getInt(1);
                 } else {
-                    throw new SQLException("No se pudo obtener el ID de la observación.");
+                    throw new SQLException("No se pudo obtener el ID de la observación insertada.");
                 }
 
                 for (int idExpediente : expedientes) {
+                    // Verificar si ya existe una entrega con ese nombre y expediente
+                    stmtExiste.setString(1, entrega.getNombre());
+                    stmtExiste.setInt(2, idExpediente);
+                    ResultSet rsExiste = stmtExiste.executeQuery();
+                    if (rsExiste.next()) {
+                        continue; // Ya existe, omitir
+                    }
+
+                    // Insertar la entrega
                     stmtInsertEntrega.setString(1, entrega.getNombre());
                     stmtInsertEntrega.setString(2, entrega.getFechaInicio());
                     stmtInsertEntrega.setString(3, entrega.getFechaFin());
@@ -143,10 +156,16 @@ public class EntregaReporteDAO {
                     stmtInsertEntrega.setInt(5, idExpediente);
                     stmtInsertEntrega.setInt(6, idObservacion);
                     stmtInsertEntrega.addBatch();
+                    totalEntregasInsertadas++;
                 }
             }
 
-            stmtInsertEntrega.executeBatch();
+            if (totalEntregasInsertadas > 0) {
+                stmtInsertEntrega.executeBatch();
+                return true;
+            }
+
+            return false;
 
         } catch (SQLException e) {
             Utilidad.mostrarAlertaSimple(
@@ -169,6 +188,7 @@ public class EntregaReporteDAO {
         String sql = "SELECT COUNT(*) FROM entrega_reporte er "
             + "JOIN expediente e ON er.id_expediente = e.id_expediente "
             + "JOIN periodo p ON e.id_periodo = p.id_periodo "
+            + "JOIN periodo_cursante pc ON p.id_periodo = pc.id_periodo "
             + "WHERE p.fecha_inicio = ? AND p.fecha_fin = ?";
 
         try (Connection conn = ConexionBD.abrirConexion();

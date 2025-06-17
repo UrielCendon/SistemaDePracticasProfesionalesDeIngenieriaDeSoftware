@@ -21,7 +21,7 @@
       <Label layoutX="613.0" layoutY="298.0" text="Fecha inicio:" />
       <Line layoutX="706.0" layoutY="326.0" startX="-100.0" stroke="#3768b2" />
       <Line endX="1000.0" layoutX="130.0" layoutY="123.0" startX="-120.0" stroke="#6f6f6f" />
-      <Label fx:id="lblNombreUsuario" layoutX="856.0" layoutY="87.0" />
+      <Label fx:id="lblNombreUsuario" layoutX="892.0" layoutY="87.0" />
       <Label fx:id="lblTituloVentana" layoutX="90.0" layoutY="51.0" prefHeight="51.0" prefWidth="673.0" style="-fx-background-color: #9faec2; -fx-alignment: CENTER;" text="Registrar proyecto" textAlignment="CENTER" textFill="WHITE" wrapText="true">
          <font>
             <Font name="Arial Black" size="34.0" />

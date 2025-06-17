@@ -28,7 +28,7 @@
             <Font name="Arial Black" size="34.0" />
          </font>
       </Label>
-      <ImageView fitHeight="42.0" fitWidth="47.0" layoutX="836.0" layoutY="37.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="42.0" fitWidth="47.0" layoutX="821.0" layoutY="37.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../recursos/imagenIcono.png" />
          </image>

@@ -11,7 +11,7 @@
 
 <AnchorPane id="AnchorPane" prefHeight="642.0" prefWidth="908.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sistemapracticasis.controlador.FXMLPrincipalEvaluadorController">
    <children>
-      <ImageView fitHeight="42.0" fitWidth="47.0" layoutX="749.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="42.0" fitWidth="47.0" layoutX="721.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../recursos/imagenIcono.png" />
          </image>

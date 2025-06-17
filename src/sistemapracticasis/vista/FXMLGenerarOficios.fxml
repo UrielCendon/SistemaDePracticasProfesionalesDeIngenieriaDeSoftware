@@ -22,7 +22,7 @@
          </font>
       </Label>
       <Button fx:id="btnCancelar" layoutX="14.0" layoutY="510.0" mnemonicParsing="false" onAction="#clicCancelar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Cancelar" textFill="RED" />
-      <Label fx:id="lblNombreUsuario" layoutX="700.0" layoutY="68.0" />
+      <Label fx:id="lblNombreUsuario" layoutX="737.0" layoutY="68.0" />
       <Line endX="807.0" layoutX="100.0" layoutY="93.0" startX="-100.0" stroke="#6f6f6f" />
       <Button fx:id="btnGenerarDocumentos" layoutX="733.0" layoutY="510.0" mnemonicParsing="false" onAction="#clicGenerarDocumentos" prefHeight="42.0" prefWidth="161.0" style="-fx-cursor: hand;" text="Generar documentos" textFill="#1aa01a" />
       <TableView fx:id="tvOficiosAsignacion" layoutX="14.0" layoutY="101.0" prefHeight="388.0" prefWidth="632.0">

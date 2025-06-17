@@ -30,7 +30,7 @@
             <Font size="14.0" />
          </font>
       </Label>
-      <ImageView fitHeight="42.0" fitWidth="47.0" layoutX="871.0" layoutY="33.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="42.0" fitWidth="47.0" layoutX="1007.0" layoutY="33.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../recursos/imagenIcono.png" />
          </image>
@@ -40,7 +40,7 @@
             <Font name="Arial Black" size="34.0" />
          </font>
       </Label>
-      <Label fx:id="lblNombreUsuario" layoutX="810.0" layoutY="87.0" />
+      <Label fx:id="lblNombreUsuario" layoutX="954.0" layoutY="87.0" />
       <Line endX="1000.0" layoutX="120.0" layoutY="113.0" startX="-120.0" stroke="#6f6f6f" />
       <Line layoutX="696.0" layoutY="276.0" startX="-100.0" stroke="#3768b2" />
       <TextField fx:id="txtPuesto" layoutX="744.0" layoutY="241.0" prefHeight="33.0" prefWidth="341.0" promptText="Puesto" style="-fx-border-color: BLACK;" />

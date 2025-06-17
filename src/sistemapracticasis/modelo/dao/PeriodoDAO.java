@@ -25,7 +25,7 @@ public class PeriodoDAO {
      * @return Objeto Periodo con los datos encontrados o null si no existe
      */
     public static Periodo obtenerPeriodoActualPorEstudiante(int idEstudiante) {
-        String consulta = "SELECT p.nombre_periodo, p.fecha_inicio, p.fecha_fin, "
+        String consulta = "SELECT p.id_periodo, p.nombre_periodo, p.fecha_inicio, p.fecha_fin, "
             + "e.id_estudiante, exp.id_expediente "
             + "FROM periodo p "
             + "INNER JOIN periodo_cursante pc ON p.id_periodo = pc.id_periodo "
@@ -43,6 +43,7 @@ public class PeriodoDAO {
             try (ResultSet resultado = sentencia.executeQuery()) {
                 if (resultado.next()) {
                     return new Periodo(
+                            resultado.getInt("id_periodo"),
                             resultado.getString("nombre_periodo"),
                             resultado.getString("fecha_inicio"),
                             resultado.getString("fecha_fin"),

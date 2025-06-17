@@ -16,7 +16,9 @@ import javafx.scene.control.Label;
 import sistemapracticasis.modelo.dao.EntregaDocumentoDAO;
 import sistemapracticasis.modelo.dao.EstudianteDAO;
 import sistemapracticasis.modelo.dao.ExpedienteDAO;
+import sistemapracticasis.modelo.dao.PeriodoDAO;
 import sistemapracticasis.modelo.pojo.Estudiante;
+import sistemapracticasis.modelo.pojo.Periodo;
 import sistemapracticasis.util.Navegador;
 import sistemapracticasis.util.Utilidad;
 
@@ -77,8 +79,11 @@ public class FXMLPrincipalEstudianteController implements Initializable {
     @FXML
     private void clicDocIniciales(ActionEvent event) {
         int idEstudiante = estudianteSesion.getIdEstudiante();
-
-        if (!EntregaDocumentoDAO.existeEntregaInicialVigente(idEstudiante)) {
+        PeriodoDAO periodoDAO = new PeriodoDAO();
+        Periodo periodoActual = periodoDAO.obtenerPeriodoActualPorEstudiante(idEstudiante);
+        if (periodoActual != null) {
+            int idPeriodo = periodoActual.getIdPeriodo();
+            if (!EntregaDocumentoDAO.existenEntregasInicialesParaPeriodo(idPeriodo)) {
             Utilidad.mostrarAlertaSimple(
                 Alert.AlertType.WARNING,
                 "No hay Documentos Iniciales Programados",
@@ -86,8 +91,9 @@ public class FXMLPrincipalEstudianteController implements Initializable {
                 + " en el periodo actual."
             );
             return;
+            }
         }
-        
+                
         if(!EntregaDocumentoDAO.existeEntregaInicialVigente(idEstudiante)){
             Utilidad.mostrarAlertaSimple(
                 Alert.AlertType.WARNING,

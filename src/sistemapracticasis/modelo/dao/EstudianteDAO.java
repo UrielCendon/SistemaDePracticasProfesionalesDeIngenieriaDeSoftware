@@ -202,39 +202,4 @@ public class EstudianteDAO {
         }
         return false;
     }
-
-    /**
-     * Obtiene el ID de expediente asociado a un estudiante.
-     * @param idEstudiante ID del estudiante del cual obtener el expediente.
-     * @return ID del expediente asociado, o -1 si no se encuentra.
-     */
-    public static int obtenerIdExpedientePorEstudiante(int idEstudiante) {
-        int idExpediente = -1;
-
-        try (Connection conexion = ConexionBD.abrirConexion();
-            PreparedStatement sentencia = conexion.prepareStatement(
-                "SELECT exp.id_expediente "
-                + "FROM expediente exp "
-                + "INNER JOIN estudiante est ON exp.id_estudiante = est.id_estudiante "
-                + "INNER JOIN periodo p ON exp.id_periodo = p.id_periodo "
-                + "INNER JOIN periodo_cursante pc ON pc.id_periodo = p.id_periodo "
-                + "WHERE est.matricula = ? "
-                + "AND CURDATE() BETWEEN p.fecha_inicio AND p.fecha_fin"
-        )) {
-
-            sentencia.setInt(1, idEstudiante);
-
-            try (ResultSet resultado = sentencia.executeQuery()) {
-                if (resultado.next()) {
-                    idExpediente = resultado.getInt("id_expediente");
-                }
-            }
-
-        } catch (SQLException ex) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", 
-                "Error con la base de datos");
-        }
-
-        return idExpediente;
-    }
 }

@@ -18,6 +18,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import sistemapracticasis.modelo.dao.DocumentoDAO;
 import sistemapracticasis.modelo.dao.EstudianteDAO;
+import sistemapracticasis.modelo.dao.ExpedienteDAO;
 import sistemapracticasis.modelo.dao.ReporteDAO;
 import sistemapracticasis.modelo.pojo.Estudiante;
 import sistemapracticasis.modelo.pojo.Profesor;
@@ -203,7 +204,7 @@ public class FXMLValidarEntregaController implements Initializable {
     }
     
     private void llenarCamposEstudiante(Estudiante estudiante) {
-        int idExpediente = EstudianteDAO.obtenerIdExpedientePorEstudiante
+        int idExpediente = ExpedienteDAO.obtenerIdExpedientePorEstudiante
             (estudiante.getIdEstudiante());
 
         if (idExpediente > 0) {

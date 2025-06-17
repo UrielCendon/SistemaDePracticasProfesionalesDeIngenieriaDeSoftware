@@ -30,14 +30,14 @@ public class DocumentoDAO {
      */
     public static boolean documentoYaEntregado(int idEntregaDocumento, 
             int idEstudiante) {
-        String consulta = "SELECT d.fecha_entregado "
-            + "FROM documento d "
-            + "JOIN entrega_documento ed ON d.id_entrega_documento = ed."
-            + "id_entrega_documento "
-            + "JOIN expediente e ON ed.id_expediente = e.id_expediente "
-            + "JOIN periodo_cursante pc ON e.id_estudiante = pc.id_estudiante "
-            + "AND e.id_periodo = pc.id_periodo "
-            + "WHERE d.id_entrega_documento = ? AND p.id_estudiante = ?";
+        String consulta = "SELECT d.fecha_entregado " +
+            "FROM documento d " +
+            "JOIN entrega_documento ed ON d.id_entrega_documento = ed.id_entrega_documento " +
+            "JOIN expediente e ON ed.id_expediente = e.id_expediente " +
+            "JOIN periodo p ON e.id_periodo = p.id_periodo " +
+            "WHERE d.id_entrega_documento = ? " +
+            "AND e.id_estudiante = ? " +
+            "AND CURDATE() BETWEEN p.fecha_inicio AND p.fecha_fin";;
         
         try (Connection conn = ConexionBD.abrirConexion();
              PreparedStatement sentencia = conn.prepareStatement(consulta)) {

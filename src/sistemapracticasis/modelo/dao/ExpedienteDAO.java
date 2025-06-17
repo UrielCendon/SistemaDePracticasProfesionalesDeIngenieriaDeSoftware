@@ -91,13 +91,13 @@ public class ExpedienteDAO {
      *         encuentra.
      */
     public static Expediente obtenerExpedientePorIdEstudiante(int idEstudiante) {
-        String consulta = "SELECT e.id_expediente, e.horas_acumuladas, e.estado "
-            + "FROM expediente e "
-            + "INNER JOIN periodo p ON e.id_periodo = p.id_periodo "
-            + "INNER JOIN periodo_cursante pc ON p.id_periodo = pc.id_periodo "
-            + "WHERE pc.id_estudiante = ? "
-            + "ORDER BY p.fecha_inicio DESC "
-            + "LIMIT 1";
+        String consulta = "SELECT e.id_expediente, e.horas_acumuladas, e.estado " +
+            "FROM expediente e " +
+            "INNER JOIN periodo p ON e.id_periodo = p.id_periodo " +
+            "WHERE e.id_estudiante = ? " +
+            "AND CURDATE() BETWEEN p.fecha_inicio AND p.fecha_fin " +
+            "ORDER BY p.fecha_inicio DESC " +
+            "LIMIT 1";
 
         try (Connection conexion = ConexionBD.abrirConexion();
              PreparedStatement sentencia = conexion.prepareStatement(consulta)) {
@@ -113,8 +113,8 @@ public class ExpedienteDAO {
                     EstadoExpediente.fromValor(estadoTexto)
                 );
             } else {
-                System.out.println("No se encontró expediente para el estudiante con "
-                    + "ID " + idEstudiante);
+                System.out.println("No se encontró expediente activo para el "
+                    + "estudiante con ID " + idEstudiante);
             }
 
         } catch (SQLException e) {
@@ -126,6 +126,7 @@ public class ExpedienteDAO {
 
         return null;
     }
+
 
     /**
      * Inserta un nuevo expediente vacío en la base de datos.
@@ -205,7 +206,9 @@ public class ExpedienteDAO {
      */
     public static Integer obtenerIdExpedientePorEstudiante(int idEstudiante) {
         Integer idExpediente = null;
-        String consulta = "SELECT id_expediente FROM expediente WHERE id_estudiante = ?";
+        String consulta = "SELECT id_expediente FROM expediente "
+        + "INNER JOIN periodo ON expediente.id_periodo = periodo.id_periodo "
+        + "WHERE expediente.id_estudiante = ? AND periodo.fecha_fin > CURDATE()";
 
         try (Connection conexion = ConexionBD.abrirConexion();
              PreparedStatement sentencia = conexion.prepareStatement(consulta)) {

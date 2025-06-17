@@ -12,6 +12,11 @@ package sistemapracticasis.modelo.pojo;
 public class Periodo {
 
     /**
+     * Identificador del periodo académico.
+     */
+    private int idPeriodo;
+            
+    /**
      * Nombre del periodo académico.
      */
     private String nombrePeriodo;
@@ -55,7 +60,26 @@ public class Periodo {
      * @param idEstudiante El identificador del estudiante asociado.
      */
     public Periodo(String nombrePeriodo, String fechaInicio, String fechaFin, 
-                   int idExpediente, int idEstudiante) {
+            int idExpediente, int idEstudiante) {
+        this.nombrePeriodo = nombrePeriodo;
+        this.fechaInicio = fechaInicio;
+        this.fechaFin = fechaFin;
+        this.idExpediente = idExpediente;
+        this.idEstudiante = idEstudiante;
+    }
+
+    /**
+     * Sobrecarga del constructor de la clase Periodo incluyendo su id.
+     * @param idPeriodo El identificador del periodo académico.
+     * @param nombrePeriodo El nombre del periodo académico.
+     * @param fechaInicio La fecha de inicio del periodo académico.
+     * @param fechaFin La fecha de fin del periodo académico.
+     * @param idExpediente El identificador del expediente asociado.
+     * @param idEstudiante El identificador del estudiante asociado.
+     */
+    public Periodo(int idPeriodo, String nombrePeriodo, String fechaInicio, String fechaFin,
+            int idExpediente, int idEstudiante) {
+        this.idPeriodo = idPeriodo;
         this.nombrePeriodo = nombrePeriodo;
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
@@ -174,4 +198,22 @@ public class Periodo {
     public void setNrc(String nrc) {
         this.nrc = nrc;
     }
+
+    /**
+     * Obtiene el Identificador del periodo.
+     * @return El Identificador del periodo.
+     */
+    public int getIdPeriodo() {
+        return idPeriodo;
+    }
+
+    /**
+     * Establece el identificador del periodo.
+     * @param idPeriodo El identificador del periodo.
+     */
+    public void setIdPeriodo(int idPeriodo) {
+        this.idPeriodo = idPeriodo;
+    }
+    
+    
 }

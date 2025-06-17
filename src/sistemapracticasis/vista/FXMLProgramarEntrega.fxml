@@ -24,21 +24,21 @@
       <Button fx:id="btnCancelar" layoutX="14.0" layoutY="531.0" mnemonicParsing="false" onAction="#clicCancelar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Cancelar" textFill="RED" />
       <Label fx:id="lblNombreUsuario" layoutX="965.0" layoutY="63.0" />
       <Line endX="1011.0" layoutX="100.0" layoutY="93.0" startX="-100.0" stroke="#6f6f6f" />
-      <Button fx:id="btnGenerarEntregaIniciales" layoutX="15.0" layoutY="252.0" mnemonicParsing="false" onAction="#clicGenerarEntregaIniciales" prefHeight="60.0" prefWidth="250.0" text="Generar Entrega Iniciales" textFill="#1b8b9e">
+      <Button fx:id="btnGenerarEntregaIniciales" layoutX="15.0" layoutY="252.0" mnemonicParsing="false" onAction="#clicGenerarEntregaIniciales" prefHeight="60.0" prefWidth="250.0" text="Generar Entrega Iniciales">
          <font>
             <Font size="18.0" />
          </font></Button>
-      <Button fx:id="btnGenerarEntregaIntermedios" layoutX="282.0" layoutY="252.0" mnemonicParsing="false" onAction="#clicGenerarEntregaIntermedios" prefHeight="60.0" prefWidth="286.0" text="Generar Entrega Intermedios" textFill="#1b8b9e">
+      <Button fx:id="btnGenerarEntregaIntermedios" layoutX="282.0" layoutY="252.0" mnemonicParsing="false" onAction="#clicGenerarEntregaIntermedios" prefHeight="60.0" prefWidth="286.0" text="Generar Entrega Intermedios">
          <font>
             <Font size="18.0" />
          </font>
       </Button>
-      <Button fx:id="btnGenerarEntregaFinales" layoutX="587.0" layoutY="252.0" mnemonicParsing="false" onAction="#clicGenerarEntregaFinales" prefHeight="60.0" prefWidth="237.0" text="Generar Entrega Finales" textFill="#1b8b9e">
+      <Button fx:id="btnGenerarEntregaFinales" layoutX="587.0" layoutY="252.0" mnemonicParsing="false" onAction="#clicGenerarEntregaFinales" prefHeight="60.0" prefWidth="237.0" text="Generar Entrega Finales">
          <font>
             <Font size="18.0" />
          </font>
       </Button>
-      <Button fx:id="btnGenerarEntregaReportes" layoutX="839.0" layoutY="252.0" mnemonicParsing="false" onAction="#clicGenerarEntregaReportes" prefHeight="60.0" prefWidth="258.0" text="Generar Entrega Reportes" textFill="#1b8b9e">
+      <Button fx:id="btnGenerarEntregaReportes" layoutX="839.0" layoutY="252.0" mnemonicParsing="false" onAction="#clicGenerarEntregaReportes" prefHeight="60.0" prefWidth="258.0" text="Generar Entrega Reportes">
          <font>
             <Font size="18.0" />
          </font>

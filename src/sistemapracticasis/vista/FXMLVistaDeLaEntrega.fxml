@@ -14,7 +14,7 @@
       <TextField fx:id="txtNombreDocumento" editable="false" layoutX="14.0" layoutY="16.0" prefHeight="33.0" prefWidth="315.0" promptText="Nombre del documento" style="-fx-border-color: BLACK;" />
       <TextField fx:id="txtFechaEntregado" editable="false" layoutX="347.0" layoutY="16.0" prefHeight="33.0" prefWidth="259.0" style="-fx-border-color: BLACK;" text="Entregado el: " />
       <ImageView fx:id="imvPDF" fitHeight="800.0" fitWidth="600.0" layoutX="93.0" layoutY="89.0" pickOnBounds="true" preserveRatio="true" />
-      <Label layoutX="14.0" layoutY="896.0" text="Asigne una calificación:">
+      <Label layoutX="14.0" layoutY="896.0" text="Asigne una calificación (del 1 al 10):">
          <font>
             <Font size="18.0" />
          </font>

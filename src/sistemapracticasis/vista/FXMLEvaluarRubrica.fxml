@@ -36,11 +36,11 @@
       </TableView>
       <Button fx:id="btnAceptar" layoutX="852.0" layoutY="574.0" mnemonicParsing="false" onAction="#clicAceptar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Aceptar" textFill="#1aa01a" />
       <Button fx:id="btnCancelar" layoutX="668.0" layoutY="574.0" mnemonicParsing="false" onAction="#clicCancelar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Cancelar" textFill="RED" />
-      <Button fx:id="btnAgregarObservacion" layoutX="348.0" layoutY="551.0" mnemonicParsing="false" onAction="#clicAgregarObservacion" prefHeight="65.0" prefWidth="194.0" style="-fx-cursor: hand;" text="Agregar observación" textFill="#1b8b9e">
+      <Button fx:id="btnAgregarNota" layoutX="349.0" layoutY="551.0" mnemonicParsing="false" onAction="#clicAgregarNota" prefHeight="65.0" prefWidth="194.0" style="-fx-cursor: hand;" text="Agregar nota" textFill="#1b8b9e">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Button>
-      <TextArea fx:id="txtObservacion" layoutX="14.0" layoutY="551.0" prefHeight="65.0" prefWidth="317.0" />
+      <TextArea fx:id="txtNota" layoutX="14.0" layoutY="551.0" prefHeight="65.0" prefWidth="317.0" />
    </children>
 </AnchorPane>

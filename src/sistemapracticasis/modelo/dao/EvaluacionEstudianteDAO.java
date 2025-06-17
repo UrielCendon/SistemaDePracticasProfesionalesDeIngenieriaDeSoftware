@@ -30,7 +30,7 @@ public class EvaluacionEstudianteDAO {
     public static boolean guardarEvaluacion(EvaluacionEstudiante evaluacion) {
         String consulta = "INSERT INTO evaluacion_estudiante("
             + "fecha_entregado, puntaje_total, uso_tecnicas, seguridad, "
-            + "contenido, ortografia, requisitos, id_observacion, id_expediente) "
+            + "contenido, ortografia, requisitos, nota, id_expediente) "
             + "VALUES (CURDATE(), ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conexion = ConexionBD.abrirConexion();
@@ -42,7 +42,7 @@ public class EvaluacionEstudianteDAO {
             sentencia.setInt(4, evaluacion.getContenido());
             sentencia.setInt(5, evaluacion.getOrtografia());
             sentencia.setInt(6, evaluacion.getRequisitos());
-            sentencia.setInt(7, evaluacion.getIdObservacion());
+            sentencia.setString(7, evaluacion.getNota());
             sentencia.setInt(8, evaluacion.getIdExpediente());
 
             return sentencia.executeUpdate() > 0;
@@ -71,7 +71,7 @@ public class EvaluacionEstudianteDAO {
             + "LEFT JOIN proyecto proy ON est.id_proyecto = proy.id_proyecto "
             + "WHERE ev.id_evaluacion_estudiante IS NULL "
             + "AND CURDATE() BETWEEN p.fecha_inicio AND p.fecha_fin "
-            + "AND est.id_proyecto IS NOT NULL";  // Solo estudiantes con proyecto
+            + "AND est.id_proyecto IS NOT NULL";
 
         try (Connection conexion = ConexionBD.abrirConexion();
              PreparedStatement sentencia = conexion.prepareStatement(consulta);

@@ -42,9 +42,6 @@ public class FXMLGenerarEntregaInicialesController implements Initializable {
     /** Columna que muestra el nombre del documento a entregar. */
     @FXML private TableColumn<EntregaDocumento, String> colNombreEntrega;
 
-    /** Columna que muestra la descripción de la entrega. */
-    @FXML private TableColumn<EntregaDocumento, String> colDescripcion;
-
     /** Columna que muestra la fecha de inicio de la entrega. */
     @FXML private TableColumn<EntregaDocumento, String> colFechaInicio;
 
@@ -90,7 +87,6 @@ public class FXMLGenerarEntregaInicialesController implements Initializable {
      */
     private void configurarColumnas() {
         configurarColumnaNombre();
-        configurarColumnaDescripcion();
         configurarColumnasFechas();
         configurarColumnaCalificacion();
     }
@@ -109,24 +105,6 @@ public class FXMLGenerarEntregaInicialesController implements Initializable {
                 tvEntregasIniciales.refresh();
             } else {
                 event.getRowValue().setNombre(nuevo);
-            }
-        });
-    }
-
-    /**
-     * Configura la columna de descripción con validación de campo vacío.
-     */
-    private void configurarColumnaDescripcion() {
-        colDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
-        colDescripcion.setCellFactory(TextFieldTableCell.forTableColumn());
-        colDescripcion.setOnEditCommit(event -> {
-            String nueva = event.getNewValue();
-            if (nueva == null || nueva.trim().isEmpty()) {
-                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Campo vacío", 
-                        "La descripción no puede estar vacía");
-                tvEntregasIniciales.refresh();
-            } else {
-                event.getRowValue().setDescripcion(nueva);
             }
         });
     }
@@ -242,11 +220,6 @@ public class FXMLGenerarEntregaInicialesController implements Initializable {
             if (entrega.getNombre() == null || entrega.getNombre().trim().isEmpty()) {
                 Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Campo requerido", 
                         "El nombre no puede estar vacío.");
-                return false;
-            }
-            if (entrega.getDescripcion() == null || entrega.getDescripcion().trim().isEmpty()) {
-                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Campo requerido", 
-                        "La descripción no puede estar vacía.");
                 return false;
             }
             if (entrega.getCalificacion() < 0.0 || entrega.getCalificacion() > 10.0) {

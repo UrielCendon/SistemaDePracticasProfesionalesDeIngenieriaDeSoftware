@@ -26,7 +26,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TableRow;
 
 import sistemapracticasis.modelo.dao.EvaluacionEstudianteDAO;
-import sistemapracticasis.modelo.dao.ObservacionDAO;
 import sistemapracticasis.modelo.pojo.Estudiante;
 import sistemapracticasis.modelo.pojo.EvaluacionEstudiante;
 import sistemapracticasis.util.EvaluacionUtils;
@@ -41,71 +40,70 @@ import sistemapracticasis.util.Utilidad;
  * se los estudiantes.
  */
 public class FXMLEvaluarRubricaController implements Initializable {
-
     /* Sección: Componentes de la interfaz
      * Contiene los elementos FXML que componen la interfaz gráfica.
      */
 
     /** Etiqueta que muestra el nombre del estudiante. */
     @FXML private Label lblNombreEstudiante;
-
+    
     /** Etiqueta que muestra la experiencia educativa. */
     @FXML private Label lblExperienciaEducativa;
-
+    
     /** Etiqueta que muestra el nombre del proyecto. */
     @FXML private Label lblProyecto;
-
+    
     /** Tabla que contiene los criterios de la rúbrica. */
     @FXML private TableView<Map.Entry<String, String>> tvRubrica;
-
+    
     /** Columna del criterio de evaluación. */
     @FXML private TableColumn<Map.Entry<String, String>, String> colCriterioEvaluacion;
-
+    
     /** Columna para la opción "Excelente". */
     @FXML private TableColumn<Map.Entry<String, String>, String> colExcelente;
-
+    
     /** Columna para la opción "Muy bien". */
     @FXML private TableColumn<Map.Entry<String, String>, String> colMuyBien;
-
+    
     /** Columna para la opción "Bien". */
     @FXML private TableColumn<Map.Entry<String, String>, String> colBien;
-
+    
     /** Columna para la opción "Regular". */
     @FXML private TableColumn<Map.Entry<String, String>, String> colRegular;
-
+    
     /** Columna para la opción "Insuficiente". */
     @FXML private TableColumn<Map.Entry<String, String>, String> colInsuficiente;
-
+    
     /** Tabla con las calificaciones asignadas. */
     @FXML private TableView<Map.Entry<String, Integer>> tvCalificacion;
-
+    
     /** Columna que muestra el criterio evaluado. */
     @FXML private TableColumn<Map.Entry<String, Integer>, String> colCriterio;
-
+    
     /** Columna que muestra la calificación numérica. */
     @FXML private TableColumn<Map.Entry<String, Integer>, Integer> colCalificacion;
-
-    /** Área de texto para la observación. */
-    @FXML private TextArea txtObservacion;
-
+    
+    /** Área de texto para la nota. */
+    @FXML private TextArea txtNota;
+    
     /** Botón para confirmar la evaluación. */
     @FXML private Button btnAceptar;
-
+    
     /** Botón para cancelar la evaluación. */
     @FXML private Button btnCancelar;
-
+    
     /** Botón que enfoca el cuadro de observaciones. */
-    @FXML private Button btnAgregarObservacion;
-
+    @FXML private Button btnAgregarNota;
+    
     /* Sección: Variables de instancia
      * Almacena los datos del estudiante y las calificaciones.
      */
 
     /** Estudiante que será evaluado. */
     private Estudiante estudiante;
-
+    
     /** Calificaciones por criterio. */
-    private final Map<String, Integer> calificaciones = new LinkedHashMap<>();
+    private final Map<String, Integer> CALIFICACIONES = new LinkedHashMap<>();
 
     /* Sección: Constantes
      * Define los criterios de la rúbrica.
@@ -193,7 +191,7 @@ public class FXMLEvaluarRubricaController implements Initializable {
                             calif = EvaluacionUtils.convertirTextoACalificacion(nivel);
                         }
 
-                        calificaciones.put(criterio, calif);
+                        CALIFICACIONES.put(criterio, calif);
                         actualizarTablaCalificacion();
                         tvCalificacion.refresh();
                     }
@@ -223,7 +221,7 @@ public class FXMLEvaluarRubricaController implements Initializable {
      * Actualiza la tabla de calificaciones con los valores actuales.
      */
     private void actualizarTablaCalificacion() {
-        tvCalificacion.setItems(FXCollections.observableArrayList(calificaciones.entrySet()));
+        tvCalificacion.setItems(FXCollections.observableArrayList(CALIFICACIONES.entrySet()));
     }
 
     /* Sección: Manejo de eventos
@@ -235,35 +233,28 @@ public class FXMLEvaluarRubricaController implements Initializable {
      */
     @FXML
     private void clicAceptar(ActionEvent event) {
-        if (txtObservacion.getText().trim().isEmpty()) {
+        if (txtNota.getText().trim().isEmpty()) {
             Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Campo requerido", 
-                    "La observación no puede quedar vacía");
+                    "La nota no puede quedar vacía");
             return;
         }
 
-        if (calificaciones.size() < CRITERIOS.length) {
+        if (CALIFICACIONES.size() < CRITERIOS.length) {
             Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Faltan criterios", 
                     "Debes calificar todos los criterios.");
             return;
         }
 
-        int idObs = ObservacionDAO.insertarObservacion(txtObservacion.getText().trim());
-        if (idObs == -1) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "Error", 
-                    "No se pudo guardar la observación.");
-            return;
-        }
-
         EvaluacionEstudiante eval = new EvaluacionEstudiante();
         eval.setIdExpediente(estudiante.getIdPeriodo());
-        eval.setIdObservacion(idObs);
-        eval.setUsoTecnicas(calificaciones.get(CRITERIOS[0]));
-        eval.setRequisitos(calificaciones.get(CRITERIOS[1]));
-        eval.setSeguridad(calificaciones.get(CRITERIOS[2]));
-        eval.setContenido(calificaciones.get(CRITERIOS[3]));
-        eval.setOrtografia(calificaciones.get(CRITERIOS[4]));
+        eval.setNota(txtNota.getText().trim());
+        eval.setUsoTecnicas(CALIFICACIONES.get(CRITERIOS[0]));
+        eval.setRequisitos(CALIFICACIONES.get(CRITERIOS[1]));
+        eval.setSeguridad(CALIFICACIONES.get(CRITERIOS[2]));
+        eval.setContenido(CALIFICACIONES.get(CRITERIOS[3]));
+        eval.setOrtografia(CALIFICACIONES.get(CRITERIOS[4]));
 
-        double total = calificaciones.values().stream().mapToDouble(i -> i).sum();
+        double total = CALIFICACIONES.values().stream().mapToDouble(i -> i).sum();
         eval.setPuntajeTotal(total);
 
         if (EvaluacionEstudianteDAO.guardarEvaluacion(eval)) {
@@ -289,11 +280,11 @@ public class FXMLEvaluarRubricaController implements Initializable {
     }
 
     /**
-     * Maneja el evento de clic en el botón Agregar Observación.
+     * Maneja el evento de clic en el botón Agregar Nota.
      * @param event El evento de acción generado.
      */
     @FXML
-    private void clicAgregarObservacion(ActionEvent event) {
-        txtObservacion.requestFocus();
+    private void clicAgregarNota(ActionEvent event) {
+        txtNota.requestFocus();
     }
 }

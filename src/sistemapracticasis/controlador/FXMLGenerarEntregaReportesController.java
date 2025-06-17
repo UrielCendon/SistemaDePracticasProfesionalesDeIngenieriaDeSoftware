@@ -50,9 +50,6 @@ public class FXMLGenerarEntregaReportesController implements Initializable {
     /** Columna que muestra la calificación obtenida en el reporte. */
     @FXML private TableColumn<EntregaReporte, Double> colCalificacion;
 
-    /** Columna que muestra la descripción detallada del reporte. */
-    @FXML private TableColumn<EntregaReporte, String> colDescripcion;
-
     /** Botón para generar el consolidado de reportes. */
     @FXML private Button btnGenerar;
 
@@ -93,7 +90,6 @@ public class FXMLGenerarEntregaReportesController implements Initializable {
         configurarColumnaNombre();
         configurarColumnasFechas();
         configurarColumnaCalificacion();
-        configurarColumnaDescripcion();
     }
 
     /**
@@ -142,17 +138,6 @@ public class FXMLGenerarEntregaReportesController implements Initializable {
                         "Valor inválido", e.getMessage());
                 tvEntregasReportes.refresh();
             }
-        });
-    }
-
-    /**
-     * Configura la columna de descripción/observación.
-     */
-    private void configurarColumnaDescripcion() {
-        colDescripcion.setCellValueFactory(new PropertyValueFactory<>("observacion"));
-        colDescripcion.setCellFactory(TextFieldTableCell.forTableColumn());
-        colDescripcion.setOnEditCommit(event -> {
-            event.getRowValue().setObservacion(event.getNewValue());
         });
     }
 
@@ -240,11 +225,6 @@ public class FXMLGenerarEntregaReportesController implements Initializable {
             if (entrega.getCalificacion() < 0.0 || entrega.getCalificacion() > 10.0) {
                 Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Calificación inválida", 
                         "Debe estar entre 0.0 y 10.0");
-                return false;
-            }
-            if (entrega.getObservacion() == null || entrega.getObservacion().trim().isEmpty()) {
-                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Campo requerido", 
-                        "La descripción no puede estar vacía.");
                 return false;
             }
         }

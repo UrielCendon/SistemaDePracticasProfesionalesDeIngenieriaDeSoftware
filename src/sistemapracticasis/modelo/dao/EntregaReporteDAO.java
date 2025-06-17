@@ -80,101 +80,191 @@ public class EntregaReporteDAO {
     /**
      * Guarda las entregas de reportes en la base de datos para todos los 
      * expedientes de un periodo.
-     * @param entregas Lista de entregas a guardar.
-     * @param fechaInicioPeriodo Fecha de inicio del periodo.
-     * @param fechaFinPeriodo Fecha de fin del periodo.
-     * @return true si se insertaron entregas, false si no se insertó nada (ya existían)
      */
-    public static boolean guardarEntregasReportes(
-            ArrayList<EntregaReporte> entregas, 
-            String fechaInicioPeriodo, 
-            String fechaFinPeriodo) {
+    public static boolean guardarEntregasReportes(ArrayList<EntregaReporte> entregas, 
+                                               String fechaInicioPeriodo, 
+                                               String fechaFinPeriodo) {
+        try (Connection conexion = ConexionBD.abrirConexion()) {
+            ArrayList<Integer> expedientes = obtenerExpedientesParaPeriodo(conexion, fechaInicioPeriodo, fechaFinPeriodo);
 
-        String obtenerExpedientesSQL = "SELECT e.id_expediente FROM expediente e "
-            + "JOIN periodo p ON e.id_periodo = p.id_periodo "
-            + "WHERE p.fecha_inicio = ? AND p.fecha_fin = ?";
+            if (expedientes.isEmpty()) {
+                mostrarAdvertenciaSinExpedientes();
+                return false;
+            }
 
-        String insertarObservacionSQL = "INSERT INTO observacion (descripcion, fecha_observacion) VALUES (?, CURDATE())";
+            int totalInsertadas = procesarEntregasReportes(conexion, entregas, expedientes);
+            return totalInsertadas > 0;
 
-        String insertarEntregaSQL = "INSERT INTO entrega_reporte("
-            + "nombre, fecha_inicio, fecha_fin, validado, calificacion, "
-            + "id_expediente, id_observacion) VALUES (?, ?, ?, 0, ?, ?, ?)";
+        } catch (SQLException e) {
+            manejarErrorGuardado(e);
+            throw new RuntimeException("Error al guardar entregas de reportes", e);
+        }
+    }
 
-        String existeEntregaSQL = "SELECT 1 FROM entrega_reporte WHERE nombre = ? AND id_expediente = ?";
+    /**
+     * Obtiene los expedientes asociados a un periodo específico.
+     * @param conexion Conexión a la base de datos.
+     * @param fechaInicio Fecha de inicio del periodo.
+     * @param fechaFin Fecha de fin del periodo.
+     * @return Lista de IDs de expedientes para el periodo.
+     * @throws SQLException Si ocurre un error al acceder a la base de datos.
+     */
+    private static ArrayList<Integer> obtenerExpedientesParaPeriodo(Connection conexion, 
+                                                                 String fechaInicio, 
+                                                                 String fechaFin) throws SQLException {
+        String sql = "SELECT e.id_expediente FROM expediente e "
+                   + "JOIN periodo p ON e.id_periodo = p.id_periodo "
+                   + "WHERE p.fecha_inicio = ? AND p.fecha_fin = ?";
 
-        try (Connection conexion = ConexionBD.abrirConexion();
-             PreparedStatement stmtExpedientes = conexion.prepareStatement(obtenerExpedientesSQL);
-             PreparedStatement stmtInsertObs = conexion.prepareStatement(insertarObservacionSQL, PreparedStatement.RETURN_GENERATED_KEYS);
-             PreparedStatement stmtInsertEntrega = conexion.prepareStatement(insertarEntregaSQL);
-             PreparedStatement stmtExiste = conexion.prepareStatement(existeEntregaSQL)) {
+        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+            stmt.setString(1, fechaInicio);
+            stmt.setString(2, fechaFin);
 
-            stmtExpedientes.setString(1, fechaInicioPeriodo);
-            stmtExpedientes.setString(2, fechaFinPeriodo);
-            ResultSet rs = stmtExpedientes.executeQuery();
-
+            ResultSet rs = stmt.executeQuery();
             ArrayList<Integer> expedientes = new ArrayList<>();
+
             while (rs.next()) {
                 expedientes.add(rs.getInt("id_expediente"));
             }
 
-            if (expedientes.isEmpty()) {
-                Utilidad.mostrarAlertaSimple(
-                    Alert.AlertType.WARNING, 
-                    "Sin expedientes", 
-                    "No se encontraron expedientes para el periodo actual.");
-                return false;
-            }
+            return expedientes;
+        }
+    }
 
-            int totalEntregasInsertadas = 0;
+    /**
+     * Muestra una advertencia cuando no se encuentran expedientes para el periodo.
+     */
+    private static void mostrarAdvertenciaSinExpedientes() {
+        Utilidad.mostrarAlertaSimple(
+            Alert.AlertType.WARNING, 
+            "Sin expedientes", 
+            "No se encontraron expedientes para el periodo actual."
+        );
+    }
+
+    /**
+     * Procesa el guardado de las entregas de reportes en la base de datos.
+     * @param conexion Conexión a la base de datos.
+     * @param entregas Lista de entregas de reportes a guardar.
+     * @param expedientes Lista de IDs de expedientes asociados.
+     * @return Número total de entregas insertadas.
+     * @throws SQLException Si ocurre un error al acceder a la base de datos.
+     */
+    private static int procesarEntregasReportes(Connection conexion, 
+                                             ArrayList<EntregaReporte> entregas, 
+                                             ArrayList<Integer> expedientes) throws SQLException {
+        try (PreparedStatement stmtInsert = crearStatementInsertReporte(conexion);
+             PreparedStatement stmtExiste = crearStatementExisteReporte(conexion)) {
+
+            int totalInsertadas = 0;
 
             for (EntregaReporte entrega : entregas) {
-                // Insertar observación una vez por entrega
-                stmtInsertObs.setString(1, entrega.getObservacion());
-                stmtInsertObs.executeUpdate();
-                ResultSet generatedKeys = stmtInsertObs.getGeneratedKeys();
-                int idObservacion = 0;
-                if (generatedKeys.next()) {
-                    idObservacion = generatedKeys.getInt(1);
-                } else {
-                    throw new SQLException("No se pudo obtener el ID de la observación insertada.");
-                }
-
-                for (int idExpediente : expedientes) {
-                    // Verificar si ya existe una entrega con ese nombre y expediente
-                    stmtExiste.setString(1, entrega.getNombre());
-                    stmtExiste.setInt(2, idExpediente);
-                    ResultSet rsExiste = stmtExiste.executeQuery();
-                    if (rsExiste.next()) {
-                        continue; // Ya existe, omitir
-                    }
-
-                    // Insertar la entrega
-                    stmtInsertEntrega.setString(1, entrega.getNombre());
-                    stmtInsertEntrega.setString(2, entrega.getFechaInicio());
-                    stmtInsertEntrega.setString(3, entrega.getFechaFin());
-                    stmtInsertEntrega.setDouble(4, entrega.getCalificacion());
-                    stmtInsertEntrega.setInt(5, idExpediente);
-                    stmtInsertEntrega.setInt(6, idObservacion);
-                    stmtInsertEntrega.addBatch();
-                    totalEntregasInsertadas++;
-                }
+                totalInsertadas += procesarEntregaReporte(entrega, expedientes, stmtInsert, stmtExiste);
             }
 
-            if (totalEntregasInsertadas > 0) {
-                stmtInsertEntrega.executeBatch();
-                return true;
+            if (totalInsertadas > 0) {
+                stmtInsert.executeBatch();
             }
 
-            return false;
-
-        } catch (SQLException e) {
-            Utilidad.mostrarAlertaSimple(
-                Alert.AlertType.ERROR,
-                "Error al guardar",
-                "No se pudieron guardar las entregas de reportes: " + e.getMessage()
-            );
-            throw new RuntimeException("Error al guardar entregas de reportes", e);
+            return totalInsertadas;
         }
+    }
+
+    /**
+     * Crea el PreparedStatement para insertar una entrega de reporte.
+     * @param conexion Conexión a la base de datos.
+     * @return PreparedStatement configurado para la inserción.
+     * @throws SQLException Si ocurre un error al crear el statement.
+     */
+    private static PreparedStatement crearStatementInsertReporte(Connection conexion) throws SQLException {
+        String sql = "INSERT INTO entrega_reporte("
+                   + "nombre, fecha_inicio, fecha_fin, validado, calificacion, "
+                   + "id_expediente) VALUES (?, ?, ?, 0, ?, ?)";
+        return conexion.prepareStatement(sql);
+    }
+
+    /**
+     * Crea el PreparedStatement para verificar si existe una entrega de reporte.
+     * @param conexion Conexión a la base de datos.
+     * @return PreparedStatement configurado para la verificación.
+     * @throws SQLException Si ocurre un error al crear el statement.
+     */
+    private static PreparedStatement crearStatementExisteReporte(Connection conexion) throws SQLException {
+        String sql = "SELECT 1 FROM entrega_reporte WHERE nombre = ? AND id_expediente = ?";
+        return conexion.prepareStatement(sql);
+    }
+
+    /**
+     * Procesa una entrega de reporte individual para todos los expedientes.
+     * @param entrega Entrega de reporte a procesar.
+     * @param expedientes Lista de IDs de expedientes.
+     * @param stmtInsert Statement para insertar entregas.
+     * @param stmtExiste Statement para verificar existencia.
+     * @return Número de entregas insertadas para esta entrega.
+     * @throws SQLException Si ocurre un error al procesar la entrega.
+     */
+    private static int procesarEntregaReporte(EntregaReporte entrega, 
+                                           ArrayList<Integer> expedientes,
+                                           PreparedStatement stmtInsert,
+                                           PreparedStatement stmtExiste) throws SQLException {
+        int insertadasPorEntrega = 0;
+
+        for (int idExpediente : expedientes) {
+            if (!existeEntregaReporte(entrega, idExpediente, stmtExiste)) {
+                configurarInsertReporte(stmtInsert, entrega, idExpediente);
+                stmtInsert.addBatch();
+                insertadasPorEntrega++;
+            }
+        }
+
+        return insertadasPorEntrega;
+    }
+
+    /**
+     * Verifica si ya existe una entrega de reporte con el mismo nombre para un expediente.
+     * @param entrega Entrega de reporte a verificar.
+     * @param idExpediente ID del expediente a verificar.
+     * @param stmtExiste Statement para verificar existencia.
+     * @return true si ya existe, false en caso contrario.
+     * @throws SQLException Si ocurre un error al verificar.
+     */
+    private static boolean existeEntregaReporte(EntregaReporte entrega, 
+                                             int idExpediente,
+                                             PreparedStatement stmtExiste) throws SQLException {
+        stmtExiste.setString(1, entrega.getNombre());
+        stmtExiste.setInt(2, idExpediente);
+        try (ResultSet rs = stmtExiste.executeQuery()) {
+            return rs.next();
+        }
+    }
+
+    /**
+     * Configura los parámetros para insertar una entrega de reporte.
+     * @param stmt Statement a configurar.
+     * @param entrega Entrega de reporte con los datos.
+     * @param idExpediente ID del expediente asociado.
+     * @throws SQLException Si ocurre un error al configurar.
+     */
+    private static void configurarInsertReporte(PreparedStatement stmt, 
+                                             EntregaReporte entrega, 
+                                             int idExpediente) throws SQLException {
+        stmt.setString(1, entrega.getNombre());
+        stmt.setString(2, entrega.getFechaInicio());
+        stmt.setString(3, entrega.getFechaFin());
+        stmt.setDouble(4, entrega.getCalificacion());
+        stmt.setInt(5, idExpediente);
+    }
+
+    /**
+     * Maneja y muestra un error ocurrido durante el guardado de entregas.
+     * @param e Excepción SQL ocurrida.
+     */
+    private static void manejarErrorGuardado(SQLException e) {
+        Utilidad.mostrarAlertaSimple(
+            Alert.AlertType.ERROR,
+            "Error al guardar",
+            "No se pudieron guardar las entregas de reportes: " + e.getMessage()
+        );
     }
 
     /**

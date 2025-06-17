@@ -49,7 +49,7 @@ public class EvaluacionEstudiante {
     /**
      * Identificador de la observación asociada a esta evaluación.
      */
-    private int idObservacion;
+    private String nota;
 
     /**
      * Obtiene el puntaje de uso de técnicas.
@@ -167,15 +167,15 @@ public class EvaluacionEstudiante {
      * Obtiene el identificador de la observación asociada.
      * @return ID de la observación.
      */
-    public int getIdObservacion() {
-        return idObservacion;
+    public String getNota() {
+        return nota;
     }
 
     /**
      * Establece el identificador de la observación asociada.
      * @param idObservacion ID de la observación a establecer.
      */
-    public void setIdObservacion(int idObservacion) {
-        this.idObservacion = idObservacion;
+    public void setNota(String nota) {
+        this.nota = nota;
     }
 }

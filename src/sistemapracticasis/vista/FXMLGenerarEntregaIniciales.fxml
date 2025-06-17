@@ -11,11 +11,10 @@
    <children>
       <TableView fx:id="tvEntregasIniciales" editable="true" layoutX="81.0" layoutY="121.0" prefHeight="426.0" prefWidth="849.0">
         <columns>
-          <TableColumn fx:id="colNombreEntrega" prefWidth="178.0" text="Nombre de Entrega" />
-          <TableColumn fx:id="colDescripcion" prefWidth="310.0" text="Descripción" />
-            <TableColumn fx:id="colFechaInicio" prefWidth="120.0" text="Fecha Inicio" />
-            <TableColumn fx:id="colFechaFin" prefWidth="120.0" text="Fecha Fin" />
-            <TableColumn fx:id="colCalificacion" editable="false" prefWidth="120.0" text="Calificación" />
+          <TableColumn fx:id="colNombreEntrega" prefWidth="361.0" text="Nombre de Entrega" />
+            <TableColumn fx:id="colFechaInicio" minWidth="9.0" prefWidth="180.0" text="Fecha Inicio" />
+            <TableColumn fx:id="colFechaFin" prefWidth="181.0" text="Fecha Fin" />
+            <TableColumn fx:id="colCalificacion" editable="false" prefWidth="126.0" text="Calificación" />
         </columns>
       </TableView>
       <Button fx:id="btnGenerar" layoutX="425.0" layoutY="566.0" mnemonicParsing="false" onAction="#clicGenerar" prefHeight="42.0" prefWidth="161.0" style="-fx-cursor: hand;" text="Generar" textFill="#1aa01a">

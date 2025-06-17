@@ -22,11 +22,10 @@
       </Label>
       <TableView fx:id="tvEntregasReportes" editable="true" layoutX="82.0" layoutY="119.0" prefHeight="426.0" prefWidth="849.0">
          <columns>
-            <TableColumn fx:id="colNombreEntrega" prefWidth="178.0" text="Nombre de Entrega" />
-            <TableColumn fx:id="colDescripcion" prefWidth="310.0" text="Descripción" />
-            <TableColumn fx:id="colFechaInicio" prefWidth="120.0" text="Fecha Inicio" />
-            <TableColumn fx:id="colFechaFin" prefWidth="120.0" text="Fecha Fin" />
-            <TableColumn fx:id="colCalificacion" editable="false" prefWidth="120.0" text="Calificación" />
+            <TableColumn fx:id="colNombreEntrega" prefWidth="352.0" text="Nombre de Entrega" />
+            <TableColumn fx:id="colFechaInicio" prefWidth="181.0" text="Fecha Inicio" />
+            <TableColumn fx:id="colFechaFin" prefWidth="181.0" text="Fecha Fin" />
+            <TableColumn fx:id="colCalificacion" editable="false" prefWidth="134.0" text="Calificación" />
          </columns>
       </TableView>
    </children>

@@ -38,8 +38,8 @@ import sistemapracticasis.util.Navegador;
 import sistemapracticasis.util.Utilidad;
 
 /** 
- * Autor: [Nombre del autor]
- * Fecha de creación: [Fecha de creación]
+ * Autor: Uriel Cendon
+ * Fecha de creación: 15/06/2025
  * Descripción: Controlador para la vista principal del evaluador,
  * permite evaluar estudiantes mediante una rúbrica y gestionar
  * las evaluaciones pendientes.

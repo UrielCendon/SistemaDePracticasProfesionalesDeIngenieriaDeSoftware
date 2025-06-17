@@ -27,8 +27,8 @@ import sistemapracticasis.util.Navegador;
 import sistemapracticasis.util.Utilidad;
 
 /** 
- * Autor: [Nombre del autor]
- * Fecha de creación: [Fecha de creación]
+ * Autor: Miguel Escobar
+ * Fecha de creación: 15/06/2025
  * Descripción: Controlador para la vista de inicio de sesión,
  * maneja la autenticación de usuarios y redirección a las pantallas
  * principales según el tipo de usuario (estudiante, profesor, evaluador, coordinador).

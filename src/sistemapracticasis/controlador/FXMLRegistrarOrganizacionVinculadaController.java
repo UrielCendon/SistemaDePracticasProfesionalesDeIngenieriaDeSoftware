@@ -3,6 +3,7 @@ package sistemapracticasis.controlador;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -10,6 +11,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+
 import sistemapracticasis.modelo.dao.OrganizacionVinculadaDAO;
 import sistemapracticasis.modelo.pojo.Coordinador;
 import sistemapracticasis.modelo.pojo.OrganizacionVinculada;
@@ -17,46 +19,89 @@ import sistemapracticasis.modelo.pojo.ResultadoOperacion;
 import sistemapracticasis.util.Navegador;
 import sistemapracticasis.util.Utilidad;
 
+/**
+ * Autor: Miguel Edurdo
+ * Fecha de creación: 15/06/2025
+ * Descripción: Controlador para registrar una nueva organización vinculada
+ * desde la vista FXMLRegistrarOrganizacionVinculada.
+ */
 public class FXMLRegistrarOrganizacionVinculadaController implements Initializable {
 
+    /* Sección: Declaración de componentes de interfaz */
+
+    /** Etiqueta con el nombre del usuario */
     @FXML
     private Label lblNombreUsuario;
+
+    /** Botón para guardar la organización */
     @FXML
     private Button btnGuardar;
+
+    /** Campo para ingresar el correo electrónico */
     @FXML
     private TextField txtCorreo;
+
+    /** Campo para ingresar la dirección */
     @FXML
     private TextField txtDireccion;
+
+    /** Campo para ingresar el teléfono */
     @FXML
     private TextField txtTelefono;
+
+    /** Campo para ingresar el nombre o razón social */
     @FXML
     private TextField txtNombre;
+
+    /** Botón para cancelar el registro */
     @FXML
     private Button btnCancelar;
 
+    /* Sección: Variables de sesión */
+
+    /** Coordinador autenticado en sesión */
     private Coordinador coordinadorSesion;
 
+    /* Sección: Inicialización del controlador */
+
+    /**
+     * Inicializa el controlador. No se aplican validaciones al inicio.
+     * @param url URL de localización.
+     * @param rb Recursos para internacionalización.
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // No se necesita configurar validaciones aquí con el nuevo enfoque
     }
 
-        public void inicializarInformacion(Coordinador coordinadorSesion) {
-            this.coordinadorSesion = coordinadorSesion;
-            cargarInformacionUsuario();
-        }
+    /**
+     * Inicializa la sesión con información del coordinador.
+     * @param coordinadorSesion Coordinador autenticado.
+     */
+    public void inicializarInformacion(Coordinador coordinadorSesion) {
+        this.coordinadorSesion = coordinadorSesion;
+        cargarInformacionUsuario();
+    }
 
-        private void cargarInformacionUsuario() {
-            if (coordinadorSesion != null) {
-                lblNombreUsuario.setText(coordinadorSesion.toString());
-            }
+    /**
+     * Carga el nombre del coordinador en la interfaz.
+     */
+    private void cargarInformacionUsuario() {
+        if (coordinadorSesion != null) {
+            lblNombreUsuario.setText(coordinadorSesion.toString());
         }
+    }
 
+    /* Sección: Manejo de eventos */
+
+    /**
+     * Maneja el clic sobre el botón guardar.
+     * @param event Evento generado.
+     */
     @FXML
     private void clicBtnGuardar(ActionEvent event) {
         if (validarCampos()) {
             OrganizacionVinculada organizacion = construirOrganizacion();
-
             ResultadoOperacion resultado = OrganizacionVinculadaDAO.registrarOrganizacion(organizacion);
 
             if (!resultado.isError()) {
@@ -69,8 +114,7 @@ public class FXMLRegistrarOrganizacionVinculadaController implements Initializab
                         "/sistemapracticasis/vista/FXMLPrincipalCoordinador.fxml",
                         sistemapracticasis.controlador.FXMLPrincipalCoordinadorController.class,
                         "inicializarInformacion",
-                        coordinadorSesion
-                );
+                        coordinadorSesion);
             } else {
                 Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR,
                         "No hay conexión con la base de datos",
@@ -83,6 +127,10 @@ public class FXMLRegistrarOrganizacionVinculadaController implements Initializab
         }
     }
 
+    /**
+     * Maneja el clic sobre el botón cancelar.
+     * @param event Evento generado.
+     */
     @FXML
     private void clicBtnCancelar(ActionEvent event) {
         if (Utilidad.mostrarConfirmacion(
@@ -95,11 +143,16 @@ public class FXMLRegistrarOrganizacionVinculadaController implements Initializab
                     "/sistemapracticasis/vista/FXMLPrincipalCoordinador.fxml",
                     sistemapracticasis.controlador.FXMLPrincipalCoordinadorController.class,
                     "inicializarInformacion",
-                    coordinadorSesion
-            );
+                    coordinadorSesion);
         }
     }
 
+    /* Sección: Validaciones y construcción de datos */
+
+    /**
+     * Valida los campos del formulario.
+     * @return true si todos los campos son válidos, false en caso contrario.
+     */
     private boolean validarCampos() {
         boolean valido = true;
         limpiarEstilos();
@@ -135,6 +188,10 @@ public class FXMLRegistrarOrganizacionVinculadaController implements Initializab
         return valido;
     }
 
+    /**
+     * Construye una instancia de OrganizacionVinculada a partir de los campos.
+     * @return La organización construida.
+     */
     private OrganizacionVinculada construirOrganizacion() {
         OrganizacionVinculada organizacion = new OrganizacionVinculada();
         organizacion.setRazonSocial(txtNombre.getText().trim());
@@ -144,17 +201,23 @@ public class FXMLRegistrarOrganizacionVinculadaController implements Initializab
         return organizacion;
     }
 
+    /* Sección: Estilo visual de campos */
+
+    /**
+     * Aplica estilo de error al campo proporcionado.
+     * @param campo Campo de texto a modificar.
+     */
     private void marcarError(TextField campo) {
         campo.setStyle("-fx-border-color: red; -fx-border-width: 2;");
     }
 
+    /**
+     * Limpia los estilos de error en todos los campos.
+     */
     private void limpiarEstilos() {
         txtNombre.setStyle("");
         txtTelefono.setStyle("");
         txtDireccion.setStyle("");
         txtCorreo.setStyle("");
     }
-
 }
-
-

@@ -3,6 +3,7 @@ package sistemapracticasis.controlador;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -10,6 +11,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+
 import sistemapracticasis.modelo.dao.ResponsableProyectoDAO;
 import sistemapracticasis.modelo.pojo.Coordinador;
 import sistemapracticasis.modelo.pojo.ResponsableProyecto;
@@ -17,49 +19,68 @@ import sistemapracticasis.modelo.pojo.ResultadoOperacion;
 import sistemapracticasis.util.Navegador;
 import sistemapracticasis.util.Utilidad;
 
+/**
+ * Autor: Miguel Escobar
+ * Fecha de creación: 15/06/2025
+ * Descripción: Controlador de la vista FXMLRegistrarResponsableDeProyecto,
+ * permite registrar nuevos responsables vinculados a una organización.
+ */
 public class FXMLRegistrarResponsableDeProyectoController implements Initializable {
 
-    @FXML
-    private Button btnCancelar;
-    @FXML
-    private TextField txtNombre;
-    @FXML
-    private TextField txtAPaterno;
-    @FXML
-    private TextField txtDepartamento;
-    @FXML
-    private TextField txtCorreo;
-    @FXML
-    private Button btnGuardar;
-    @FXML
-    private Label lblNombreUsuario;
-    @FXML
-    private TextField txtPuesto;
-    @FXML
-    private TextField txtAMaterno;
-    @FXML
-    private TextField txtTelefono;
+    /* Sección: Declaración de componentes de interfaz */
+
+    @FXML private Button btnCancelar;
+    @FXML private TextField txtNombre;
+    @FXML private TextField txtAPaterno;
+    @FXML private TextField txtDepartamento;
+    @FXML private TextField txtCorreo;
+    @FXML private Button btnGuardar;
+    @FXML private Label lblNombreUsuario;
+    @FXML private TextField txtPuesto;
+    @FXML private TextField txtAMaterno;
+    @FXML private TextField txtTelefono;
+
+    /* Sección: Atributos */
 
     private Coordinador coordinadorSesion;
     private int idOrganizacionVinculada;
 
+    /**
+     * Inicializa el controlador.
+     * @param url No utilizado.
+     * @param rb No utilizado.
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // no usado por ahora
+        // No utilizado actualmente
     }
 
+    /**
+     * Inicializa los datos del controlador.
+     * @param coordinadorSesion Coordinador en sesión
+     * @param idOrganizacionVinculada ID de la organización a la que se vincula el responsable
+     */
     public void inicializarInformacion(Coordinador coordinadorSesion, Integer idOrganizacionVinculada) {
         this.coordinadorSesion = coordinadorSesion;
         this.idOrganizacionVinculada = idOrganizacionVinculada;
         cargarInformacionUsuario();
     }
 
+    /**
+     * Carga el nombre del coordinador en la interfaz.
+     */
     private void cargarInformacionUsuario() {
         if (coordinadorSesion != null) {
             lblNombreUsuario.setText(coordinadorSesion.toString());
         }
     }
 
+    /* Sección: Eventos */
+
+    /**
+     * Maneja el clic del botón Cancelar.
+     * @param event Evento generado al hacer clic.
+     */
     @FXML
     private void clicBtnCancelar(ActionEvent event) {
         if (Utilidad.mostrarConfirmacion(
@@ -72,42 +93,48 @@ public class FXMLRegistrarResponsableDeProyectoController implements Initializab
                     "/sistemapracticasis/vista/FXMLPrincipalCoordinador.fxml",
                     sistemapracticasis.controlador.FXMLPrincipalCoordinadorController.class,
                     "inicializarInformacion",
-                    coordinadorSesion
-            );
+                    coordinadorSesion);
         }
     }
 
+    /**
+     * Maneja el clic del botón Guardar.
+     * @param event Evento generado al hacer clic.
+     */
     @FXML
     private void clicBtnGuardar(ActionEvent event) {
         if (validarCampos()) {
             ResponsableProyecto responsable = construirResponsable();
-
             ResultadoOperacion resultado = ResponsableProyectoDAO.registrarResponsable(responsable);
 
             if (!resultado.isError()) {
                 Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION,
-                        "RegistroExitoso",
+                        "Registro exitoso",
                         resultado.getMensaje());
                 Navegador.cambiarEscenaParametrizada(
                         Utilidad.getEscenarioComponente(btnGuardar),
                         "/sistemapracticasis/vista/FXMLPrincipalCoordinador.fxml",
                         sistemapracticasis.controlador.FXMLPrincipalCoordinadorController.class,
                         "inicializarInformacion",
-                        coordinadorSesion
-                );
-             
+                        coordinadorSesion);
             } else {
                 Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR,
-                        "No hay conexión con la base de datos",
+                        "Error de conexión",
                         resultado.getMensaje());
             }
         } else {
             Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING,
-                    "DatosInválidos",
+                    "Datos inválidos",
                     "Por favor verifique la información ingresada.");
         }
     }
 
+    /* Sección: Validación y construcción */
+
+    /**
+     * Construye un objeto ResponsableProyecto con los datos del formulario.
+     * @return ResponsableProyecto construido.
+     */
     private ResponsableProyecto construirResponsable() {
         ResponsableProyecto responsable = new ResponsableProyecto();
         responsable.setNombre(txtNombre.getText().trim());
@@ -121,6 +148,10 @@ public class FXMLRegistrarResponsableDeProyectoController implements Initializab
         return responsable;
     }
 
+    /**
+     * Valida los campos del formulario.
+     * @return true si los campos son válidos, false en caso contrario.
+     */
     private boolean validarCampos() {
         boolean valido = true;
         limpiarEstilos();
@@ -151,10 +182,19 @@ public class FXMLRegistrarResponsableDeProyectoController implements Initializab
         return valido;
     }
 
+    /* Sección: Estilo visual */
+
+    /**
+     * Marca un campo de texto con estilo de error.
+     * @param campo Campo de texto a marcar.
+     */
     private void marcarError(TextField campo) {
         campo.setStyle("-fx-border-color: red; -fx-border-width: 2;");
     }
 
+    /**
+     * Limpia el estilo de error de todos los campos.
+     */
     private void limpiarEstilos() {
         txtNombre.setStyle("");
         txtAPaterno.setStyle("");
@@ -164,7 +204,4 @@ public class FXMLRegistrarResponsableDeProyectoController implements Initializab
         txtDepartamento.setStyle("");
         txtPuesto.setStyle("");
     }
-
 }
-
-

@@ -4,10 +4,12 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.ResourceBundle;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+
 import sistemapracticasis.modelo.dao.OrganizacionVinculadaDAO;
 import sistemapracticasis.modelo.dao.ProyectoDAO;
 import sistemapracticasis.modelo.dao.ResponsableProyectoDAO;
@@ -20,42 +22,54 @@ import sistemapracticasis.modelo.pojo.ResultadoOperacion;
 import sistemapracticasis.util.Navegador;
 import sistemapracticasis.util.Utilidad;
 
+/**
+ * Autor: Miguel Escobar
+ * Fecha de creación: 15/06/2025
+ * Descripción: Controlador para registrar o editar proyectos en la vista
+ * FXMLRegistrarProyecto.
+ */
 public class FXMLRegistrarProyectoController implements Initializable {
 
-    @FXML
-    private Label lblNombreUsuario;
-    @FXML
-    private Button btnGuardar;
-    @FXML
-    private TextField txtCupo;
-    @FXML
-    private TextField txtNombre;
-    @FXML
-    private Button btnCancelar;
-    @FXML
-    private ComboBox<EstadoProyecto> cbEstado;
-    @FXML
-    private TextArea txtDescripcion;
-    @FXML
-    private DatePicker dpFechaInicio;
-    @FXML
-    private DatePicker dpFechaFin;
-    @FXML
-    private Label lblTituloVentana;
-    @FXML
-    private ComboBox<OrganizacionVinculada> cbOrganizacionVinculada;
-    @FXML
-    private ComboBox<ResponsableProyecto> cbResponsable;
+    /* Sección: Declaración de componentes de interfaz */
+
+    /** Etiqueta con el nombre del usuario */
+    @FXML private Label lblNombreUsuario;
+    /** Botón para guardar el proyecto */
+    @FXML private Button btnGuardar;
+    /** Campo para el cupo del proyecto */
+    @FXML private TextField txtCupo;
+    /** Campo para el nombre del proyecto */
+    @FXML private TextField txtNombre;
+    /** Botón para cancelar */
+    @FXML private Button btnCancelar;
+    /** ComboBox con estados posibles */
+    @FXML private ComboBox<EstadoProyecto> cbEstado;
+    /** Campo de texto para descripción del proyecto */
+    @FXML private TextArea txtDescripcion;
+    /** Selector de fecha de inicio */
+    @FXML private DatePicker dpFechaInicio;
+    /** Selector de fecha de fin */
+    @FXML private DatePicker dpFechaFin;
+    /** Título de la ventana (dinámico para edición o registro) */
+    @FXML private Label lblTituloVentana;
+    /** ComboBox de organización vinculada */
+    @FXML private ComboBox<OrganizacionVinculada> cbOrganizacionVinculada;
+    /** ComboBox de responsable del proyecto */
+    @FXML private ComboBox<ResponsableProyecto> cbResponsable;
+
+    /* Sección: Atributos de sesión y control */
 
     private Coordinador coordinadorSesion;
     private OrganizacionVinculada organizacionSeleccionada;
     private ResponsableProyecto responsableSeleccionado;
-    
     private boolean esEdicion = false;
     private Proyecto proyectoEditado;
 
+    /* Sección: Inicialización */
 
-
+    /**
+     * Inicializa el controlador configurando los elementos interactivos.
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         cbEstado.getItems().setAll(EstadoProyecto.values());
@@ -65,10 +79,14 @@ public class FXMLRegistrarProyectoController implements Initializable {
         cbResponsable.setDisable(true);
 
         configurarCambioDeOrganizacion();
-
     }
 
-
+    /**
+     * Inicializa la información del coordinador, organización y responsable.
+     * @param coordinadorSesion Coordinador en sesión
+     * @param organizacion Organización seleccionada
+     * @param responsable Responsable seleccionado
+     */
     public void inicializarInformacion(Coordinador coordinadorSesion,
                                        OrganizacionVinculada organizacion,
                                        ResponsableProyecto responsable) {
@@ -98,6 +116,11 @@ public class FXMLRegistrarProyectoController implements Initializable {
         }
     }
 
+    /* Sección: Eventos de botones */
+
+    /**
+     * Maneja el clic en el botón Guardar.
+     */
     @FXML
     private void clicBtnGuardar(ActionEvent event) {
         if (!validarCampos()) {
@@ -118,17 +141,15 @@ public class FXMLRegistrarProyectoController implements Initializable {
 
         if (!resultado.isError()) {
             String mensaje = esEdicion ? "Proyecto actualizado con éxito" : "Proyecto registrado con éxito";
-            String titulo = esEdicion ? "Actualizacion exitosa" : "registro exitoso";
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION,
-                    titulo, mensaje);
+            String titulo = esEdicion ? "Actualizacion exitosa" : "Registro exitoso";
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION, titulo, mensaje);
 
             Navegador.cambiarEscenaParametrizada(
                     Utilidad.getEscenarioComponente(btnGuardar),
                     "/sistemapracticasis/vista/FXMLPrincipalCoordinador.fxml",
                     FXMLPrincipalCoordinadorController.class,
                     "inicializarInformacion",
-                    coordinadorSesion
-            );
+                    coordinadorSesion);
         } else {
             Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR,
                     "No hay conexión con la base de datos",
@@ -136,35 +157,35 @@ public class FXMLRegistrarProyectoController implements Initializable {
         }
     }
 
-
+    /**
+     * Maneja el clic en el botón Cancelar.
+     */
     @FXML
     private void clicBtnCancelar(ActionEvent event) {
         String titulo = esEdicion ? "Cancelar actualización" : "Cancelar registro";
-        String mensaje = esEdicion
-            ? "¿Desea cancelar la actualización del proyecto?"
-            : "¿Desea cancelar el registro del proyecto?";
+        String mensaje = esEdicion ? "¿Desea cancelar la actualización del proyecto?" : "¿Desea cancelar el registro del proyecto?";
         String contenido = "Los datos ingresados se perderán.";
 
         if (Utilidad.mostrarConfirmacion(titulo, mensaje, contenido)) {
             Navegador.cambiarEscenaParametrizada(
-                Utilidad.getEscenarioComponente(btnCancelar),
-                "/sistemapracticasis/vista/FXMLPrincipalCoordinador.fxml",
-                FXMLPrincipalCoordinadorController.class,
-                "inicializarInformacion",
-                coordinadorSesion
-            );
+                    Utilidad.getEscenarioComponente(btnCancelar),
+                    "/sistemapracticasis/vista/FXMLPrincipalCoordinador.fxml",
+                    FXMLPrincipalCoordinadorController.class,
+                    "inicializarInformacion",
+                    coordinadorSesion);
         }
     }
 
-    
+    /* Sección: Validaciones y construcción */
+
     private Proyecto construirProyecto() {
         OrganizacionVinculada orgSeleccionada = cbOrganizacionVinculada.getSelectionModel().getSelectedItem();
         ResponsableProyecto respSeleccionado = cbResponsable.getSelectionModel().getSelectedItem();
 
         if (orgSeleccionada == null || respSeleccionado == null) {
             Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING,
-                "Selección incompleta",
-                "Debe seleccionar una organización y un responsable.");
+                    "Selección incompleta",
+                    "Debe seleccionar una organización y un responsable.");
             return null;
         }
 
@@ -178,14 +199,12 @@ public class FXMLRegistrarProyectoController implements Initializable {
         proyecto.setIdOrganizacionVinculada(orgSeleccionada.getIdOrganizacionVinculada());
         proyecto.setIdResponsableProyecto(respSeleccionado.getIdEncargado());
 
-        // Si estás editando un proyecto existente, asegúrate de tener este campo
         if (proyectoEditado != null) {
             proyecto.setIdProyecto(proyectoEditado.getIdProyecto());
         }
 
         return proyecto;
     }
-
 
     private boolean validarCampos() {
         boolean valido = true;
@@ -210,7 +229,7 @@ public class FXMLRegistrarProyectoController implements Initializable {
             marcarError(txtCupo); valido = false;
         } else {
             int cupo = Integer.parseInt(cupoTexto);
-            if (cupo <= 0 || cupo > 127) { // límite para TINYINT sin signo
+            if (cupo <= 0 || cupo > 127) {
                 marcarError(txtCupo); valido = false;
             }
         }
@@ -237,8 +256,12 @@ public class FXMLRegistrarProyectoController implements Initializable {
         dpFechaInicio.setStyle("");
         dpFechaFin.setStyle("");
     }
-    
-    
+
+    /**
+     * Carga la información de un proyecto para su edición.
+     * @param proyecto Proyecto a editar
+     * @param coordinadorSesion Coordinador activo
+     */
     public void cargarDatosProyectoParaEditar(Proyecto proyecto, Coordinador coordinadorSesion) {
         this.coordinadorSesion = coordinadorSesion;
         this.proyectoEditado = proyecto;
@@ -290,8 +313,4 @@ public class FXMLRegistrarProyectoController implements Initializable {
             }
         });
     }
-
-
-
 }
-

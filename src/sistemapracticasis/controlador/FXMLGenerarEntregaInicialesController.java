@@ -23,7 +23,7 @@ import sistemapracticasis.util.Navegador;
 import sistemapracticasis.util.Utilidad;
 
 /** 
- * Autor: Uriel Cendón
+ * Autor: Raziel Filobello
  * Fecha de creación: 15/06/2025
  * Descripción: Controlador de la vista FXMLGenerarEntregaIniciales,
  * que permite al coordinador generar las entregas iniciales que los

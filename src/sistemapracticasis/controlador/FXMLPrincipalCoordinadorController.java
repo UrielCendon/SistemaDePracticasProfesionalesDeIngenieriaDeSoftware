@@ -15,8 +15,8 @@ import sistemapracticasis.util.Navegador;
 import sistemapracticasis.util.Utilidad;
 
 /** 
- * Autor: [Nombre del autor]
- * Fecha de creación: [Fecha de creación]
+ * Autor: Uriel Cendon
+ * Fecha de creación: 15/06/2025
  * Descripción: Controlador principal para la vista del coordinador,
  * que permite acceder a todas las funcionalidades del sistema
  * como gestión de proyectos, responsables y organizaciones vinculadas.

@@ -3,6 +3,7 @@ package sistemapracticasis.controlador;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -13,28 +14,46 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+
 import sistemapracticasis.modelo.dao.OrganizacionVinculadaDAO;
 import sistemapracticasis.modelo.pojo.Coordinador;
 import sistemapracticasis.modelo.pojo.OrganizacionVinculada;
 import sistemapracticasis.util.Navegador;
 import sistemapracticasis.util.Utilidad;
 
+/**
+ * Autor: Miguel Escobar
+ * Fecha de creación: 15/06/2025
+ * Descripción: Controlador de la vista FXMLSeleccionarOrganizacionVinculada,
+ * permite al coordinador seleccionar una organización para asignarle un responsable.
+ */
 public class FXMLSeleccionarOrganizacionVinculadaController implements Initializable {
 
-    @FXML
-    private TextField txtBuscar;
-    @FXML
-    private Label lblNombreUsuario;
-    @FXML
-    private Button btnRegresar;
-    @FXML
-    private Button btnGuardar;
-    @FXML
-    private ComboBox<OrganizacionVinculada> cbOrganizacionVinculada;
+    /* Sección: Declaración de componentes de interfaz */
 
+    /** Campo de búsqueda de organizaciones */
+    @FXML private TextField txtBuscar;
+    /** Etiqueta con el nombre del coordinador */
+    @FXML private Label lblNombreUsuario;
+    /** Botón para regresar al menú principal */
+    @FXML private Button btnRegresar;
+    /** Botón para continuar con la organización seleccionada */
+    @FXML private Button btnGuardar;
+    /** ComboBox con la lista de organizaciones vinculadas */
+    @FXML private ComboBox<OrganizacionVinculada> cbOrganizacionVinculada;
+
+    /* Sección: Atributos */
+
+    /** Coordinador autenticado en sesión */
     private Coordinador coordinadorSesion;
+    /** Lista completa de organizaciones */
     private ObservableList<OrganizacionVinculada> listaOrganizaciones;
 
+    /* Sección: Inicialización */
+
+    /**
+     * Inicializa la vista cargando las organizaciones disponibles y configurando eventos.
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         cargarOrganizaciones();
@@ -47,26 +66,47 @@ public class FXMLSeleccionarOrganizacionVinculadaController implements Initializ
         txtBuscar.textProperty().addListener((obs, oldVal, newVal) -> filtrarOrganizaciones(newVal));
     }
 
+    /**
+     * Inicializa la información de sesión.
+     * @param coordinadorSesion Coordinador en sesión
+     */
     public void inicializarInformacion(Coordinador coordinadorSesion) {
         this.coordinadorSesion = coordinadorSesion;
         cargarInformacionUsuario();
     }
 
+    /**
+     * Carga el nombre del coordinador en la interfaz.
+     */
     private void cargarInformacionUsuario() {
         if (coordinadorSesion != null) {
             lblNombreUsuario.setText(coordinadorSesion.toString());
         }
     }
 
+    /**
+     * Permite acceder externamente a la etiqueta del nombre del usuario.
+     * @return Etiqueta del nombre del usuario
+     */
     public Label getLblNombreUsuario() {
         return lblNombreUsuario;
     }
 
+    /* Sección: Carga y filtro de datos */
+
+    /**
+     * Carga todas las organizaciones disponibles en el ComboBox.
+     */
     private void cargarOrganizaciones() {
-        listaOrganizaciones = FXCollections.observableArrayList(OrganizacionVinculadaDAO.obtenerOrganizaciones());
+        listaOrganizaciones = FXCollections.observableArrayList
+        (OrganizacionVinculadaDAO.obtenerOrganizaciones());
         cbOrganizacionVinculada.setItems(listaOrganizaciones);
     }
 
+    /**
+     * Filtra las organizaciones según el texto ingresado.
+     * @param filtro Texto usado para filtrar
+     */
     private void filtrarOrganizaciones(String filtro) {
         if (filtro == null || filtro.trim().isEmpty()) {
             cbOrganizacionVinculada.setItems(listaOrganizaciones);
@@ -80,6 +120,11 @@ public class FXMLSeleccionarOrganizacionVinculadaController implements Initializ
         cbOrganizacionVinculada.setItems(filtradas);
     }
 
+    /* Sección: Manejo de eventos */
+
+    /**
+     * Maneja el clic del botón Guardar. Redirige a registrar responsable si hay selección válida.
+     */
     @FXML
     private void clicBtnGuardar(ActionEvent event) {
         OrganizacionVinculada seleccionada = cbOrganizacionVinculada.getValue();
@@ -99,7 +144,9 @@ public class FXMLSeleccionarOrganizacionVinculadaController implements Initializ
         }
     }
 
-
+    /**
+     * Maneja el clic del botón Regresar. Retorna a la vista principal del coordinador.
+     */
     @FXML
     private void clicBtnRegresar(ActionEvent event) {
         Navegador.cambiarEscenaParametrizada(
@@ -110,5 +157,4 @@ public class FXMLSeleccionarOrganizacionVinculadaController implements Initializ
             coordinadorSesion
         );
     }
-
 }

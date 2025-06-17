@@ -26,8 +26,8 @@ import sistemapracticasis.util.PDFGenerador;
 import sistemapracticasis.util.Utilidad;
 
 /** 
- * Autor: Kaiser
- * Fecha de creación: [Fecha de creación]
+ * Autor: Raziel Filobello
+ * Fecha de creación: 15/06/2025
  * Descripción: Controlador para la generación de oficios de asignación,
  * permite seleccionar estudiantes y generar los documentos oficiales
  * de asignación a organizaciones vinculadas.

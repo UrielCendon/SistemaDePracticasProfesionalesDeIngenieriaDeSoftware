@@ -4,6 +4,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
@@ -15,6 +16,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+
 import sistemapracticasis.modelo.dao.ProyectoDAO;
 import sistemapracticasis.modelo.pojo.Coordinador;
 import sistemapracticasis.modelo.pojo.Proyecto;
@@ -22,58 +24,52 @@ import sistemapracticasis.modelo.pojo.ResultadoOperacion;
 import sistemapracticasis.util.Navegador;
 import sistemapracticasis.util.Utilidad;
 
-
-
 /**
- * FXML Controller class
- *
- * @author migue
+ * Autor: Miguel Escobar
+ * Fecha de creación: 15/06/2025
+ * Descripción: Controlador para la gestión de proyectos académicos,
+ * permite visualizar, buscar, actualizar y eliminar proyectos.
  */
 public class FXMLProyectoController implements Initializable {
 
-    @FXML
-    private TableView<Proyecto> tblEntregas;
-    @FXML
-    private TableColumn<Proyecto, String> tbcNombre;
-    @FXML
-    private TableColumn<Proyecto, String> tbcEstado;
-    @FXML
-    private TableColumn<Proyecto, Integer> tbcCupo;
-    @FXML
-    private TableColumn<Proyecto, String> tbcFechaInicio;
-    @FXML
-    private TableColumn<Proyecto, String> tbcFechaFin;
+    /* Sección: Componentes de la interfaz */
+    @FXML private TableView<Proyecto> tblEntregas;
+    @FXML private TableColumn<Proyecto, String> tbcNombre;
+    @FXML private TableColumn<Proyecto, String> tbcEstado;
+    @FXML private TableColumn<Proyecto, Integer> tbcCupo;
+    @FXML private TableColumn<Proyecto, String> tbcFechaInicio;
+    @FXML private TableColumn<Proyecto, String> tbcFechaFin;
+    @FXML private TextField txtBuscar;
+    @FXML private Label lblNombreUsuario;
+    @FXML private Button btnRegresar;
+    @FXML private Button btnEliminar;
+    @FXML private Button btnActualizar;
 
-    @FXML
-    private TextField txtBuscar;
-    @FXML
-    private Label lblNombreUsuario;
-    @FXML
-    private Button btnRegresar;
+    /* Sección: Variables de instancia */
     private Coordinador coordinadorSesion;
-    @FXML
-    private Button btnEliminar;
 
     /**
      * Initializes the controller class.
+     * @param url Ubicación utilizada para resolver rutas relativas.
+     * @param rb Recursos utilizados para localizar el objeto raíz.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         configurarColumnas();
         cargarProyectos();
-    }  
-    
+    }
+
+    /* Sección: Métodos públicos */
+    /**
+     * Inicializa la información del coordinador en sesión.
+     * @param coordinadorSesion Objeto Coordinador con datos de sesión.
+     */
     public void inicializarInformacion(Coordinador coordinadorSesion) {
         this.coordinadorSesion = coordinadorSesion;
         cargarInformacionUsuario();
     }
 
-    private void cargarInformacionUsuario() {
-        if (coordinadorSesion != null) {
-            lblNombreUsuario.setText(coordinadorSesion.toString());
-        }
-    }
-    
+    /* Sección: Configuración de la interfaz */
     private void configurarColumnas() {
         tbcNombre.setCellValueFactory(cellData ->
             new SimpleStringProperty(cellData.getValue().getNombre()));
@@ -90,20 +86,30 @@ public class FXMLProyectoController implements Initializable {
         tbcFechaFin.setCellValueFactory(cellData ->
             new SimpleStringProperty(cellData.getValue().getFecha_fin()));
     }
-    
+
+    /* Sección: Carga de datos */
+    private void cargarInformacionUsuario() {
+        if (coordinadorSesion != null) {
+            lblNombreUsuario.setText(coordinadorSesion.toString());
+        }
+    }
+
+    /**
+     * Carga todos los proyectos desde la base de datos.
+     */
     private void cargarProyectos() {
         try {
             ArrayList<Proyecto> listaProyectos = ProyectoDAO.obtenerTodosLosProyectos();
             tblEntregas.getItems().clear();
             tblEntregas.getItems().addAll(listaProyectos);
         } catch (SQLException e) {
-            e.printStackTrace();
             Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR,
                 "Error de conexión",
                 "No hay conexión con la base de datos."); 
         }
     }
-    
+
+    /* Sección: Manejo de eventos */
     @FXML
     private void clicBtnBuscar(ActionEvent event) {
         String textoBusqueda = txtBuscar.getText().trim();
@@ -120,7 +126,6 @@ public class FXMLProyectoController implements Initializable {
                 "No se encontró ningún proyecto con el nombre ingresado.");
         }
     }
-
 
     @FXML
     private void clicBtnActualizar(ActionEvent event) {
@@ -142,8 +147,6 @@ public class FXMLProyectoController implements Initializable {
             coordinadorSesion
         );
     }
-
-
 
     @FXML
     private void clicBtnRegresar(ActionEvent event) {
@@ -189,7 +192,7 @@ public class FXMLProyectoController implements Initializable {
         }
     }
 
-    
+    /* Sección: Métodos auxiliares */
     private boolean validarCampoBusqueda(String texto) {
         if (texto.isEmpty()) {
             Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING,
@@ -218,6 +221,4 @@ public class FXMLProyectoController implements Initializable {
         }
         return proyectosCoincidentes;
     }
-
-    
 }

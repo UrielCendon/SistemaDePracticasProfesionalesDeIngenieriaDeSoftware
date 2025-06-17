@@ -32,24 +32,53 @@ import sistemapracticasis.util.Utilidad;
  */
 public class FXMLProyectoController implements Initializable {
 
-    /* Sección: Componentes de la interfaz */
+    /* Sección: Componentes de la interfaz
+     * Contiene los elementos FXML de la vista de gestión de proyectos.
+     */
+
+    /** Tabla que muestra los proyectos disponibles. */
     @FXML private TableView<Proyecto> tblEntregas;
+
+    /** Columna que muestra el nombre del proyecto. */
     @FXML private TableColumn<Proyecto, String> tbcNombre;
+
+    /** Columna que indica el estado actual del proyecto. */
     @FXML private TableColumn<Proyecto, String> tbcEstado;
+
+    /** Columna que muestra el cupo máximo del proyecto. */
     @FXML private TableColumn<Proyecto, Integer> tbcCupo;
+
+    /** Columna que muestra la fecha de inicio del proyecto. */
     @FXML private TableColumn<Proyecto, String> tbcFechaInicio;
+
+    /** Columna que muestra la fecha de fin del proyecto. */
     @FXML private TableColumn<Proyecto, String> tbcFechaFin;
+
+    /** Campo de texto para buscar proyectos por nombre o palabra clave. */
     @FXML private TextField txtBuscar;
+
+    /** Etiqueta que muestra el nombre del coordinador en sesión. */
     @FXML private Label lblNombreUsuario;
+
+    /** Botón para regresar a la vista anterior. */
     @FXML private Button btnRegresar;
+
+    /** Botón para eliminar el proyecto seleccionado. */
     @FXML private Button btnEliminar;
+
+    /** Botón para actualizar la información del proyecto seleccionado. */
     @FXML private Button btnActualizar;
 
-    /* Sección: Variables de instancia */
+    /* Sección: Variables de instancia
+     * Almacena los datos del coordinador en sesión.
+     */
+
+    /** Coordinador actualmente autenticado en la aplicación. */
     private Coordinador coordinadorSesion;
 
+
     /**
-     * Initializes the controller class.
+     * Inicializa el controlador después de que su elemento raíz haya sido procesado.
      * @param url Ubicación utilizada para resolver rutas relativas.
      * @param rb Recursos utilizados para localizar el objeto raíz.
      */
@@ -177,7 +206,8 @@ public class FXMLProyectoController implements Initializable {
         );
 
         if (confirmar) {
-            ResultadoOperacion resultado = ProyectoDAO.eliminarProyectoPorId(proyectoSeleccionado.getIdProyecto());
+            ResultadoOperacion resultado = ProyectoDAO.eliminarProyectoPorId(
+                    proyectoSeleccionado.getIdProyecto());
 
             if (!resultado.isError()) {
                 Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION,

@@ -30,45 +30,72 @@ import sistemapracticasis.util.Utilidad;
  */
 public class FXMLRegistrarProyectoController implements Initializable {
 
-    /* Sección: Declaración de componentes de interfaz */
+    /* Sección: Componentes de la interfaz
+     * Contiene los elementos FXML de la vista.
+     */
 
-    /** Etiqueta con el nombre del usuario */
+    /** Etiqueta con el nombre del usuario. */
     @FXML private Label lblNombreUsuario;
-    /** Botón para guardar el proyecto */
+
+    /** Botón para guardar el proyecto. */
     @FXML private Button btnGuardar;
-    /** Campo para el cupo del proyecto */
+
+    /** Campo para el cupo del proyecto. */
     @FXML private TextField txtCupo;
-    /** Campo para el nombre del proyecto */
+
+    /** Campo para el nombre del proyecto. */
     @FXML private TextField txtNombre;
-    /** Botón para cancelar */
+
+    /** Botón para cancelar la operación. */
     @FXML private Button btnCancelar;
-    /** ComboBox con estados posibles */
+
+    /** Lista desplegable con los estados posibles del proyecto. */
     @FXML private ComboBox<EstadoProyecto> cbEstado;
-    /** Campo de texto para descripción del proyecto */
+
+    /** Área de texto para la descripción del proyecto. */
     @FXML private TextArea txtDescripcion;
-    /** Selector de fecha de inicio */
+
+    /** Selector de fecha de inicio del proyecto. */
     @FXML private DatePicker dpFechaInicio;
-    /** Selector de fecha de fin */
+
+    /** Selector de fecha de fin del proyecto. */
     @FXML private DatePicker dpFechaFin;
-    /** Título de la ventana (dinámico para edición o registro) */
+
+    /** Etiqueta que actúa como título dinámico de la ventana. */
     @FXML private Label lblTituloVentana;
-    /** ComboBox de organización vinculada */
+
+    /** Lista desplegable de la organización vinculada al proyecto. */
     @FXML private ComboBox<OrganizacionVinculada> cbOrganizacionVinculada;
-    /** ComboBox de responsable del proyecto */
+
+    /** Lista desplegable del responsable del proyecto. */
     @FXML private ComboBox<ResponsableProyecto> cbResponsable;
 
-    /* Sección: Atributos de sesión y control */
+    /* Sección: Variables de instancia
+     * Almacena los datos de la sesión y control del proyecto.
+     */
 
+    /** Coordinador autenticado en sesión. */
     private Coordinador coordinadorSesion;
+
+    /** Organización vinculada seleccionada para el proyecto. */
     private OrganizacionVinculada organizacionSeleccionada;
+
+    /** Responsable seleccionado para el proyecto. */
     private ResponsableProyecto responsableSeleccionado;
+
+    /** Indicador de modo edición (true si se edita un proyecto existente). */
     private boolean esEdicion = false;
+
+    /** Proyecto que se está editando (nulo si es un registro nuevo). */
     private Proyecto proyectoEditado;
 
-    /* Sección: Inicialización */
+
+    /* Sección: Inicialización del controlador */
 
     /**
-     * Inicializa el controlador configurando los elementos interactivos.
+     * Inicializa el controlador después de que su elemento raíz haya sido procesado.
+     * @param url URL de localización.
+     * @param rb Recursos para internacionalización.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -140,7 +167,8 @@ public class FXMLRegistrarProyectoController implements Initializable {
         }
 
         if (!resultado.isError()) {
-            String mensaje = esEdicion ? "Proyecto actualizado con éxito" : "Proyecto registrado con éxito";
+            String mensaje = esEdicion ? "Proyecto actualizado con éxito" : 
+                    "Proyecto registrado con éxito";
             String titulo = esEdicion ? "Actualizacion exitosa" : "Registro exitoso";
             Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION, titulo, mensaje);
 
@@ -163,7 +191,8 @@ public class FXMLRegistrarProyectoController implements Initializable {
     @FXML
     private void clicBtnCancelar(ActionEvent event) {
         String titulo = esEdicion ? "Cancelar actualización" : "Cancelar registro";
-        String mensaje = esEdicion ? "¿Desea cancelar la actualización del proyecto?" : "¿Desea cancelar el registro del proyecto?";
+        String mensaje = esEdicion ? "¿Desea cancelar la actualización del proyecto?" : 
+                "¿Desea cancelar el registro del proyecto?";
         String contenido = "Los datos ingresados se perderán.";
 
         if (Utilidad.mostrarConfirmacion(titulo, mensaje, contenido)) {
@@ -179,8 +208,10 @@ public class FXMLRegistrarProyectoController implements Initializable {
     /* Sección: Validaciones y construcción */
 
     private Proyecto construirProyecto() {
-        OrganizacionVinculada orgSeleccionada = cbOrganizacionVinculada.getSelectionModel().getSelectedItem();
-        ResponsableProyecto respSeleccionado = cbResponsable.getSelectionModel().getSelectedItem();
+        OrganizacionVinculada orgSeleccionada = 
+                cbOrganizacionVinculada.getSelectionModel().getSelectedItem();
+        ResponsableProyecto respSeleccionado = 
+                cbResponsable.getSelectionModel().getSelectedItem();
 
         if (orgSeleccionada == null || respSeleccionado == null) {
             Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING,
@@ -281,27 +312,33 @@ public class FXMLRegistrarProyectoController implements Initializable {
         dpFechaFin.setValue(LocalDate.parse(proyecto.getFecha_fin()));
         cbEstado.getSelectionModel().select(proyecto.getEstado());
 
-        cbOrganizacionVinculada.getItems().setAll(OrganizacionVinculadaDAO.obtenerOrganizaciones());
-        OrganizacionVinculada ov = OrganizacionVinculadaDAO.obtenerOrganizacionPorId(proyecto.getIdOrganizacionVinculada());
+        cbOrganizacionVinculada.getItems().setAll(
+                OrganizacionVinculadaDAO.obtenerOrganizaciones());
+        OrganizacionVinculada ov = OrganizacionVinculadaDAO.obtenerOrganizacionPorId(
+                proyecto.getIdOrganizacionVinculada());
         if (ov != null) cbOrganizacionVinculada.getSelectionModel().select(ov);
 
         if (ov != null) {
             cbResponsable.getItems().setAll(
-                ResponsableProyectoDAO.obtenerResponsablesPorIdOrganizacion(ov.getIdOrganizacionVinculada())
+                ResponsableProyectoDAO.obtenerResponsablesPorIdOrganizacion(
+                        ov.getIdOrganizacionVinculada())
             );
-            ResponsableProyecto responsable = ResponsableProyectoDAO.obtenerResponsablePorId(proyecto.getIdResponsableProyecto());
+            ResponsableProyecto responsable = ResponsableProyectoDAO.obtenerResponsablePorId(
+                    proyecto.getIdResponsableProyecto());
             if (responsable != null) cbResponsable.getSelectionModel().select(responsable);
         }
     }
 
     private void configurarCambioDeOrganizacion() {
         cbOrganizacionVinculada.setOnAction(event -> {
-            OrganizacionVinculada organizacionSeleccionada = cbOrganizacionVinculada.getSelectionModel().getSelectedItem();
+            OrganizacionVinculada organizacionSeleccionada = 
+                    cbOrganizacionVinculada.getSelectionModel().getSelectedItem();
 
             if (organizacionSeleccionada != null) {
                 int idOrganizacion = organizacionSeleccionada.getIdOrganizacionVinculada();
 
-                List<ResponsableProyecto> responsables = ResponsableProyectoDAO.obtenerResponsablesPorIdOrganizacion(idOrganizacion);
+                List<ResponsableProyecto> responsables = 
+                        ResponsableProyectoDAO.obtenerResponsablesPorIdOrganizacion(idOrganizacion);
 
                 cbResponsable.getItems().clear();
                 cbResponsable.getItems().addAll(responsables);

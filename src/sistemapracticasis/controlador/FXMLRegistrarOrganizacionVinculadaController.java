@@ -27,45 +27,43 @@ import sistemapracticasis.util.Utilidad;
  */
 public class FXMLRegistrarOrganizacionVinculadaController implements Initializable {
 
-    /* Sección: Declaración de componentes de interfaz */
+    /* Sección: Componentes de la interfaz
+     * Contiene los elementos FXML de la vista.
+     */
 
-    /** Etiqueta con el nombre del usuario */
-    @FXML
-    private Label lblNombreUsuario;
+    /** Etiqueta con el nombre del usuario. */
+    @FXML private Label lblNombreUsuario;
 
-    /** Botón para guardar la organización */
-    @FXML
-    private Button btnGuardar;
+    /** Botón para guardar la organización. */
+    @FXML private Button btnGuardar;
 
-    /** Campo para ingresar el correo electrónico */
-    @FXML
-    private TextField txtCorreo;
+    /** Campo para ingresar el correo electrónico. */
+    @FXML private TextField txtCorreo;
 
-    /** Campo para ingresar la dirección */
-    @FXML
-    private TextField txtDireccion;
+    /** Campo para ingresar la dirección. */
+    @FXML private TextField txtDireccion;
 
-    /** Campo para ingresar el teléfono */
-    @FXML
-    private TextField txtTelefono;
+    /** Campo para ingresar el teléfono. */
+    @FXML private TextField txtTelefono;
 
-    /** Campo para ingresar el nombre o razón social */
-    @FXML
-    private TextField txtNombre;
+    /** Campo para ingresar el nombre o razón social. */
+    @FXML private TextField txtNombre;
 
-    /** Botón para cancelar el registro */
-    @FXML
-    private Button btnCancelar;
+    /** Botón para cancelar el registro. */
+    @FXML private Button btnCancelar;
 
-    /* Sección: Variables de sesión */
+    /* Sección: Variables de instancia
+     * Almacena los datos del coordinador en sesión.
+     */
 
-    /** Coordinador autenticado en sesión */
+    /** Coordinador autenticado en sesión. */
     private Coordinador coordinadorSesion;
+
 
     /* Sección: Inicialización del controlador */
 
     /**
-     * Inicializa el controlador. No se aplican validaciones al inicio.
+     * Inicializa el controlador después de que su elemento raíz haya sido procesado.
      * @param url URL de localización.
      * @param rb Recursos para internacionalización.
      */
@@ -102,7 +100,8 @@ public class FXMLRegistrarOrganizacionVinculadaController implements Initializab
     private void clicBtnGuardar(ActionEvent event) {
         if (validarCampos()) {
             OrganizacionVinculada organizacion = construirOrganizacion();
-            ResultadoOperacion resultado = OrganizacionVinculadaDAO.registrarOrganizacion(organizacion);
+            ResultadoOperacion resultado = 
+                    OrganizacionVinculadaDAO.registrarOrganizacion(organizacion);
 
             if (!resultado.isError()) {
                 Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION,

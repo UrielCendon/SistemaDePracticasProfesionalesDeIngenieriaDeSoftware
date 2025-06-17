@@ -49,24 +49,47 @@ public class FXMLPrincipalEvaluadorController implements Initializable {
     /* Sección: Componentes de la interfaz
      * Contiene los elementos FXML de la vista principal del evaluador.
      */
+
+    /** Etiqueta que muestra el nombre del evaluador en sesión. */
     @FXML private Label lblNombreUsuario;
+
+    /** Botón para cerrar la sesión del evaluador. */
     @FXML private Button btnCerrarSesion;
+
+    /** Botón para confirmar la selección y continuar con la evaluación. */
     @FXML private Button btnAceptar;
+
+    /** Tabla que lista a los estudiantes pendientes de evaluación. */
     @FXML private TableView<Estudiante> tvEvaluarEstudiante;
+
+    /** Columna que muestra la matrícula del estudiante. */
     @FXML private TableColumn<Estudiante, String> colMatricula;
+
+    /** Columna que muestra el nombre completo del estudiante. */
     @FXML private TableColumn<Estudiante, String> colEstudiante;
+
+    /** Columna que muestra el proyecto asignado al estudiante. */
     @FXML private TableColumn<Estudiante, String> colProyectoAsignado;
+
+    /** Columna con el botón para seleccionar al estudiante a evaluar. */
     @FXML private TableColumn<Estudiante, Void> colSeleccionEstudiante;
 
     /* Sección: Variables de instancia
      * Almacena los datos del evaluador en sesión y estudiantes a evaluar.
      */
+
+    /** Evaluador actualmente autenticado en la aplicación. */
     private Evaluador evaluadorSesion;
+
+    /** Lista observable de estudiantes que serán evaluados. */
     private ObservableList<Estudiante> estudiantes;
+
+    /** Estudiante seleccionado actualmente para su evaluación. */
     private Estudiante seleccionado;
 
+
     /**
-     * Initializes the controller class.
+     * Inicializa el controlador después de que su elemento raíz haya sido procesado.
      * @param url Ubicación utilizada para resolver rutas relativas.
      * @param rb Recursos utilizados para localizar el objeto raíz.
      */
@@ -97,12 +120,14 @@ public class FXMLPrincipalEvaluadorController implements Initializable {
 
     private void configurarColumnasTexto() {
         colMatricula.setCellValueFactory(new PropertyValueFactory<>("matricula"));
-        colEstudiante.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().toString()));
+        colEstudiante.setCellValueFactory(cellData -> new SimpleStringProperty(
+                cellData.getValue().toString()));
         colProyectoAsignado.setCellValueFactory(new PropertyValueFactory<>("nombreProyecto"));
     }
 
     private void configurarColumnaSeleccion() {
-        colSeleccionEstudiante.setCellFactory(new Callback<TableColumn<Estudiante, Void>, TableCell<Estudiante, Void>>() {
+        colSeleccionEstudiante.setCellFactory(new Callback<TableColumn<Estudiante, Void>, 
+                TableCell<Estudiante, Void>>() {
             @Override
             public TableCell<Estudiante, Void> call(TableColumn<Estudiante, Void> param) {
                 return new TableCell<Estudiante, Void>() {

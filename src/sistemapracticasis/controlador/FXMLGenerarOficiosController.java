@@ -37,25 +37,51 @@ public class FXMLGenerarOficiosController implements Initializable {
     /* Sección: Componentes de la interfaz
      * Contiene los elementos FXML de la vista.
      */
+
+    /** Botón para cancelar y cerrar la ventana. */
     @FXML private Button btnCancelar;
+
+    /** Etiqueta que muestra el nombre del usuario en sesión. */
     @FXML private Label lblNombreUsuario;
+
+    /** Botón para generar los documentos seleccionados. */
     @FXML private Button btnGenerarDocumentos;
+
+    /** Tabla que lista a los estudiantes con oficio de asignación. */
     @FXML private TableView<EstudianteAsignado> tvOficiosAsignacion;
+
+    /** Columna que muestra la matrícula del estudiante. */
     @FXML private TableColumn<EstudianteAsignado, String> colMatricula;
+
+    /** Columna que muestra el nombre completo del estudiante. */
     @FXML private TableColumn<EstudianteAsignado, String> colEstudiante;
+
+    /** Columna que muestra el proyecto asignado al estudiante. */
     @FXML private TableColumn<EstudianteAsignado, String> colProyectoAsignado;
+
+    /** Columna que muestra la organización vinculada al proyecto. */
     @FXML private TableColumn<EstudianteAsignado, String> colOrganizacionVinculada;
+
+    /** Columna que permite seleccionar o deseleccionar al estudiante. */
     @FXML private TableColumn<EstudianteAsignado, Boolean> colSeleccionEstudiante;
+
+    /** Botón para seleccionar o deseleccionar a todos los estudiantes. */
     @FXML private Button btnSeleccionarTodos;
 
     /* Sección: Variables de instancia
      * Almacena datos de la sesión y lista de estudiantes.
      */
+
+    /** Coordinador actualmente en sesión. */
     private Coordinador coordinadorSesion;
-    private ObservableList<EstudianteAsignado> listaEstudiantes = FXCollections.observableArrayList();
+
+    /** Lista observable de estudiantes asignados. */
+    private ObservableList<EstudianteAsignado> listaEstudiantes =
+        FXCollections.observableArrayList();
+
 
     /**
-     * Initializes the controller class.
+     * Inicializa el controlador después de que su elemento raíz haya sido procesado.
      * @param url Ubicación utilizada para resolver rutas relativas.
      * @param rb Recursos utilizados para localizar el objeto raíz.
      */
@@ -72,12 +98,18 @@ public class FXMLGenerarOficiosController implements Initializable {
         tvOficiosAsignacion.setEditable(true);
         colSeleccionEstudiante.setEditable(true);
         
-        colMatricula.setCellValueFactory(cellData -> cellData.getValue().matriculaProperty());
-        colEstudiante.setCellValueFactory(cellData -> cellData.getValue().nombreEstudianteProperty());
-        colProyectoAsignado.setCellValueFactory(cellData -> cellData.getValue().nombreProyectoProperty());
-        colOrganizacionVinculada.setCellValueFactory(cellData -> cellData.getValue().razonSocialOrganizacionProperty());
-        colSeleccionEstudiante.setCellValueFactory(cellData -> cellData.getValue().seleccionadoProperty());
-        colSeleccionEstudiante.setCellFactory(CheckBoxTableCell.forTableColumn(colSeleccionEstudiante));
+        colMatricula.setCellValueFactory(cellData -> 
+                cellData.getValue().matriculaProperty());
+        colEstudiante.setCellValueFactory(cellData -> 
+                cellData.getValue().nombreEstudianteProperty());
+        colProyectoAsignado.setCellValueFactory(cellData -> 
+                cellData.getValue().nombreProyectoProperty());
+        colOrganizacionVinculada.setCellValueFactory(cellData -> 
+                cellData.getValue().razonSocialOrganizacionProperty());
+        colSeleccionEstudiante.setCellValueFactory(cellData -> 
+                cellData.getValue().seleccionadoProperty());
+        colSeleccionEstudiante.setCellFactory(CheckBoxTableCell.forTableColumn(
+                colSeleccionEstudiante));
     }
 
     /* Sección: Carga de datos
@@ -85,7 +117,8 @@ public class FXMLGenerarOficiosController implements Initializable {
      */
     private void cargarEstudiantes() {
         try {
-            List<EstudianteAsignado> estudiantes = GenerarOficiosDAO.obtenerEstudiantesAsignadosPeriodoActual();
+            List<EstudianteAsignado> estudiantes = 
+                    GenerarOficiosDAO.obtenerEstudiantesAsignadosPeriodoActual();
             listaEstudiantes.setAll(estudiantes);
             tvOficiosAsignacion.setItems(listaEstudiantes);
         } catch (Exception e) {

@@ -38,15 +38,28 @@ public class FXMLInicioSesionController implements Initializable {
     /* Sección: Componentes de la interfaz
      * Contiene los elementos FXML de la vista de login.
      */
+
+    /** Campo de contraseña para ingresar la clave de acceso. */
     @FXML private PasswordField pfPassword;
+
+    /** Botón para alternar la visibilidad de la contraseña. */
     @FXML private Button btnMostrarContraseña;
+
+    /** Campo de texto para ingresar el nombre de usuario. */
     @FXML private TextField txtUsuario;
+
+    /** Etiqueta que muestra un error relacionado con el usuario. */
     @FXML private Label lblErrorUsuario;
+
+    /** Etiqueta que muestra un error relacionado con la contraseña. */
     @FXML private Label lblErrorContraseña;
+
+    /** Campo de texto que muestra la contraseña en modo visible. */
     @FXML private TextField txtPasswordVisible;
 
+
     /**
-     * Initializes the controller class.
+     * Inicializa el controlador después de que su elemento raíz haya sido procesado.
      * @param url Ubicación utilizada para resolver rutas relativas.
      * @param rb Recursos utilizados para localizar el objeto raíz.
      */
@@ -124,7 +137,8 @@ public class FXMLInicioSesionController implements Initializable {
     private void redirigirSegunTipoUsuario(Usuario usuarioSesion) throws SQLException {
         switch (usuarioSesion.getTipo().toLowerCase()) {
             case "estudiante":
-                Estudiante estudiante = EstudianteDAO.obtenerEstudiantePorIdUsuario(usuarioSesion.getIdUsuario());
+                Estudiante estudiante = EstudianteDAO.obtenerEstudiantePorIdUsuario(
+                        usuarioSesion.getIdUsuario());
                 if (estudiante != null) {
                     irPantallaPrincipalEstudiante(estudiante);
                 } else {
@@ -133,7 +147,8 @@ public class FXMLInicioSesionController implements Initializable {
                 break;
 
             case "profesor":
-                Profesor profesor = ProfesorDAO.obtenerProfesorPorIdUsuario(usuarioSesion.getIdUsuario());
+                Profesor profesor = ProfesorDAO.obtenerProfesorPorIdUsuario(
+                        usuarioSesion.getIdUsuario());
                 if (profesor != null) {
                     irPantallaPrincipalProfesor(profesor);
                 } else {
@@ -142,7 +157,8 @@ public class FXMLInicioSesionController implements Initializable {
                 break;
 
             case "evaluador":
-                Evaluador evaluador = EvaluadorDAO.obtenerEvaluadorPorIdUsuario(usuarioSesion.getIdUsuario());
+                Evaluador evaluador = EvaluadorDAO.obtenerEvaluadorPorIdUsuario(
+                        usuarioSesion.getIdUsuario());
                 if (evaluador != null) {
                     irPantallaPrincipalEvaluador(evaluador);
                 } else {
@@ -151,7 +167,8 @@ public class FXMLInicioSesionController implements Initializable {
                 break;
 
             case "coordinador":
-                Coordinador coordinador = CoordinadorDAO.obtenerCoordinadorPorIdUsuario(usuarioSesion.getIdUsuario());
+                Coordinador coordinador = CoordinadorDAO.obtenerCoordinadorPorIdUsuario(
+                        usuarioSesion.getIdUsuario());
                 if (coordinador != null) {
                     irPantallaPrincipalCoordinador(coordinador);
                 } else {

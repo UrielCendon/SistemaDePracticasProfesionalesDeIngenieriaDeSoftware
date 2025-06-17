@@ -32,34 +32,48 @@ import sistemapracticasis.util.Utilidad;
  */
 public class FXMLSeleccionarOVYResponsableController implements Initializable {
 
-    /* Sección: Declaración de componentes de interfaz */
+    /* Sección: Componentes de la interfaz
+     * Contiene los elementos FXML de la vista.
+     */
 
-    /** Botón para guardar la selección */
+    /** Botón para guardar la selección. */
     @FXML private Button btnGuardar;
-    /** Botón para regresar a la pantalla anterior */
+
+    /** Botón para regresar a la pantalla anterior. */
     @FXML private Button btnRegresar;
-    /** ComboBox de organizaciones disponibles */
+
+    /** Lista desplegable con las organizaciones disponibles. */
     @FXML private ComboBox<OrganizacionVinculada> cbOrganizaciones;
-    /** ComboBox de responsables disponibles */
+
+    /** Lista desplegable con los responsables disponibles. */
     @FXML private ComboBox<ResponsableProyecto> cbResponsables;
-    /** Etiqueta con el nombre del usuario en sesión */
+
+    /** Etiqueta que muestra el nombre del usuario en sesión. */
     @FXML private Label lblNombreUsuario;
-    /** Campo de texto para buscar organizaciones */
+
+    /** Campo de texto para buscar organizaciones por nombre o palabra clave. */
     @FXML private TextField txtBuscar;
 
-    /* Sección: Atributos */
+    /* Sección: Variables de instancia
+     * Almacena los datos de la sesión y listas de entidades.
+     */
 
-    /** Coordinador en sesión */
+    /** Coordinador autenticado en sesión. */
     private Coordinador coordinadorSesion;
-    /** Lista de organizaciones disponibles */
+
+    /** Lista observable de organizaciones disponibles. */
     private ObservableList<OrganizacionVinculada> listaOrganizaciones;
-    /** Lista de responsables asociados a la organización seleccionada */
+
+    /** Lista observable de responsables asociados a la organización seleccionada. */
     private ObservableList<ResponsableProyecto> listaResponsables;
 
-    /* Sección: Inicialización */
+
+    /* Sección: Inicialización del controlador */
 
     /**
-     * Inicializa la interfaz cargando las organizaciones y configurando eventos.
+     * Inicializa el controlador después de que su elemento raíz haya sido procesado.
+     * @param url URL de localización.
+     * @param rb Recursos para internacionalización.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -71,7 +85,8 @@ public class FXMLSeleccionarOVYResponsableController implements Initializable {
             btnGuardar.setDisable(true);
         }
 
-        txtBuscar.textProperty().addListener((obs, oldVal, newVal) -> filtrarOrganizaciones(newVal));
+        txtBuscar.textProperty().addListener((obs, oldVal, newVal) -> 
+                filtrarOrganizaciones(newVal));
 
         cbOrganizaciones.setOnAction(event -> {
             OrganizacionVinculada seleccionada = cbOrganizaciones.getValue();

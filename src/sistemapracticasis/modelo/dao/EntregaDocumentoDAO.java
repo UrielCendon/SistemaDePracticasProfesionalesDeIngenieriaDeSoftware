@@ -18,7 +18,7 @@ import sistemapracticasis.util.Utilidad;
 /**
  * Clase DAO para gestionar las operaciones relacionadas con entregas de 
  * documentos en la base de datos.
- * Autor: Alan Raziel
+ * Autor: Raziel Filobello
  * Fecha de creación: 15/06/2025
  * Descripción: Proporciona métodos para verificar, crear y gestionar entregas 
  * de documentos iniciales y sus validaciones.

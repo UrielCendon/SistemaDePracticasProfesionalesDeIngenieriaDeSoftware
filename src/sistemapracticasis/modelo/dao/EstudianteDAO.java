@@ -11,8 +11,8 @@ import sistemapracticasis.modelo.pojo.Estudiante;
 /**
  * Clase DAO para gestionar las operaciones relacionadas con estudiantes en la 
  * base de datos.
- * Autor: [Nombre del autor]
- * Fecha de creación: [Fecha en formato DD/MM/AAAA]
+ * Autor: Uriel Cendón
+ * Fecha de creación: 15/06/2025
  * Descripción: Proporciona métodos para obtener, buscar y actualizar información 
  * de estudiantes, así como verificar su estado en el sistema.
  */

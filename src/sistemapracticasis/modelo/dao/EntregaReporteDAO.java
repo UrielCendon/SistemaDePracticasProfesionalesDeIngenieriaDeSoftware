@@ -15,7 +15,7 @@ import sistemapracticasis.util.Utilidad;
 /**
  * Clase DAO para gestionar las operaciones relacionadas con entregas de reportes 
  * en la base de datos.
- * Autor: Alan Raziel
+ * Autor: Raziel Filobello
  * Fecha de creación: 15/06/2025
  * Descripción: Proporciona métodos para validar, generar y guardar entregas de 
  * reportes, así como verificar su existencia.

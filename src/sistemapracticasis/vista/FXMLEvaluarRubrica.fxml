@@ -34,13 +34,15 @@
           <TableColumn fx:id="colCalificacion" prefWidth="162.0" text="Calificación" />
         </columns>
       </TableView>
-      <Button fx:id="btnAceptar" layoutX="852.0" layoutY="574.0" mnemonicParsing="false" onAction="#clicAceptar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Aceptar" textFill="#1aa01a" />
-      <Button fx:id="btnCancelar" layoutX="668.0" layoutY="574.0" mnemonicParsing="false" onAction="#clicCancelar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Cancelar" textFill="RED" />
-      <Button fx:id="btnAgregarNota" layoutX="349.0" layoutY="551.0" mnemonicParsing="false" onAction="#clicAgregarNota" prefHeight="65.0" prefWidth="194.0" style="-fx-cursor: hand;" text="Agregar nota">
+      <Button fx:id="btnAceptar" layoutX="668.0" layoutY="563.0" mnemonicParsing="false" onAction="#clicAceptar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand; -fx-background-color: GREEN;" text="Aceptar" textFill="WHITE">
          <font>
             <Font name="System Bold" size="15.0" />
-         </font>
-      </Button>
+         </font></Button>
+      <Button fx:id="btnCancelar" layoutX="852.0" layoutY="563.0" mnemonicParsing="false" onAction="#clicCancelar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand; -fx-background-color: RED;" text="Cancelar" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font></Button>
+      <Button fx:id="btnAgregarNota" layoutX="349.0" layoutY="551.0" mnemonicParsing="false" onAction="#clicAgregarNota" prefHeight="65.0" prefWidth="194.0" style="-fx-cursor: hand;" text="Agregar nota" />
       <TextArea fx:id="txtNota" layoutX="14.0" layoutY="551.0" prefHeight="65.0" prefWidth="317.0" />
    </children>
 </AnchorPane>

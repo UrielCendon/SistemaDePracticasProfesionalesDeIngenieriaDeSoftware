@@ -48,6 +48,9 @@ public class FXMLRegistrarProyectoController implements Initializable {
 
     /** Botón para cancelar la operación. */
     @FXML private Button btnCancelar;
+    
+    /** Botón para regresar a la seleccion de OV y Responsable o a la ventana proyecto . */
+    @FXML private Button btnRegresar;
 
     /** Lista desplegable con los estados posibles del proyecto. */
     @FXML private ComboBox<EstadoProyecto> cbEstado;
@@ -204,6 +207,30 @@ public class FXMLRegistrarProyectoController implements Initializable {
                     coordinadorSesion);
         }
     }
+    
+    /**
+     * Maneja el clic del botón Regresar. Retorna a la vista principal del coordinador.
+     */
+    @FXML
+    private void clicBtnRegresar(ActionEvent event) {
+        if (esEdicion) {
+            Navegador.cambiarEscenaParametrizada(
+                Utilidad.getEscenarioComponente(btnRegresar),
+                "/sistemapracticasis/vista/FXMLProyecto.fxml",
+                FXMLProyectoController.class,
+                "inicializarInformacion",
+                coordinadorSesion
+            );
+        } else {
+            Navegador.cambiarEscenaParametrizada(
+                Utilidad.getEscenarioComponente(btnRegresar),
+                "/sistemapracticasis/vista/FXMLSeleccionarOVYResponsable.fxml",
+                FXMLSeleccionarOVYResponsableController.class,
+                "inicializarInformacion",
+                coordinadorSesion
+            );
+        }
+    }
 
     /* Sección: Validaciones y construcción */
 
@@ -350,4 +377,6 @@ public class FXMLRegistrarProyectoController implements Initializable {
             }
         });
     }
+
+
 }

@@ -38,6 +38,9 @@
       <Line layoutX="272.0" layoutY="294.0" startX="-110.0" stroke="#3768b2" />
       <ComboBox fx:id="cbOrganizacionVinculada" layoutX="355.0" layoutY="250.0" prefHeight="39.0" prefWidth="258.0" promptText="Organizaciones " />
       <Button fx:id="btnRegresar" layoutX="28.0" layoutY="439.0" mnemonicParsing="false" onAction="#clicBtnRegresar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Regresar" />
-      <Button fx:id="btnGuardar" layoutX="780.0" layoutY="439.0" mnemonicParsing="false" onAction="#clicBtnGuardar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Guardar" textFill="#1aa01a" />
+      <Button fx:id="btnGuardar" layoutX="780.0" layoutY="439.0" mnemonicParsing="false" onAction="#clicBtnGuardar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand; -fx-background-color: green;" text="Continuar" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font></Button>
    </children>
 </AnchorPane>

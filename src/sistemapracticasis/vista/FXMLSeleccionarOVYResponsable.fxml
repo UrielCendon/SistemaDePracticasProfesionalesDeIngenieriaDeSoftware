@@ -11,7 +11,10 @@
 
 <AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sistemapracticasis.controlador.FXMLSeleccionarOVYResponsableController">
    <children>
-      <Button fx:id="btnGuardar" layoutX="790.0" layoutY="544.0" mnemonicParsing="false" onAction="#clicBtnGuardar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Guardar" textFill="#1aa01a" />
+      <Button fx:id="btnGuardar" layoutX="790.0" layoutY="544.0" mnemonicParsing="false" onAction="#clicBtnGuardar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand; -fx-background-color: green;" text="Continuar" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font></Button>
       <Button fx:id="btnRegresar" layoutX="23.0" layoutY="544.0" mnemonicParsing="false" onAction="#clicBtnRegresar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Regresar" />
       <ComboBox fx:id="cbOrganizaciones" layoutX="365.0" layoutY="260.0" prefHeight="39.0" prefWidth="258.0" promptText="Organizaciones " />
       <Line layoutX="282.0" layoutY="304.0" startX="-110.0" stroke="#3768b2" />

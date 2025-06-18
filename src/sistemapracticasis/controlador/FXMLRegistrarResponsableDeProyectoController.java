@@ -60,6 +60,9 @@ public class FXMLRegistrarResponsableDeProyectoController implements Initializab
 
     /** Campo para ingresar el teléfono de contacto. */
     @FXML private TextField txtTelefono;
+    
+    /** Botón para regresar a la seleccion de responsable. */
+    @FXML private Button btnRegresar;
 
     /* Sección: Variables de instancia
      * Almacena los datos de la sesión y la organización vinculada.
@@ -70,6 +73,7 @@ public class FXMLRegistrarResponsableDeProyectoController implements Initializab
 
     /** Identificador de la organización vinculada. */
     private int idOrganizacionVinculada;
+
 
 
     /* Sección: Inicialización del controlador */
@@ -156,6 +160,20 @@ public class FXMLRegistrarResponsableDeProyectoController implements Initializab
                     "Por favor verifique la información ingresada.");
         }
     }
+    
+    /**
+     * Maneja el clic del botón Regresar. Retorna a la vista principal del coordinador.
+     */
+    @FXML
+    private void clicBtnRegresar(ActionEvent event) {
+        Navegador.cambiarEscenaParametrizada(
+            Utilidad.getEscenarioComponente(lblNombreUsuario),
+            "/sistemapracticasis/vista/FXMLSeleccionarOrganizacionVinculada.fxml",
+            FXMLSeleccionarOrganizacionVinculadaController.class,
+            "inicializarInformacion",
+            coordinadorSesion
+        );
+    }
 
     /* Sección: Validación y construcción */
 
@@ -232,4 +250,6 @@ public class FXMLRegistrarResponsableDeProyectoController implements Initializab
         txtDepartamento.setStyle("");
         txtPuesto.setStyle("");
     }
+
+
 }

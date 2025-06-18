@@ -21,7 +21,10 @@
             <Font name="Arial Black" size="34.0" />
          </font>
       </Label>
-      <Button layoutX="498.0" layoutY="753.0" mnemonicParsing="false" onAction="#clicCancelar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Cancelar" textFill="RED" />
+      <Button layoutX="498.0" layoutY="753.0" mnemonicParsing="false" onAction="#clicCancelar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand; -fx-background-color: RED;" text="Cancelar" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font></Button>
       <Label fx:id="lblNombreUsuario" layoutX="705.0" layoutY="68.0" />
       <Line endX="807.0" layoutX="100.0" layoutY="93.0" startX="-100.0" stroke="#6f6f6f" />
       <Label layoutX="181.0" layoutY="219.0" text="¿Cómo calificaría el ambiente laboral?" />
@@ -34,7 +37,10 @@
       <TextField fx:id="txtSupervisionEncargado" layoutX="474.0" layoutY="273.0" prefHeight="31.0" prefWidth="284.0" promptText="Supervisión del encargado" style="-fx-border-color: BLACK;" />
       <TextField fx:id="txtCumplimientoActividades" layoutX="474.0" layoutY="357.0" prefHeight="31.0" prefWidth="284.0" promptText="Cumplimiento de actividades" style="-fx-border-color: BLACK;" />
       <TextField fx:id="txtCargaLaboral" layoutX="474.0" layoutY="439.0" prefHeight="31.0" prefWidth="284.0" promptText="Carga laboral" style="-fx-border-color: BLACK;" />
-      <Button fx:id="btnSubir" layoutX="308.0" layoutY="753.0" mnemonicParsing="false" onAction="#clicSubir" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Subir" textFill="#1aa01a" />
+      <Button fx:id="btnSubir" layoutX="308.0" layoutY="753.0" mnemonicParsing="false" onAction="#clicSubir" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand; -fx-background-color: GREEN;" text="Subir" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font></Button>
       <Line endX="160.0" layoutX="275.0" layoutY="254.0" startX="-100.0" stroke="#3768b2" />
       <Line endX="160.0" layoutX="275.0" layoutY="327.0" startX="-100.0" stroke="#3768b2" />
       <Line endX="160.0" layoutX="275.0" layoutY="420.0" startX="-100.0" stroke="#3768b2" />

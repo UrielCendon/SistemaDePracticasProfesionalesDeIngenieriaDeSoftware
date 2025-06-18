@@ -156,9 +156,9 @@ public class FXMLActualizarExpedienteDocumentoInicialController implements
     @FXML
     private void clicSalir(ActionEvent event) {
         if (Utilidad.mostrarConfirmacion(
-            "Salir",
-            "Salir",
-            "¿Está seguro de que quiere salir?")) {
+            "Cancelar",
+            "Cancelar",
+            "¿Está seguro de que quiere cancelar?")) {
                 Navegador.cambiarEscenaParametrizada(
                     Utilidad.getEscenarioComponente(lblNombreUsuario),
                     "/sistemapracticasis/vista/FXMLPrincipalEstudiante.fxml",

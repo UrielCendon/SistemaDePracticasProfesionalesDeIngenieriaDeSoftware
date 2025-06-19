@@ -205,7 +205,8 @@ public class EstudianteDAO {
                 + "FROM estudiante est "
                 + "JOIN expediente exp ON est.id_estudiante = exp.id_estudiante "
                 + "JOIN periodo per ON exp.id_periodo = per.id_periodo "
-                + "JOIN evaluacion_a_organizacion_vinculada eval ON exp.id_expediente = eval.id_expediente "
+                + "JOIN evaluacion_a_organizacion_vinculada eval ON exp.id_expediente = "
+                + "eval.id_expediente "
                 + "WHERE est.matricula = ? " 
                 + "AND exp.estado = 'en curso' "
                 + "AND CURDATE() BETWEEN per.fecha_inicio AND per.fecha_fin";

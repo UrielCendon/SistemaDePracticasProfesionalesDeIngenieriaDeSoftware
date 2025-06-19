@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javafx.scene.control.Alert;
 import sistemapracticasis.modelo.conexion.ConexionBD;
@@ -57,124 +59,112 @@ public class EstudianteDAO {
 
         return estudiante;
     }
-
+    
     /**
-     * Busca un estudiante por su matrícula y carga sus datos en el objeto 
-     * proporcionado.
-     * @param matricula Matrícula del estudiante a buscar.
-     * @param estudiante Objeto Estudiante donde se cargarán los datos.
-     * @return true si se encontró el estudiante, false en caso contrario.
+     * Obtiene todos los estudiantes que se encuentran cursando en el periodo académico actual,
+     * junto con la información de su proyecto asignado (si lo tienen).
+     * 
+     * @return Una lista de objetos Estudiante del periodo actual.
      */
-    public boolean buscarPorMatricula(String matricula, Estudiante estudiante) {
-        boolean encontrado = false;
-        Connection conexion = ConexionBD.abrirConexion();
+    public static List<Estudiante> obtenerEstudiantesConProyectoDelPeriodoActual() {
+        List<Estudiante> estudiantes = new ArrayList<>();
 
-        if (conexion != null) {
-            try {
-                String consulta = "SELECT estudiante.id_estudiante, estudiante.matricula, "
-                        + "estudiante.nombre, estudiante.correo, estudiante.telefono, "
-                        + "estudiante.apellido_paterno, estudiante.apellido_materno, "
-                        + "estudiante.id_proyecto, estudiante.id_experiencia_educativa, "
-                        + "proyecto.nombre AS nombre_proyecto "
-                        + "FROM estudiante "
-                        + "LEFT JOIN proyecto ON estudiante.id_proyecto = proyecto.id_proyecto "
-                        + "WHERE estudiante.matricula = ?";
+        String consulta = "SELECT e.id_estudiante, e.matricula, e.nombre, e.apellido_paterno, "
+            + "e.apellido_materno, e.correo, e.telefono, e.id_proyecto, p.nombre AS "
+            + "nombre_proyecto, per.id_periodo "
+            + "FROM estudiante e "
+            + "JOIN periodo_cursante pc ON e.id_estudiante = pc.id_estudiante "
+            + "JOIN periodo per ON pc.id_periodo = per.id_periodo "
+            + "LEFT JOIN proyecto p ON e.id_proyecto = p.id_proyecto "
+            + "WHERE CURDATE() BETWEEN per.fecha_inicio AND per.fecha_fin "
+            + "AND e.id_proyecto IS NULL";
 
-                PreparedStatement sentencia = conexion.prepareStatement(consulta);
-                sentencia.setString(1, matricula);
-                ResultSet resultado = sentencia.executeQuery();
+        try (Connection conexion = ConexionBD.abrirConexion();
+            PreparedStatement sentencia = conexion.prepareStatement(consulta);
+            ResultSet resultado = sentencia.executeQuery()) {
 
-                if (resultado.next()) {
-                    estudiante.setIdEstudiante(resultado.getInt("estudiante.id_estudiante"));
-                    estudiante.setMatricula(resultado.getString("estudiante.matricula"));
-                    estudiante.setNombre(resultado.getString("estudiante.nombre"));
-                    estudiante.setCorreo(resultado.getString("estudiante.correo"));
-                    estudiante.setTelefono(resultado.getString("estudiante.telefono"));
-                    estudiante.setApellidoPaterno(resultado.getString("estudiante."
-                        + "apellido_paterno"));
-                    estudiante.setApellidoMaterno(resultado.getString("estudiante."
-                        + "apellido_materno"));
-                    estudiante.setIdProyecto(resultado.getInt("estudiante.id_proyecto"));
-                    estudiante.setIdExperienciaEducativa(resultado.getInt("estudiante."
-                        + "id_experiencia_educativa"));
-                    estudiante.setNombreProyecto(resultado.getString("nombre_proyecto"));
+            while (resultado.next()) {
+                Estudiante estudiante = new Estudiante();
 
-                    encontrado = true;
-                }
+                estudiante.setIdEstudiante(resultado.getInt("id_estudiante"));
+                estudiante.setMatricula(resultado.getString("matricula"));
+                estudiante.setNombre(resultado.getString("nombre"));
+                estudiante.setApellidoPaterno(resultado.getString("apellido_paterno"));
+                estudiante.setApellidoMaterno(resultado.getString("apellido_materno"));
+                estudiante.setCorreo(resultado.getString("correo"));
+                estudiante.setTelefono(resultado.getString("telefono"));
+                estudiante.setIdProyecto(resultado.getInt("id_proyecto"));
+                estudiante.setNombreProyecto(resultado.getString("nombre_proyecto"));
+                estudiante.setIdPeriodo(resultado.getInt("id_periodo"));
 
-                resultado.close();
-                sentencia.close();
-                conexion.close();
-
-            } catch (SQLException e) {
-                Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", 
-                    "Error con la base de datos");
+                estudiantes.add(estudiante);
             }
+        } catch (SQLException ex) {
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "Error en la Base de Datos", 
+                "No se pudo establecer conexión para obtener los estudiantes.");
         }
 
-        return encontrado;
+        return estudiantes;
     }
     
     /**
-     * Busca un estudiante por su matrícula, que pertenezcan a la misma experiencia 
-     * educativa a la que está relacionado el profesor y carga sus datos en el objeto 
-     * proporcionado.
-     * @param idProfesor Identificador del profesor a filtrar el estudiante recuperado.
-     * @param matricula Matrícula del estudiante a buscar.
-     * @param estudiante Objeto Estudiante donde se cargarán los datos.
-     * @return true si se encontró el estudiante, false en caso contrario.
-     */
-    public boolean buscarMatriculaPorIdProfesor(int idProfesor, String matricula, 
-            Estudiante estudiante) {
-        boolean encontrado = false;
-        Connection conexion = ConexionBD.abrirConexion();
+     * Obtiene los estudiantes de un profesor en el periodo actual que tienen al menos
+    * un documento o reporte pendiente de validación (validado = 0).
+    * 
+    * @param idProfesor El ID del profesor para filtrar a los estudiantes.
+    * @return Una lista de Estudiantes que tienen entregas sin validar.
+    */
+    public static List<Estudiante> obtenerEstudiantesDeProfesorConDocumentoSinValidar
+            (int idProfesor) {
+        List<Estudiante> estudiantes = new ArrayList<>();
 
-        if (conexion != null) {
-            try {
-                String consulta = "SELECT estudiante.id_estudiante, estudiante.matricula, "
-                    + "estudiante.nombre, estudiante.correo, estudiante.telefono, "
-                    + "estudiante.apellido_paterno, estudiante.apellido_materno, "
-                    + "estudiante.id_proyecto, estudiante.id_experiencia_educativa, "
-                    + "proyecto.nombre AS nombre_proyecto "
-                    + "FROM estudiante "
-                    + "LEFT JOIN proyecto ON estudiante.id_proyecto = proyecto.id_proyecto "
-                    + "WHERE estudiante.matricula = ? AND estudiante.id_experiencia_educativa = "
-                    + "(SELECT id_experiencia_educativa FROM profesor WHERE id_profesor = ?)";
+        String consulta = "SELECT e.id_estudiante, e.matricula, e.nombre, e.apellido_paterno, "
+            + "e.apellido_materno, e.correo, e.telefono, e.id_proyecto, p.nombre AS "
+            + "nombre_proyecto, per.id_periodo "
+            + "FROM estudiante e "
+            + "JOIN periodo_cursante pc ON e.id_estudiante = pc.id_estudiante "
+            + "JOIN periodo per ON pc.id_periodo = per.id_periodo "
+            + "LEFT JOIN proyecto p ON e.id_proyecto = p.id_proyecto "
+            + "JOIN expediente exp ON e.id_estudiante = exp.id_estudiante "
+            + "WHERE (CURDATE() BETWEEN per.fecha_inicio AND per.fecha_fin) "
+            + "AND e.id_experiencia_educativa = "
+            + "(SELECT id_experiencia_educativa FROM profesor WHERE id_profesor = ?) "
+            + "AND EXISTS ("
+            + "  SELECT 1 FROM entrega_documento ed "
+            + "  WHERE ed.id_expediente = exp.id_expediente "
+            + "  AND ed.validado = 0 AND (ed.calificacion = 0 OR ed.calificacion IS NULL) "
+            + "  AND EXISTS (SELECT 1 FROM documento d WHERE d.id_entrega_documento = "
+            + "ed.id_entrega_documento))";
 
-                PreparedStatement sentencia = conexion.prepareStatement(consulta);
-                sentencia.setString(1, matricula);  // El primer '?' es la matrícula
-                sentencia.setInt(2, idProfesor);
-                ResultSet resultado = sentencia.executeQuery();
+        try (Connection conexion = ConexionBD.abrirConexion();
+            PreparedStatement sentencia = conexion.prepareStatement(consulta)) {
 
-                if (resultado.next()) {
-                    estudiante.setIdEstudiante(resultado.getInt("estudiante.id_estudiante"));
-                    estudiante.setMatricula(resultado.getString("estudiante.matricula"));
-                    estudiante.setNombre(resultado.getString("estudiante.nombre"));
-                    estudiante.setCorreo(resultado.getString("estudiante.correo"));
-                    estudiante.setTelefono(resultado.getString("estudiante.telefono"));
-                    estudiante.setApellidoPaterno(resultado.getString("estudiante."
-                        + "apellido_paterno"));
-                    estudiante.setApellidoMaterno(resultado.getString("estudiante."
-                        + "apellido_materno"));
-                    estudiante.setIdProyecto(resultado.getInt("estudiante.id_proyecto"));
-                    estudiante.setIdExperienciaEducativa(resultado.getInt("estudiante."
-                        + "id_experiencia_educativa"));
+            sentencia.setInt(1, idProfesor);
+
+            try (ResultSet resultado = sentencia.executeQuery()) {
+                while (resultado.next()) {
+                    Estudiante estudiante = new Estudiante();
+
+                    estudiante.setIdEstudiante(resultado.getInt("id_estudiante"));
+                    estudiante.setMatricula(resultado.getString("matricula"));
+                    estudiante.setNombre(resultado.getString("nombre"));
+                    estudiante.setApellidoPaterno(resultado.getString("apellido_paterno"));
+                    estudiante.setApellidoMaterno(resultado.getString("apellido_materno"));
+                    estudiante.setCorreo(resultado.getString("correo"));
+                    estudiante.setTelefono(resultado.getString("telefono"));
+                    estudiante.setIdProyecto(resultado.getInt("id_proyecto"));
                     estudiante.setNombreProyecto(resultado.getString("nombre_proyecto"));
+                    estudiante.setIdPeriodo(resultado.getInt("id_periodo"));
 
-                    encontrado = true;
+                    estudiantes.add(estudiante);
                 }
-
-                resultado.close();
-                sentencia.close();
-                conexion.close();
-
-            } catch (SQLException e) {
-                Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", 
-                    "Error con la base de datos");
             }
+        } catch (SQLException ex) {
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorBD", 
+                "No hay conexión con la base de datos.");
         }
 
-        return encontrado;
+        return estudiantes;
     }
 
     /**

@@ -83,30 +83,37 @@ public class FXMLPrincipalEstudianteController implements Initializable {
     @FXML
     private void clicDocIniciales(ActionEvent event) {
         int idEstudiante = estudianteSesion.getIdEstudiante();
-        PeriodoDAO periodoDAO = new PeriodoDAO();
-        Periodo periodoActual = periodoDAO.obtenerPeriodoActualPorEstudiante(idEstudiante);
-        if (!new ExpedienteDAO().tieneExpedienteEnCurso(estudianteSesion.
-                getMatricula())) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING,
-                "Sin expediente activo",
-                "Aún no tienes un expediente activo en este periodo, por lo "
-                + "tanto no se puede actualizar un documento inicial.");
+
+        if (!EstudianteDAO.estaEnPeriodoActual(estudianteSesion.getMatricula())) {
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, 
+                "Periodo incorrecto", 
+                "No estás asignado al periodo actual");
             return;
         }
+
+        if (!new ExpedienteDAO().tieneExpedienteEnCurso(estudianteSesion.getMatricula())) {
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING,
+                "Sin expediente activo",
+                "Aún no tienes un expediente activo en este periodo, por lo tanto "
+                + "no se puede actualizar un documento inicial.");
+            return;
+        }
+
+        Periodo periodoActual = PeriodoDAO.obtenerPeriodoActualPorEstudiante(idEstudiante);
         if (periodoActual != null) {
             int idPeriodo = periodoActual.getIdPeriodo();
             if (!EntregaDocumentoDAO.existenEntregasInicialesParaPeriodo(idPeriodo)) {
                 Utilidad.mostrarAlertaSimple(
                     Alert.AlertType.WARNING,
                     "No hay Documentos Iniciales Programados",
-                    "No se han programado Documentos Iniciales para este estudiante"
-                    + " en el periodo actual."
+                    "No se han programado Documentos Iniciales para este estudiante "
+                    + "en el periodo actual."
                 );
                 return;
             }
         }
-                
-        if(!EntregaDocumentoDAO.existeEntregaInicialVigente(idEstudiante)){
+
+        if (!EntregaDocumentoDAO.existeEntregaInicialVigente(idEstudiante)) {
             Utilidad.mostrarAlertaSimple(
                 Alert.AlertType.WARNING,
                 "Fecha inválida",
@@ -114,11 +121,10 @@ public class FXMLPrincipalEstudianteController implements Initializable {
             );
             return;
         }
-        
+
         Navegador.cambiarEscenaParametrizada(
             Utilidad.getEscenarioComponente(lblNombreUsuario),
-            "/sistemapracticasis/vista/FXMLActualizarExpedienteDocumentoInicial"
-            + ".fxml",
+            "/sistemapracticasis/vista/FXMLActualizarExpedienteDocumentoInicial.fxml",
             FXMLActualizarExpedienteDocumentoInicialController.class,
             "inicializarInformacion",
             estudianteSesion
@@ -214,6 +220,17 @@ public class FXMLPrincipalEstudianteController implements Initializable {
             Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION,
                 "No se puede volver a realizar la evaluación", 
                 "Ya realizaste la evaluación.");
+            return;
+        }
+        
+        int horasAcumuladas = ExpedienteDAO.obtenerHorasAcumuladasPorIdEstudiante
+            (estudianteSesion.getIdEstudiante());
+        if(horasAcumuladas != 420){
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING,
+                "Aún no se puede realizar la evaluación a la organización vinculada.",
+                "No se puede realizar la evaluación porque todavía no cuentas con 420 horas "
+                + "acumuladas en el momento.\nEl número de horas acumuladas actual es: " 
+                + horasAcumuladas + ".");
             return;
         }
 

@@ -45,12 +45,7 @@ public class Estudiante {
      * Apellido materno del estudiante.
      */
     private String apellidoMaterno;
-
-    /**
-     * Foto del estudiante en formato de cadena.
-     */
-    private String foto;
-
+    
     /**
      * ID del proyecto asignado al estudiante.
      */
@@ -201,25 +196,7 @@ public class Estudiante {
     public void setApellidoMaterno(String apellidoMaterno) {
         this.apellidoMaterno = apellidoMaterno;
     }
-
-    /**
-     * Obtiene la foto del estudiante.
-     * 
-     * @return Foto del estudiante.
-     */
-    public String getFoto() {
-        return foto;
-    }
-
-    /**
-     * Establece la foto del estudiante.
-     * 
-     * @param foto Foto del estudiante.
-     */
-    public void setFoto(String foto) {
-        this.foto = foto;
-    }
-
+    
     /**
      * Obtiene el ID del proyecto asignado al estudiante.
      * 

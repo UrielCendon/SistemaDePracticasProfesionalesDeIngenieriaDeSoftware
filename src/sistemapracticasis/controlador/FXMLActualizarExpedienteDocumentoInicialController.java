@@ -252,8 +252,8 @@ public class FXMLActualizarExpedienteDocumentoInicialController implements
                 estudianteSesion.getIdEstudiante());
             if (periodo != null) {
                 txtPeriodo.setText("Periodo: " + periodo.getNombrePeriodo());
-                txtInicioPeriodo.setText(periodo.getFechaInicio());
-                txtFinPeriodo.setText(periodo.getFechaFin());
+                txtInicioPeriodo.setText("Fecha de inicio: " +periodo.getFechaInicio());
+                txtFinPeriodo.setText("Fecha de fin: " +periodo.getFechaFin());
             }
         }
     }

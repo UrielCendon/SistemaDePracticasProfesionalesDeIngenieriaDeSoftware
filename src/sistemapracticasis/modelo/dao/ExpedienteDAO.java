@@ -226,4 +226,40 @@ public class ExpedienteDAO {
         }
         return idExpediente;
     }
+    
+    /**
+     * Obtiene las horas acumuladas de un estudiante para el periodo académico actual.
+     * La relación se establece a través del expediente que corresponde al periodo
+     * vigente.
+     *
+     * @param idEstudiante El ID del estudiante cuyas horas se desean obtener.
+     * @return Un Integer con las horas acumuladas. Devuelve null si no se encuentra
+     *         el expediente o el estudiante no está en el periodo actual.
+     */
+    public static Integer obtenerHorasAcumuladasPorIdEstudiante(int idEstudiante) {
+        Integer horasAcumuladas = null;
+
+        String consulta = "SELECT exp.horas_acumuladas "
+                        + "FROM expediente exp "
+                        + "JOIN periodo per ON exp.id_periodo = per.id_periodo "
+                        + "WHERE exp.id_estudiante = ? "
+                        + "AND CURDATE() BETWEEN per.fecha_inicio AND per.fecha_fin";
+
+        try (Connection conexion = ConexionBD.abrirConexion();
+            PreparedStatement sentencia = conexion.prepareStatement(consulta)) {
+
+            sentencia.setInt(1, idEstudiante);
+
+            try (ResultSet resultado = sentencia.executeQuery()) {
+                if (resultado.next()) {
+                    horasAcumuladas = resultado.getInt("horas_acumuladas");
+                }
+            }
+        } catch (SQLException ex) {
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "ErrorDB", 
+                "Error con la base de datos");
+        }
+
+        return horasAcumuladas;
+    }
 }

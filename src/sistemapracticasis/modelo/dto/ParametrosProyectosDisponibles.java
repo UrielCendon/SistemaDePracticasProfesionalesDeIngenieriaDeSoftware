@@ -24,7 +24,7 @@ public class ParametrosProyectosDisponibles {
     /**
      * Callback que se invoca para la asignación de un proyecto.
      */
-    private final Consumer<String> CALLBACK_ASIGNACION;
+    private final Consumer<Proyecto> CALLBACK_ASIGNACION;
     
     /**
      * Información del estudiante a quien se le asignará el proyecto.
@@ -40,7 +40,7 @@ public class ParametrosProyectosDisponibles {
      * @param estudiante El estudiante al que se le asignará un proyecto.
      */
     public ParametrosProyectosDisponibles(List<Proyecto> listaProyectos, 
-            Consumer<String> callbackAsignacion, Estudiante estudiante) {
+            Consumer<Proyecto> callbackAsignacion, Estudiante estudiante) {
         this.LISTA_PROYECTOS = listaProyectos;
         this.CALLBACK_ASIGNACION = callbackAsignacion;
         this.estudiante = estudiante;
@@ -60,7 +60,7 @@ public class ParametrosProyectosDisponibles {
      * 
      * @return El callback de asignación de proyecto.
      */
-    public Consumer<String> getCallbackAsignacion() {
+    public Consumer<Proyecto> getCallbackAsignacion() {
         return CALLBACK_ASIGNACION;
     }
     

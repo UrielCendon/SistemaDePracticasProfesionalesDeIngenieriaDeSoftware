@@ -20,7 +20,10 @@
             <TableColumn fx:id="tbcFechaFin" prefWidth="133.0" text="Fecha Fin" />
          </columns>
       </TableView>
-      <Button layoutX="543.0" layoutY="126.0" mnemonicParsing="false" onAction="#clicBtnBuscar" prefHeight="42.0" prefWidth="91.0" style="-fx-cursor: hand;" text="Buscar" />
+      <Button layoutX="543.0" layoutY="126.0" mnemonicParsing="false" onAction="#clicBtnBuscar" prefHeight="42.0" prefWidth="91.0" style="-fx-cursor: hand; -fx-background-color: #2c2486;" text="Buscar" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font></Button>
       <Button fx:id="btnEliminar" layoutX="770.0" layoutY="533.0" mnemonicParsing="false" onAction="#clicBtnEliminar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand; -fx-background-color: red;" text="Eliminar" textFill="WHITE">
          <font>
             <Font name="System Bold" size="18.0" />
@@ -47,6 +50,9 @@
             <Image url="@../recursos/imagenIcono.png" />
          </image>
       </ImageView>
-      <Button fx:id="btnRegresar" layoutX="14.0" layoutY="533.0" mnemonicParsing="false" onAction="#clicBtnRegresar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand;" text="Regresar" />
+      <Button fx:id="btnRegresar" layoutX="14.0" layoutY="533.0" mnemonicParsing="false" onAction="#clicBtnRegresar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand; -fx-background-color: #2c2486;" text="Regresar" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font></Button>
    </children>
 </AnchorPane>

@@ -4,12 +4,16 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
@@ -39,16 +43,13 @@ public class FXMLAsignarProyectoController implements Initializable {
     /** Coordinador actualmente en sesión */
     private Coordinador coordinadorSesion;
     
-    /** DAO para operaciones relacionadas con estudiantes */
-    private final EstudianteDAO ESTUDIANTE_DAO = new EstudianteDAO();
-    
     /** Botón para asignar proyecto al estudiante */
     @FXML private Button btnAsignarProyecto;
     
     /** Botón para cancelar la operación */
     @FXML private Button btnCancelar;
     
-    /** Campo de texto para buscar estudiantes por matrícula */
+    /** Campo de texto para buscar estudiantes por su nombre */
     @FXML private TextField txtBuscar;
     
     /** Campo de texto que muestra la matrícula del estudiante */
@@ -68,6 +69,12 @@ public class FXMLAsignarProyectoController implements Initializable {
     
     /** Etiqueta que muestra el nombre del coordinador en sesión */
     @FXML private Label lblNombreUsuario;
+    
+    /** Lista desplegable con los estudiantes disponibles. */
+    @FXML private ComboBox<Estudiante> cbEstudiantes;
+    
+    /** Lista observable de estudiantes disponibles. */
+    private ObservableList<Estudiante> listaEstudiantes;
 
     /**
      * Inicializa el controlador después de que su raíz ha sido procesada.
@@ -78,6 +85,28 @@ public class FXMLAsignarProyectoController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        cargarEstudiantesDelPeriodoActual();
+
+        if (listaEstudiantes.isEmpty()) {
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Sin Estudiantes", 
+                "No hay estudiantes registrados en el periodo actual. No se puede continuar.");
+            txtBuscar.setDisable(true);
+            cbEstudiantes.setDisable(true);
+        } else {
+            txtBuscar.textProperty().addListener((obs, oldVal, newVal) -> 
+                filtrarEstudiantes(newVal));
+
+            cbEstudiantes.getSelectionModel().selectedItemProperty().addListener(
+                (obs, oldSelection, newSelection) -> {
+                    if (newSelection != null) {
+                        seleccionarEstudiante(newSelection);
+                    } else {
+                        limpiarCampos();
+                    }
+                }
+            );
+        }
+
         btnAsignarProyecto.setDisable(true);
     }
     
@@ -103,23 +132,24 @@ public class FXMLAsignarProyectoController implements Initializable {
      */
     @FXML
     private void clicAsignarProyecto(ActionEvent event) {
-        try {
-            String textoBusqueda = txtBuscar.getText().trim();
-            List<Proyecto> proyectos = ProyectoDAO.
-                obtenerProyectosDisponibles();
-            Estudiante estudiante = obtenerEstudiante(textoBusqueda);
+        Estudiante estudianteSeleccionado = cbEstudiantes.getSelectionModel().getSelectedItem();
 
-            if (estudiante.getIdProyecto() > 0) {
-                btnAsignarProyecto.setDisable(true);
-            }
-            
+        if (estudianteSeleccionado == null) {
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Sin selección",
+                "Por favor, seleccione un estudiante de la lista antes de asignar un proyecto.");
+            return;
+        }
+
+        try {
+            List<Proyecto> proyectos = ProyectoDAO.obtenerProyectosDisponibles();
+
             ParametrosProyectosDisponibles parametros = new 
                     ParametrosProyectosDisponibles(
                 proyectos,
-                (nombreProyecto) -> {
-                    actualizarProyectoAsignado(nombreProyecto);
+                (proyectoAsignado) -> {
+                    actualizarProyectoAsignado(proyectoAsignado);
                 },
-                estudiante
+                estudianteSeleccionado
             );
 
             Navegador.abrirVentanaModalParametrizada(
@@ -127,16 +157,14 @@ public class FXMLAsignarProyectoController implements Initializable {
                 "/sistemapracticasis/vista/FXMLProyectosDisponibles.fxml",
                 FXMLProyectosDisponiblesController.class,
                 "inicializarInformacion",
-                estudiante,
-                parametros
+                parametros 
             );
 
         } catch (SQLException ex) {
             Utilidad.mostrarAlertaSimple(
                 Alert.AlertType.ERROR,
-                "Error de base de datos", 
-                "No se pudieron cargar los proyectos.");
-            ex.printStackTrace();
+                "ErrorBD", 
+                "No hay conexión a la Base de Datos.");
         }
     }
 
@@ -162,55 +190,47 @@ public class FXMLAsignarProyectoController implements Initializable {
         }
     }
 
-    /**
-     * Maneja el evento de clic en el botón de buscar.
-     * Busca un estudiante por matrícula y muestra su información.
-     * 
-     * @param event Evento de acción generado por el clic
+    /* Sección: Métodos auxiliares
+     * Contiene los métodos que ayudan a relalizar las operaciones de los métodos principales
      */
-    @FXML
-    private void clicBuscar(ActionEvent event) {
-        String textoBusqueda = txtBuscar.getText().trim();
-
-        if (!validarCampos(textoBusqueda)) return;
-
-        Estudiante estudianteEncontrado = obtenerEstudiante(textoBusqueda);
-
-        if (estudianteEncontrado != null) {
-            boolean estaEnPeriodo = EstudianteDAO.estaEnPeriodoActual
-                (textoBusqueda);
-
-            if (estaEnPeriodo) {
-                llenarCamposEstudiante(estudianteEncontrado);
-            } else {
-                Utilidad.mostrarAlertaSimple(
-                    Alert.AlertType.WARNING,
-                    "Estudiante fuera de periodo",
-                    "El estudiante no pertenece al periodo actual. "
-                        + "Por favor, intente con otro."
-                );
-                limpiarCampos();
-            }
-
-        } else {
-            Utilidad.mostrarAlertaSimple(
-                Alert.AlertType.INFORMATION,
-                "No encontrado",
-                "No se encontró ningún estudiante con la matrícula ingresada."
-            );
-            limpiarCampos();
-        }
-    }
-
     /**
      * Actualiza la interfaz con el nombre del proyecto asignado.
      * 
-     * @param nombreProyecto Nombre del proyecto que fue asignado al estudiante
+     * @param proyectoAsignado Proyecto que se asignó al estudiante.
      */
-    public void actualizarProyectoAsignado(String nombreProyecto) {
-        txtProyecto.setText(nombreProyecto);
-        btnAsignarProyecto.setDisable(true);
+    public void actualizarProyectoAsignado(Proyecto proyectoAsignado) {
+        Estudiante estudianteEnUI = cbEstudiantes.getSelectionModel().getSelectedItem();
+    
+        if (estudianteEnUI != null && proyectoAsignado != null) {
+            estudianteEnUI.setIdProyecto(proyectoAsignado.getIdProyecto());
+            estudianteEnUI.setNombreProyecto(proyectoAsignado.getNombre());
+
+            txtProyecto.setText(proyectoAsignado.getNombre());
+            btnAsignarProyecto.setDisable(true);
+
+            cbEstudiantes.getItems().set(cbEstudiantes.getSelectionModel().getSelectedIndex(), 
+                estudianteEnUI);
+            cbEstudiantes.getSelectionModel().select(estudianteEnUI);
+
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION, "Éxito", "Proyecto asignado "
+                + "correctamente.");
+        }
     }
+    
+    private void seleccionarEstudiante(Estudiante estudiante) {
+        txtMatricula.setText(estudiante.getMatricula());
+        txtNombre.setText(estudiante.toString());
+        txtCorreo.setText(estudiante.getCorreo());
+        txtTelefono.setText(estudiante.getTelefono());
+
+       if (estudiante.getIdProyecto() == 0) {
+            txtProyecto.setText("Aún no cuenta con un proyecto asignado");
+            btnAsignarProyecto.setDisable(false);
+        } else {
+            txtProyecto.setText(estudiante.getNombreProyecto());
+            btnAsignarProyecto.setDisable(true);
+        }
+   }
 
     /* Sección: Métodos auxiliares privados
      * Contiene la lógica de apoyo para las operaciones principales
@@ -220,42 +240,32 @@ public class FXMLAsignarProyectoController implements Initializable {
             lblNombreUsuario.setText(coordinadorSesion.toString());
         }
     }
-
-    private boolean validarCampos(String matricula) {
-        if (matricula.isEmpty()) {
-            Utilidad.mostrarAlertaSimple(
-                Alert.AlertType.WARNING,
-                "Campo vacío", 
-                "Ingrese una matrícula para buscar al estudiante."
-            );
-            return false;
-        }
-
-        if (!matricula.matches("S\\d{8}")) {
-            Utilidad.mostrarAlertaSimple(
-                Alert.AlertType.WARNING,
-                "Matrícula inválida", 
-                "La matrícula debe iniciar con 'S' seguido de 8 dígitos "
-                    + "(Ej. S12345678)."
-            );
-            return false;
-        }
-
-        return true;
+    
+    private void cargarEstudiantesDelPeriodoActual() {
+        listaEstudiantes = FXCollections.observableArrayList(
+            EstudianteDAO.obtenerEstudiantesConProyectoDelPeriodoActual()
+        );
+        cbEstudiantes.setItems(listaEstudiantes);
     }
+    
+    private void filtrarEstudiantes(String filtro) {
+        ObservableList<Estudiante> estudiantesFiltrados;
 
-    private void llenarCamposEstudiante(Estudiante estudiante) {
-        txtMatricula.setText(estudiante.getMatricula());
-        txtNombre.setText(estudiante.toString());
-        txtCorreo.setText(estudiante.getCorreo());
-        txtTelefono.setText(estudiante.getTelefono());
-
-        if (estudiante.getIdProyecto() == 0) {
-            txtProyecto.setText("Aún no cuenta con un proyecto asignado");
-            btnAsignarProyecto.setDisable(false);
+        if (filtro == null || filtro.trim().isEmpty()) {
+            estudiantesFiltrados = listaEstudiantes;
         } else {
-            txtProyecto.setText(estudiante.getNombreProyecto());
+            String textoBusqueda = filtro.toLowerCase().trim();
+
+            estudiantesFiltrados = listaEstudiantes.stream()
+                .filter(estudiante -> estudiante.toString()
+                                                .toLowerCase()
+                                                .contains(textoBusqueda))
+                .collect(Collectors.toCollection(FXCollections::observableArrayList));
         }
+
+        cbEstudiantes.getSelectionModel().clearSelection();
+
+        cbEstudiantes.setItems(estudiantesFiltrados);
     }
 
     private void limpiarCampos() {
@@ -264,12 +274,5 @@ public class FXMLAsignarProyectoController implements Initializable {
         txtCorreo.clear();
         txtTelefono.clear();
         txtProyecto.clear();
-    }
-    
-    private Estudiante obtenerEstudiante(String matricula) {
-        Estudiante estudiante = new Estudiante();
-        boolean encontrado = ESTUDIANTE_DAO.buscarPorMatricula(matricula, 
-            estudiante);
-        return encontrado ? estudiante : null;
     }
 }

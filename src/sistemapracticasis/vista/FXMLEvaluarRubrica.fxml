@@ -42,7 +42,10 @@
          <font>
             <Font name="System Bold" size="15.0" />
          </font></Button>
-      <Button fx:id="btnAgregarNota" layoutX="349.0" layoutY="551.0" mnemonicParsing="false" onAction="#clicAgregarNota" prefHeight="65.0" prefWidth="194.0" style="-fx-cursor: hand;" text="Agregar nota" />
+      <Button fx:id="btnAgregarNota" layoutX="349.0" layoutY="551.0" mnemonicParsing="false" onAction="#clicAgregarNota" prefHeight="65.0" prefWidth="194.0" style="-fx-cursor: hand; -fx-background-color: #2c2486;" text="Agregar nota" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font></Button>
       <TextArea fx:id="txtNota" layoutX="14.0" layoutY="551.0" prefHeight="65.0" prefWidth="317.0" />
    </children>
 </AnchorPane>

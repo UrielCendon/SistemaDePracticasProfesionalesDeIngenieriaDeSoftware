@@ -20,6 +20,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 import sistemapracticasis.modelo.dao.DocumentoDAO;
 import sistemapracticasis.modelo.dao.EntregaDocumentoDAO;
@@ -47,6 +49,9 @@ public class FXMLVistaDeLaEntregaController implements Initializable {
      * siendo gestionada actualmente */
     private EntregaVisual entregaActual;
 
+    /** Callback para notificar a la ventana anterior de una validación exitosa. */
+    private Runnable callbackValidacionExitosa;
+    
     /** Campo de texto que muestra el nombre del documento */
     @FXML private TextField txtNombreDocumento;
 
@@ -64,7 +69,7 @@ public class FXMLVistaDeLaEntregaController implements Initializable {
 
     /** Botón para validar y guardar la calificación del documento */
     @FXML private Button btnValidar;
-
+    
     /* Sección: Inicialización
      * Métodos relacionados con la inicialización del controlador
      * y carga de datos iniciales.
@@ -83,27 +88,17 @@ public class FXMLVistaDeLaEntregaController implements Initializable {
     }    
     
     /**
-     * Inicializa los datos de la entrega que se visualizará en la interfaz.
-     * @param entregaVisual Objeto que contiene los datos de la entrega a 
-     * visualizar.
+     * Inicializa los datos de la entrega y el callback.
+     * Acepta un array de objetos para recibir tanto la entrega como la acción
+     * a ejecutar después de validar.
+     * @param entrega La entrega visual seleccionada.
+     * @param callback La acción a ejecutar tras una validación exitosa.
      */
-    public void inicializarDatos(EntregaVisual entregaVisual) {
-        this.entregaActual = entregaVisual;
-        
-        verificarObservacionExistente();
-
-        txtNombreDocumento.setText(entregaVisual.getNombreEntrega());
-        txtFechaEntregado.setText("Entregado el: " 
-            + entregaVisual.getFechaEntregado());
-        if (entregaVisual.getTipo().equals("documento")) {
-            byte[] datos = DocumentoDAO.obtenerArchivoPorId
-                (entregaVisual.getId());
-            mostrarArchivo(datos);
-        } else {
-            byte[] datos = ReporteDAO.obtenerArchivoPorId
-                (entregaVisual.getId());
-            mostrarArchivo(datos);
-        }
+    public void inicializarDatos(EntregaVisual entrega, Runnable callback) {
+        this.entregaActual = entrega;
+        this.callbackValidacionExitosa = callback;
+    
+        cargarDatosEnUI();
     }
     
     /* Sección: Manejo de eventos
@@ -134,46 +129,40 @@ public class FXMLVistaDeLaEntregaController implements Initializable {
      */
     @FXML
     private void clicValidar(ActionEvent event) {
-        if (validarCampos()) {
-            try {
-                float calificacion = Float.parseFloat(txtCalificacion.
-                    getText());
-                boolean exito;
+        if (!validarCampos()) {
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Datos Inválidos", 
+                "Existen campos inválidos, por favor corrija la evaluación.");
+            return;
+        }
 
-                if (entregaActual.getTipo().equals("documento")) {
-                    exito = EntregaDocumentoDAO.validarEntregaDocumento
-                        (entregaActual.getId(), calificacion);
-                } else {
-                    exito = EntregaReporteDAO.validarEntregaReporte
-                        (entregaActual.getId(), calificacion);
+        try {
+            float calificacion = Float.parseFloat(txtCalificacion.getText());
+            boolean exito;
+
+            if (entregaActual.getTipo().equals("documento")) {
+                exito = EntregaDocumentoDAO.validarEntregaDocumento(entregaActual.getId(), 
+                    calificacion);
+            } else {
+                exito = EntregaReporteDAO.validarEntregaReporte(entregaActual.getId(), 
+                    calificacion);
+            }
+
+            if (exito) {
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION, "Éxito", 
+                    "Se ha guardado la validación.");
+                
+                if (callbackValidacionExitosa != null) {
+                    callbackValidacionExitosa.run();
                 }
-                if (exito) {
-                    Utilidad.mostrarAlertaSimple(
-                        Alert.AlertType.INFORMATION,
-                        "Éxito en la validación",
-                        "Se ha guardado la validación."
-                    );
-                    Navegador.cerrarVentana(btnValidar);
-                } else {
-                    Utilidad.mostrarAlertaSimple(
-                        Alert.AlertType.ERROR,
-                        "Error",
-                        "No se pudo guardar la evaluación"
-                    );
-                }
-            } catch (NumberFormatException e) {
-                Utilidad.mostrarAlertaSimple(
-                    Alert.AlertType.ERROR,
-                    "Error",
-                    "La calificación debe ser un número válido"
-                );
-            }            
-        } else {
-            Utilidad.mostrarAlertaSimple(
-                Alert.AlertType.INFORMATION,
-                "Datos Inválidos", 
-                "Existen campos inválidos, por favor corrija la evaluación"
-            );
+                
+                Navegador.cerrarVentana(btnValidar);
+            } else {
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "Error de Guardado", 
+                    "No se pudo guardar la evaluación en la base de datos.");
+            }
+        } catch (NumberFormatException e) {
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "Error de Formato", 
+                "La calificación debe ser un número válido.");
         }
     }
     
@@ -197,46 +186,36 @@ public class FXMLVistaDeLaEntregaController implements Initializable {
      */
     @FXML
     private void clicDescargar(ActionEvent event) {
-        String directorioDescargas = System.getProperty("user.home") + 
-            File.separator + "Downloads";
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Guardar Archivo PDF");
         
-        boolean exito = PDFGenerador.descargarPDF
-            (entregaActual, directorioDescargas);
+        String nombreSugerido = entregaActual.getNombreEntrega().replaceAll("[^a-zA-Z0-9.-]", "_")
+            + ".pdf";
+        fileChooser.setInitialFileName(nombreSugerido);
         
-        if (exito) {
-            Utilidad.mostrarAlertaSimple(
-                Alert.AlertType.INFORMATION,
-                "Éxito",
-                "Archivo descargado correctamente en: " + directorioDescargas
-            );
-        } else {
-            Utilidad.mostrarAlertaSimple(
-                Alert.AlertType.ERROR,
-                "Error",
-                "No se pudo descargar el archivo."
-            );
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Archivos PDF "
+            + "(*.pdf)", "*.pdf");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        Stage escena = Utilidad.getEscenarioComponente(btnValidar);
+        File archivoDestino = fileChooser.showSaveDialog(escena);
+
+        if (archivoDestino != null) {
+            boolean exito = PDFGenerador.descargarPDFA(entregaActual, archivoDestino);
+            
+            if (exito) {
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION, "Éxito", 
+                    "Archivo guardado correctamente en: " + archivoDestino.getAbsolutePath());
+            } else {
+                Utilidad.mostrarAlertaSimple(Alert.AlertType.ERROR, "Error", 
+                    "No se pudo guardar el archivo.");
+            }
         }
     }
     
     /* Sección: Lógica de observaciones
      * Métodos que gestionan las observaciones de las entregas.
      */
-    private void verificarObservacionExistente() {
-        boolean tieneObservacion = false;
-
-        if (entregaActual.getTipo().equals("documento")) {
-            tieneObservacion = DocumentoDAO.tieneObservacion(entregaActual.
-                getId());
-        } else {
-            tieneObservacion = ReporteDAO.tieneObservacion(entregaActual.
-                getId());
-        }
-
-        if (tieneObservacion) {
-            btnAgregarObservacion.setDisable(true);
-        }
-    }
-    
     private void verificarObservacion() {
         boolean tieneObservacion = false;
 
@@ -251,6 +230,29 @@ public class FXMLVistaDeLaEntregaController implements Initializable {
         btnAgregarObservacion.setDisable(tieneObservacion);
     }
     
+    /* Sección: Manejo de datos en la interfaz
+     * Métodos relacionados con la visualización y manejo de archivos PDF.
+     */
+    private void cargarDatosEnUI() {
+        verificarObservacion();
+        txtNombreDocumento.setText(entregaActual.getNombreEntrega());
+        txtFechaEntregado.setText("Entregado el: " + entregaActual.getFechaEntregado());
+        
+        byte[] datosPDF = null;
+        if (entregaActual.getTipo().equals("documento")) {
+            datosPDF = DocumentoDAO.obtenerArchivoPorId(entregaActual.getId());
+        } else {
+            datosPDF = ReporteDAO.obtenerArchivoPorId(entregaActual.getId());
+        }
+        
+        if (datosPDF != null) {
+            mostrarArchivo(datosPDF);
+        } else {
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Sin Archivo", 
+                "No se encontró el archivo PDF para esta entrega.");
+        }
+    }
+    
     /* Sección: Manejo de archivos
      * Métodos relacionados con la visualización y manejo de archivos PDF.
      */
@@ -261,11 +263,10 @@ public class FXMLVistaDeLaEntregaController implements Initializable {
             Image imagenFX = SwingFXUtils.toFXImage(imagenPDF, null);
             imvPDF.setImage(imagenFX);
         } catch (IOException e) {
-            e.printStackTrace();
             Utilidad.mostrarAlertaSimple(
                 Alert.AlertType.ERROR,
                 "Error",
-                "No se pudo cargar el archivo PDF: " + e.getMessage()
+                "No se pudo cargar el archivo PDF"
             );
         }
     }

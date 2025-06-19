@@ -1,6 +1,7 @@
 package sistemapracticasis.controlador;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javafx.event.ActionEvent;
@@ -10,6 +11,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
+import sistemapracticasis.modelo.dao.EstudianteDAO;
+import sistemapracticasis.modelo.pojo.Estudiante;
 import sistemapracticasis.modelo.pojo.Profesor;
 import sistemapracticasis.util.Navegador;
 import sistemapracticasis.util.Utilidad;
@@ -76,13 +79,20 @@ public class FXMLPrincipalProfesorController implements Initializable {
      */
     @FXML
     private void clicValidarEntregas(ActionEvent event) {
-        Navegador.cambiarEscenaParametrizada(
-            Utilidad.getEscenarioComponente(lblNombreUsuario),
-            "/sistemapracticasis/vista/FXMLValidarEntrega.fxml",
-            FXMLValidarEntregaController.class,
-            "inicializarInformacion",
-            profesorSesion
-        );
+        List<Estudiante> estudiantesConEntregas = EstudianteDAO.
+            obtenerEstudiantesDeProfesorConDocumentoSinValidar(profesorSesion.getIdProfesor());
+         if (estudiantesConEntregas.isEmpty()) {
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION, "Sin entregas pendientes",
+            "No tiene estudiantes con entregas pendientes de validación en este momento.");
+        } else {
+            Navegador.cambiarEscenaParametrizada(
+                Utilidad.getEscenarioComponente(lblNombreUsuario),
+                "/sistemapracticasis/vista/FXMLValidarEntrega.fxml",
+                FXMLValidarEntregaController.class,
+                "inicializarInformacion",
+                profesorSesion
+            );
+        }
     }
 
     /**

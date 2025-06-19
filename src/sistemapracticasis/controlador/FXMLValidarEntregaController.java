@@ -4,12 +4,16 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -29,20 +33,24 @@ import sistemapracticasis.util.Utilidad;
 /**
  * Autor: Uriel Cendón
  * Fecha de creación: 15/06/2025
- * Descripción: Controlador de la vista FXMLValidarEntregaController,
- * que permite al profesor buscar a un estudiante y seleccionar una de sus 
- * entregas para validarla según sea el caso.
+ * Descripción: Controlador de la vista FXMLValidarEntrega. Permite al profesor
+ * buscar y seleccionar a un estudiante con entregas pendientes para
+ * poder validarlas.
  */
 public class FXMLValidarEntregaController implements Initializable {
 
     /* Sección: Declaración de variables
     * Contiene todas las variables de instancia y componentes FXML
     * utilizados en el controlador.
+    */
     /** Profesor actualmente en sesión */
     private Profesor profesorSesion;
     
     /** Campo de texto para buscar un estudiante*/
     @FXML private TextField txtBuscar;
+    
+    /** Campo de texto que muestra el proyecto de un estudiante*/
+    @FXML private TextField txtProyecto;
 
     /** Tabla que muestra el listado de entregas visuales */
     @FXML private TableView<EntregaVisual> tblEntregas;
@@ -58,6 +66,12 @@ public class FXMLValidarEntregaController implements Initializable {
 
     /** Botón para mostrar las opciones de validar y agregar una observación*/
     @FXML private Button btnOpciones;
+    
+    /** Lista desplegable con los estudiantes disponibles. */
+    @FXML private ComboBox<Estudiante> cbEstudiantes;
+    
+    /** Lista observable de estudiantes disponibles. */
+    private ObservableList<Estudiante> listaEstudiantes;
 
     /* Sección: Inicialización del controlador
     * Contiene los métodos relacionados con la configuración inicial
@@ -65,31 +79,32 @@ public class FXMLValidarEntregaController implements Initializable {
     */
     /**
      * Inicializa el controlador después de que su elemento raíz haya sido 
-     * procesado.
-     * Configura las columnas de la tabla y los listeners de selección.
+     * procesado. Configura las columnas de la tabla y los listeners para una
+     * interfaz reactiva.
      * @param url Ubicación utilizada para resolver rutas relativas para el 
      * objeto raíz.
      * @param rb Recursos utilizados para localizar el objeto raíz.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        tbcNombreDocumento.setCellValueFactory(new PropertyValueFactory<>
-            ("nombreEntrega"));
-        tbcFechaEntregadoDoc.setCellValueFactory(new PropertyValueFactory<>
-            ("fechaEntregado"));
+        tbcNombreDocumento.setCellValueFactory(new PropertyValueFactory<>("nombreEntrega"));
+        tbcFechaEntregadoDoc.setCellValueFactory(new PropertyValueFactory<>("fechaEntregado"));
         btnOpciones.setDisable(true);
         
-        agregarListenersSeleccion();
+        configurarListeners();
     }
     
     /**
-     * Inicializa la información del profesor en sesión.
+     * Inicializa el controlador con los datos del profesor en sesión.
+     * Desencadena la carga de la información del usuario y la lista de 
+     * estudiantes con entregas pendientes.
      * @param profesorSesion Objeto Profesor que contiene los datos del usuario 
      * en sesión.
      */
     public void inicializarInformacion(Profesor profesorSesion) {
         this.profesorSesion = profesorSesion;
         cargarInformacionUsuario();
+        cargarEstudiantesConEntregasPendientes();
     }
 
     /* Sección: Manejo de eventos de UI
@@ -98,24 +113,29 @@ public class FXMLValidarEntregaController implements Initializable {
     */
     /**
      * Maneja el evento de clic en el botón de opciones.
-     * Abre la ventana de visualización de entrega seleccionada.
+     * Abre la ventana modal para visualizar la entrega seleccionada.
      * @param event Evento de acción generado por el clic.
      */
     @FXML
     private void clicOpciones(ActionEvent event) {
-        EntregaVisual seleccion = tblEntregas.getSelectionModel().
-            getSelectedItem();
+        EntregaVisual seleccion = tblEntregas.getSelectionModel().getSelectedItem();
+        int indiceSeleccionado = tblEntregas.getSelectionModel().getSelectedIndex();
     
         if (seleccion != null) {
+            Runnable accionPostValidacion = () -> {
+                seleccion.setValidado(true);
+                tblEntregas.getItems().set(indiceSeleccionado, seleccion);
+                tblEntregas.getSelectionModel().select(indiceSeleccionado);
+            };
+
             Navegador.abrirVentanaModalParametrizada(
                 Utilidad.getEscenarioComponente(lblNombreUsuario),
                 "/sistemapracticasis/vista/FXMLVistaDeLaEntrega.fxml",
                 FXMLVistaDeLaEntregaController.class,
                 "inicializarDatos",
-                seleccion
+                seleccion,
+                accionPostValidacion
             );
-            
-            verificarEstadoBoton(seleccion);
         }
     }
 
@@ -127,9 +147,7 @@ public class FXMLValidarEntregaController implements Initializable {
     @FXML
     private void clicCancelar(ActionEvent event) {
         if (Utilidad.mostrarConfirmacion(
-            "Cancelar",
-            "Cancelar",
-            "¿Está seguro de que quiere cancelar?")) {
+            "Cancelar", "Cancelar", "¿Está seguro de que quiere cancelar?")) {
                 Navegador.cambiarEscenaParametrizada(
                     Utilidad.getEscenarioComponente(lblNombreUsuario),
                     "/sistemapracticasis/vista/FXMLPrincipalProfesor.fxml",
@@ -139,140 +157,133 @@ public class FXMLValidarEntregaController implements Initializable {
                 );
         }
     }
-
+    
+    /* Sección: Lógica de la Interfaz y Negocio
+    * Contiene los métodos que implementan la funcionalidad principal y
+    * configuran el comportamiento dinámico de la vista.
+    */
     /**
-     * Maneja el evento de clic en el botón de buscar.
-     * Busca un estudiante por matrícula y muestra sus entregas.
-     * @param event Evento de acción generado por el clic.
+     * Configura todos los listeners necesarios para que la interfaz sea
+     * reactiva: la selección en el ComboBox de estudiantes, el filtro de 
+     * búsqueda y la selección en la tabla de entregas.
      */
-    @FXML
-    private void clicBuscar(ActionEvent event) {
-        String textoBusqueda = txtBuscar.getText().trim();
-
-        if (!validarCampos(textoBusqueda)) return;
-
-        Estudiante estudianteEncontrado = obtenerEstudiante(profesorSesion.getIdProfesor(), 
-            textoBusqueda);
-
-        if (estudianteEncontrado != null) {
-            boolean estaEnPeriodo = EstudianteDAO.estaEnPeriodoActual
-                (textoBusqueda);
-
-            if (estaEnPeriodo) {
-                llenarCamposEstudiante(estudianteEncontrado);
+    private void configurarListeners() {
+        cbEstudiantes.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, 
+                newSelection) -> {
+            if (newSelection != null) {
+                manejarSeleccionEstudiante(newSelection);
             } else {
-                Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING,
-                    "Estudiante fuera de periodo",
-                    "El estudiante no pertenece al periodo actual. "
-                    + "Por favor, intente con otro.");
-                tblEntregas.getItems().clear();
+                limpiarDetallesEstudiante();
             }
-        } else {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION,
-                "No encontrado", "No se encontró ningún estudiante con la "
-                + "matrícula ingresada. Verifique que sea correcta o que pertenezca"
-                + " a su experiencia educativa.");
-        }
+        });
+
+        txtBuscar.textProperty().addListener((obs, oldVal, newVal) -> filtrarEstudiantes(newVal));
+
+        tblEntregas.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, 
+                newVal) -> {
+            if (newVal != null) {
+                btnOpciones.setDisable(newVal.isValidado());
+            } else {
+                btnOpciones.setDisable(true);
+            }
+        });
     }
     
-    /* Sección: Lógica de negocio
-    * Contiene los métodos que implementan la funcionalidad principal
-    * de la aplicación.
-    */
+    /**
+     * Carga la información del profesor en sesión en la etiqueta de la interfaz.
+     */
     private void cargarInformacionUsuario() {
         if (profesorSesion != null) {
-            lblNombreUsuario.setText(
-                profesorSesion.toString()
-            );
+            lblNombreUsuario.setText(profesorSesion.toString());
         }
     }
     
-    private boolean validarCampos(String matricula) {
-        if (matricula.isEmpty()) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING,
-                "Campo vacío", "Ingrese una matrícula para buscar al "
-                + "estudiante.");
-            return false;
-        }
+    /**
+     * Obtiene y carga la lista de estudiantes del profesor que tienen entregas
+     * sin validar en el ComboBox.
+     */
+    private void cargarEstudiantesConEntregasPendientes() {
+        listaEstudiantes = FXCollections.observableArrayList(
+            EstudianteDAO.obtenerEstudiantesDeProfesorConDocumentoSinValidar
+                (profesorSesion.getIdProfesor())
+        );
+        cbEstudiantes.setItems(listaEstudiantes);
 
-        if (!matricula.matches("S\\d{8}")) {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING,
-                "Matrícula inválida", "La matrícula debe iniciar con 'S' "
-                    + "seguido de 8 dígitos (Ej. S12345678).");
-            return false;
+        if (listaEstudiantes.isEmpty()) {
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.INFORMATION, "Sin entregas "
+                + "pendientes de validar",
+                "No tiene estudiantes con entregas pendientes de validación en este momento.");
+            txtBuscar.setDisable(true);
+            cbEstudiantes.setDisable(true);
         }
-
-        return true;
     }
-    
-    private void llenarCamposEstudiante(Estudiante estudiante) {
+
+    /**
+     * Gestiona la lógica a ejecutar cuando un estudiante es seleccionado del 
+     * ComboBox. Muestra el proyecto y carga sus entregas en la tabla.
+     * @param estudiante El estudiante que fue seleccionado.
+     */
+    private void manejarSeleccionEstudiante(Estudiante estudiante) {
+        txtProyecto.setText(estudiante.getNombreProyecto() != null && !estudiante.
+                getNombreProyecto().isEmpty() 
+            ? estudiante.getNombreProyecto() 
+            : "Sin proyecto asignado");
+        
+        llenarTablaEntregas(estudiante);
+    }
+
+    /**
+     * Puebla la tabla de entregas con los documentos y reportes asociados al 
+     * expediente de un estudiante específico.
+     * @param estudiante El estudiante del cual se mostrarán las entregas.
+     */
+    private void llenarTablaEntregas(Estudiante estudiante) {
         int idExpediente = ExpedienteDAO.obtenerIdExpedientePorEstudiante
             (estudiante.getIdEstudiante());
 
         if (idExpediente > 0) {
             List<EntregaVisual> entregas = new ArrayList<>();
-            entregas.addAll(DocumentoDAO.obtenerDocumentosPorIdExpediente
-                (idExpediente));
-            entregas.addAll(ReporteDAO.obtenerReportesPorIdExpediente
-                (idExpediente));
+            entregas.addAll(DocumentoDAO.obtenerDocumentosPorIdExpediente(idExpediente));
+            entregas.addAll(ReporteDAO.obtenerReportesPorIdExpediente(idExpediente));
 
             tblEntregas.getItems().setAll(entregas);
         } else {
-            Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, 
-                "Sin expediente", "El estudiante no tiene expediente "
-                    + "asignado.");
+            Utilidad.mostrarAlertaSimple(Alert.AlertType.WARNING, "Sin Expediente",
+                "El estudiante seleccionado no tiene un expediente asociado.");
+            tblEntregas.getItems().clear();
         }
     }
-    
-    private Estudiante obtenerEstudiante(int idProfesor, String matricula) {
-        Estudiante estudiante = new Estudiante();
-        EstudianteDAO estudianteDAO = new EstudianteDAO();
-        boolean encontrado = estudianteDAO.buscarMatriculaPorIdProfesor
-            (idProfesor, matricula, estudiante);
-        return (encontrado) ? estudiante : null;
+
+    /**
+     * Limpia los campos de detalle del estudiante (proyecto y tabla de entregas)
+     * cuando no hay ninguna selección en el ComboBox.
+     */
+    private void limpiarDetallesEstudiante() {
+        txtProyecto.clear();
+        tblEntregas.getItems().clear();
+        btnOpciones.setDisable(true);
     }
     
-    /* Sección: Configuración de UI
-    * Contiene los métodos para configurar el comportamiento
-    * de los componentes de la interfaz.
-    */
-    private void agregarListenersSeleccion() {
-        tblEntregas.getSelectionModel().selectedItemProperty().addListener(
-            (obs, oldVal, newVal) -> {
-                if (newVal != null) {
-                    boolean tieneCalificacion = false;
+    /**
+     * Filtra la lista de estudiantes en el ComboBox según el texto ingresado
+     * en el campo de búsqueda. La búsqueda es insensible a mayúsculas.
+     * @param filtro El texto utilizado para filtrar la lista.
+     */
+    private void filtrarEstudiantes(String filtro) {
+        ObservableList<Estudiante> estudiantesFiltrados;
 
-                    if (newVal.getTipo().equals("documento")) {
-                        Double calificacion = DocumentoDAO.
-                            obtenerCalificacionPorId(newVal.getId());
-                        tieneCalificacion = (calificacion != 0.0);
-                    } else if (newVal.getTipo().equals("reporte")) {
-                        Double calificacion = ReporteDAO.
-                            obtenerCalificacionPorId(newVal.getId());
-                        tieneCalificacion = (calificacion != 0.0);
-                    }
-
-                    btnOpciones.setDisable(tieneCalificacion);
-                } else {
-                    btnOpciones.setDisable(true);
-                }
-            }
-        );
-    }
-    
-    private void verificarEstadoBoton(EntregaVisual entrega) {
-        boolean tieneCalificacion = false;
-
-        if (entrega.getTipo().equals("documento")) {
-            Double calificacion = DocumentoDAO.obtenerCalificacionPorId
-                (entrega.getId());
-            tieneCalificacion = (calificacion != null);
-        } else if (entrega.getTipo().equals("reporte")) {
-            Double calificacion = ReporteDAO.obtenerCalificacionPorId
-                (entrega.getId());
-            tieneCalificacion = (calificacion != null);
+        if (filtro == null || filtro.trim().isEmpty()) {
+            estudiantesFiltrados = listaEstudiantes;
+        } else {
+            String textoBusqueda = filtro.toLowerCase().trim();
+            estudiantesFiltrados = listaEstudiantes.stream()
+                .filter(estudiante -> estudiante.toString().toLowerCase().contains(textoBusqueda))
+                .collect(Collectors.toCollection(FXCollections::observableArrayList));
         }
-
-        btnOpciones.setDisable(tieneCalificacion);
+        cbEstudiantes.setItems(estudiantesFiltrados);
+        
+        if (estudiantesFiltrados.isEmpty()) {
+            cbEstudiantes.getSelectionModel().clearSelection();
+        }
     }
 }

@@ -212,8 +212,6 @@ public class Navegador {
             URL url = Navegador.class.getResource(rutaFXML);
 
             if (url == null) {
-                System.err.println("No se pudo encontrar el FXML en la ruta: "
-                    + rutaFXML);
                 throw new IOException("Recurso FXML no encontrado: "
                     + rutaFXML);
             }
@@ -223,9 +221,17 @@ public class Navegador {
             C controlador = cargador.getController();
 
             if (metodoInicializacion != null && parametros != null) {
-                Method metodo = claseControlador.getMethod(
-                    metodoInicializacion,
-                    getParameterTypes(parametros));
+                Method metodo = encontrarMetodoCompatible(controlador.getClass(), 
+                    metodoInicializacion, parametros);
+
+                if (metodo == null) {
+                    throw new NoSuchMethodException(
+                        "No se encontró un método compatible llamado '" + metodoInicializacion +
+                        "' en la clase '" + controlador.getClass().getName() +
+                        "' para los parámetros dados."
+                    );
+                }
+                
                 metodo.invoke(controlador, parametros);
             }
 
@@ -243,6 +249,46 @@ public class Navegador {
                     + ex.getMessage());
             ex.printStackTrace();
         }
+    }
+    
+    /**
+     * Busca un método compatible en una clase.
+     * Es "compatible" si el nombre coincide y cada argumento pasado puede ser asignado
+     * al tipo de parámetro del método (usando isAssignableFrom).
+     * Esto soluciona el problema con interfaces y lambdas.
+     *
+     * @param clase La clase en la que se buscará el método.
+     * @param nombreMetodo El nombre del método a buscar.
+     * @param args Los argumentos que se pasarán al método.
+     * @return El objeto Method si se encuentra, o null si no.
+     */
+    private static Method encontrarMetodoCompatible(Class<?> clase, String nombreMetodo, 
+            Object[] args) {
+        for (Method metodo : clase.getMethods()) {
+            if (metodo.getName().equals(nombreMetodo)) {
+                Class<?>[] tiposParametrosMetodo = metodo.getParameterTypes();
+                if (tiposParametrosMetodo.length == args.length) {
+                    boolean compatible = true;
+                    for (int i = 0; i < tiposParametrosMetodo.length; i++) {
+                        Class<?> tipoParametro = tiposParametrosMetodo[i];
+                        if (tipoParametro.isPrimitive()) {
+                            if (tipoParametro.equals(int.class) && !(args[i] instanceof Integer))
+                                compatible = false;
+                            else if (tipoParametro.equals(double.class) && !(args[i] 
+                                instanceof Double)) compatible = false;
+                        } else if (args[i] != null && !tipoParametro.isAssignableFrom
+                            (args[i].getClass())) {
+                                compatible = false;
+                        }
+                        if (!compatible) break;
+                    }
+                    if (compatible) {
+                        return metodo;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     /*

@@ -53,7 +53,7 @@ public class FXMLProyectosDisponiblesController implements Initializable {
     @FXML private Button btnAsignarProyecto;
 
     /** Callback para notificar la asignación de proyecto */
-    private Consumer<String> proyectoAsignadoCallback;
+    private Consumer<Proyecto> proyectoAsignadoCallback;
 
     /** Lista de proyectos disponibles */
     private List<Proyecto> listaProyectos;
@@ -83,19 +83,17 @@ public class FXMLProyectosDisponiblesController implements Initializable {
      * @param callback Función de callback que se ejecutará al asignar un 
      * proyecto.
      */
-    public void setProyectoAsignadoCallback(Consumer<String> callback) {
+    public void setProyectoAsignadoCallback(Consumer<Proyecto> callback) {
         this.proyectoAsignadoCallback = callback;
     }
     
     /**
      * Inicializa la información del estudiante y proyectos disponibles.
-     * @param estudiante Estudiante al que se asignará el proyecto.
      * @param parametros Parámetros que contienen la lista de proyectos 
      * disponibles y callback.
      */
-    public void inicializarInformacion(Estudiante estudiante,
-            ParametrosProyectosDisponibles parametros) {
-        this.estudiante = estudiante;
+    public void inicializarInformacion(ParametrosProyectosDisponibles parametros) {
+        this.estudiante = parametros.getEstudiante();
         this.listaProyectos = parametros.getListaProyectos();
         this.proyectoAsignadoCallback = parametros.getCallbackAsignacion();
         cargarProyectosEnTabla();
@@ -166,15 +164,10 @@ public class FXMLProyectosDisponiblesController implements Initializable {
 
                         if (proyectoAsignadoCallback != null) {
                             proyectoAsignadoCallback.accept
-                                (proyectoSeleccionado.getNombre());
+                                (proyectoSeleccionado);
                         }
 
                         Navegador.cerrarVentana(txtProyectoSeleccionado);
-                        Utilidad.mostrarAlertaSimple(
-                            Alert.AlertType.INFORMATION,
-                            "Proyecto Asignado",
-                            "Proyecto asignado con éxito."
-                        );
 
                     } catch (SQLException ex) {
                         ex.printStackTrace();

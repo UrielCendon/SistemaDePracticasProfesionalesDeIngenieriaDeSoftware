@@ -9,7 +9,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="566.0" prefWidth="908.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sistemapracticasis.controlador.FXMLAsignarProyectoController">
+<AnchorPane id="AnchorPane" prefHeight="639.0" prefWidth="908.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sistemapracticasis.controlador.FXMLAsignarProyectoController">
    <children>
       <ImageView fitHeight="42.0" fitWidth="47.0" layoutX="749.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -21,32 +21,37 @@
             <Font name="Arial Black" size="34.0" />
          </font>
       </Label>
-      <Button fx:id="btnCancelar" layoutX="481.0" layoutY="463.0" mnemonicParsing="false" onAction="#clicCancelar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand; -fx-background-color: RED;" text="Cancelar" textFill="WHITE">
+      <Button fx:id="btnCancelar" layoutX="481.0" layoutY="517.0" mnemonicParsing="false" onAction="#clicCancelar" prefHeight="42.0" prefWidth="134.0" style="-fx-cursor: hand; -fx-background-color: RED;" text="Cancelar" textFill="WHITE">
          <font>
             <Font name="System Bold" size="15.0" />
          </font></Button>
       <Label fx:id="lblNombreUsuario" layoutX="705.0" layoutY="68.0" />
       <Line endX="807.0" layoutX="100.0" layoutY="93.0" startX="-100.0" stroke="#6f6f6f" />
-      <TextField fx:id="txtBuscar" layoutX="127.0" layoutY="117.0" prefHeight="39.0" prefWidth="393.0" promptText="Buscar matrícula (S12345678)" style="-fx-cursor: text;" />
-      <Label layoutX="272.0" layoutY="192.0" text="Matrícula:" />
-      <Label layoutX="275.0" layoutY="237.0" text="Nombre:" />
-      <Label layoutX="280.0" layoutY="282.0" text="Correo:" />
-      <Label layoutX="273.0" layoutY="331.0" text="Teléfono:" />
-      <Label layoutX="273.0" layoutY="380.0" text="Proyecto:" />
-      <TextField fx:id="txtMatricula" editable="false" layoutX="404.0" layoutY="186.0" prefHeight="33.0" prefWidth="341.0" promptText="Matrícula" style="-fx-border-color: BLACK;" />
-      <TextField fx:id="txtNombre" editable="false" layoutX="404.0" layoutY="231.0" prefHeight="33.0" prefWidth="341.0" promptText="Nombre" style="-fx-border-color: BLACK;" />
-      <TextField fx:id="txtCorreo" editable="false" layoutX="404.0" layoutY="276.0" prefHeight="33.0" prefWidth="341.0" promptText="Correo" style="-fx-border-color: BLACK;" />
-      <TextField fx:id="txtTelefono" editable="false" layoutX="404.0" layoutY="325.0" prefHeight="33.0" prefWidth="341.0" promptText="Telefono" style="-fx-border-color: BLACK;" />
-      <TextField fx:id="txtProyecto" editable="false" layoutX="404.0" layoutY="374.0" prefHeight="33.0" prefWidth="341.0" promptText="Proyecto" style="-fx-border-color: BLACK;" />
-      <Button fx:id="btnAsignarProyecto" layoutX="299.0" layoutY="463.0" mnemonicParsing="false" onAction="#clicAsignarProyecto" prefHeight="42.0" prefWidth="144.0" style="-fx-cursor: hand; -fx-background-color: GREEN;" text="Asignar Proyecto" textFill="WHITE">
+      <Label layoutX="272.0" layoutY="246.0" text="Matrícula:" />
+      <Label layoutX="275.0" layoutY="291.0" text="Nombre:" />
+      <Label layoutX="280.0" layoutY="336.0" text="Correo:" />
+      <Label layoutX="273.0" layoutY="385.0" text="Teléfono:" />
+      <Label layoutX="273.0" layoutY="434.0" text="Proyecto:" />
+      <TextField fx:id="txtMatricula" editable="false" layoutX="404.0" layoutY="240.0" prefHeight="33.0" prefWidth="341.0" promptText="Matrícula" style="-fx-border-color: BLACK;" />
+      <TextField fx:id="txtNombre" editable="false" layoutX="404.0" layoutY="285.0" prefHeight="33.0" prefWidth="341.0" promptText="Nombre" style="-fx-border-color: BLACK;" />
+      <TextField fx:id="txtCorreo" editable="false" layoutX="404.0" layoutY="330.0" prefHeight="33.0" prefWidth="341.0" promptText="Correo" style="-fx-border-color: BLACK;" />
+      <TextField fx:id="txtTelefono" editable="false" layoutX="404.0" layoutY="379.0" prefHeight="33.0" prefWidth="341.0" promptText="Telefono" style="-fx-border-color: BLACK;" />
+      <TextField fx:id="txtProyecto" editable="false" layoutX="404.0" layoutY="428.0" prefHeight="33.0" prefWidth="341.0" promptText="Proyecto" style="-fx-border-color: BLACK;" />
+      <Button fx:id="btnAsignarProyecto" layoutX="299.0" layoutY="517.0" mnemonicParsing="false" onAction="#clicAsignarProyecto" prefHeight="42.0" prefWidth="144.0" style="-fx-cursor: hand; -fx-background-color: GREEN;" text="Asignar Proyecto" textFill="WHITE">
          <font>
             <Font name="System Bold" size="15.0" />
          </font></Button>
-      <Line layoutX="356.0" layoutY="219.0" startX="-100.0" stroke="#3768b2" />
-      <Line layoutX="356.0" layoutY="265.0" startX="-100.0" stroke="#3768b2" />
-      <Line layoutX="356.0" layoutY="310.0" startX="-100.0" stroke="#3768b2" />
-      <Line layoutX="356.0" layoutY="360.0" startX="-100.0" stroke="#3768b2" />
-      <Line layoutX="356.0" layoutY="410.0" startX="-100.0" stroke="#3768b2" />
-      <Button layoutX="533.0" layoutY="116.0" mnemonicParsing="false" onAction="#clicBuscar" prefHeight="42.0" prefWidth="65.0" style="-fx-cursor: hand;" text="Buscar" />
+      <Line layoutX="356.0" layoutY="273.0" startX="-100.0" stroke="#3768b2" />
+      <Line layoutX="356.0" layoutY="319.0" startX="-100.0" stroke="#3768b2" />
+      <Line layoutX="356.0" layoutY="364.0" startX="-100.0" stroke="#3768b2" />
+      <Line layoutX="356.0" layoutY="414.0" startX="-100.0" stroke="#3768b2" />
+      <Line layoutX="356.0" layoutY="464.0" startX="-100.0" stroke="#3768b2" />
+      <TextField fx:id="txtBuscar" layoutX="208.0" layoutY="112.0" prefHeight="39.0" prefWidth="393.0" promptText="Buscar por nombre del estudiante" style="-fx-cursor: text;" />
+      <ComboBox fx:id="cbEstudiantes" layoutX="208.0" layoutY="169.0" prefHeight="39.0" prefWidth="258.0" promptText="Estudiantes" />
+      <ImageView fitHeight="39.0" fitWidth="51.0" layoutX="562.0" layoutY="112.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../recursos/icons8-buscar-50.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>

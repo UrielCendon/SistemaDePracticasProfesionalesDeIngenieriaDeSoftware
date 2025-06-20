@@ -222,7 +222,6 @@ public class FXMLActualizarExpedienteDocumentoInicialController implements
                                 "No se pudo subir el documento");
                         }
                     } catch (IOException ex) {
-                        ex.printStackTrace();
                         Utilidad.mostrarAlertaSimple(
                             Alert.AlertType.ERROR,
                             "Error",
